@@ -1,0 +1,1 @@
+2025-07-21 12:54:41 - PHP Warning:  mysqli::__construct(): (HY000/2002): Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение in C:\Users\puyols\Downloads\flowers_belka\system\library\db\mysqli.php on line 7

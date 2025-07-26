@@ -1,0 +1,1102 @@
+{{ header }}{{ column_left }}
+<div id="content">
+<div class="page-header">
+    <div class="container-fluid">
+        <div class="pull-right">
+            <button type="submit" form="form" data-toggle="tooltip" title="{{ button_apply }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+            <a onclick="$('#form').attr('action', location + '&exit=true'); $('#form').submit()" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-default"><i class="fa fa-save"></i></a>
+            <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+        </div>
+
+        <h1>{{ heading_title }}</h1>
+        <ul class="breadcrumb">
+            {% for breadcrumb in breadcrumbs %}
+                <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+</div>
+<div class="container-fluid">
+{% if error_warning %}
+    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+{% endif %}
+<div class="panel panel-default">
+<div class="panel-heading">
+    <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_form }}</h3>
+</div>
+<div class="panel-body">
+<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form" class="form-horizontal">
+<input type="hidden" name="{{ name }}_license" size="50" value="{{ dostavkaplus_license }}" >
+
+<div class="row">
+    <div class="col-sm-2">
+        <ul class="nav nav-pills nav-stacked" id="modules">
+            <li class="active"><a href="#tab-general" data-toggle="tab">{{ tab_general }}</a></li>
+            <li><a href="#tab-discount" data-toggle="tab">{{ tab_discount }}</a></li>
+            {% if show_product_groups and groups is defined and groups|length > 0 %}
+            <li><a href="#tab-pgroups" data-toggle="tab">{{ tab_product_groups }}</a></li>
+            {% endif %}
+            <li><a href="#tab-backup" data-toggle="tab">{{ tab_backup }}</a></li>
+            {% if modules|length > 0 %}
+                {% for module_row, module in modules %}
+                    <li><a href="#tab-module-{{ module_row }}" id="module-{{ module_row }}" data-toggle="tab">
+                        {% if module.title_tab[config_language_id] is not empty %} 
+                            {{ module.title_tab[config_language_id] }} 
+                        {% else %} 
+                            {% if module.title[config_language_id] is not empty %} 
+                                {{ module.title[config_language_id] }} 
+                            {% else %} 
+                                {{ tab_module }}&nbsp;{{ module_row + 1 }} 
+                            {% endif %}
+                        {% endif %}
+                    &nbsp;&nbsp;&nbsp;<i class="fa fa-minus-circle" onClick="$('#modules li > a:first').trigger('click'); $('#module-{{ module_row }}').remove(); $('#tab-module-{{ module_row }}').remove(); return false; "></i></a></li>
+                {% endfor %}
+            {% endif %}
+            <button id="module-add" type="button" onclick="addModule();" data-toggle="tooltip" title="{{ button_module_add }}" class="btn btn-primary"><i class="fa fa-plus-circle">&nbsp;{{ button_module_add }}</i></button>
+        </ul>
+    </div>
+    <div class="col-sm-10">
+        <div class="tab-content" id="modules-tabs">
+            <div class="tab-pane active" id="tab-general">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_name }}">{{ entry_name }}</span></label>
+                    <div class="col-sm-10">
+                        {% for language in languages %}
+                            {% if language.status == 1 %}
+                                <div class="input-group pull-left"><span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> </span>
+                                <input size="50" type="text" name="{{ name }}_name[{{ language.language_id }}]" value="{% if dostavkaplus_name is defined and dostavkaplus_name[language.language_id] is defined %}{{ dostavkaplus_name[language.language_id] }}{% endif %}" id="input-name{{ language.language_id }}" class="form-control" /></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-tax">{{ entry_tax_class }}</label>
+                    <div class="col-sm-10">
+                        <select name="{{ name }}_tax_class_id" id="input-tax" class="form-control">
+                            <option value="0">{{ text_none }}</option>
+                            {% for tax_class in tax_classes %}
+                                {% if tax_class.tax_class_id == dostavkaplus_tax_class_id %}
+                                <option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
+                                {% else %}
+                                <option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+                    <div class="col-sm-10">
+                        <select name="shipping_{{ name }}_status" id="input-status" class="form-control">
+                            {% if shipping_dostavkaplus_status %}
+                                <option value="1" selected="selected">{{ text_enabled }}</option>
+                                <option value="0">{{ text_disabled }}</option>
+                            {% else %}
+                                <option value="1">{{ text_enabled }}</option>
+                                <option value="0" selected="selected">{{ text_disabled }}</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-sort-order">{{ entry_sort_order }}</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="shipping_{{ name }}_sort_order" value="{{ shipping_dostavkaplus_sort_order }}" placeholder="1" id="input-sort-order" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="tab-pane" id="tab-discount">
+                <div class="table-responsive">
+                    <table id="discount" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <td class="text-left required"><span data-toggle="tooltip" title="{{ help_discount_value }}">{{ column_discount_value }}</span></td>
+                            <td class="text-left">{{ column_method }}</td>
+                            <td class="text-left">{{ column_customer_group }}</td>
+                            <td class="text-left">{{ column_geo_zone }}</td>
+                            
+                            <td class="text-left"><span data-toggle="tooltip" title="{{ help_min_total }}">{{ column_min_cost }}</span></td>
+                            <td class="text-left"><span data-toggle="tooltip" title="{{ help_max_total }}">{{ column_max_cost }}</span></td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+
+                        {% if dostavkaplus_discounts|length > 0 %}
+                            {% set discount_row = dostavkaplus_discounts|length %}
+                        {% for key, discount in dostavkaplus_discounts %}
+
+                        <tr id="discount-row{{ key }}">
+                            <td class="text-left">
+                                <nobr>
+                                    <select name="{{ name }}_discounts[{{ key }}][prefix]" class="form-control">
+                                        {% set arr_prefix = ['-', '+'] %}
+                                        {% for prefix in arr_prefix %}
+                                        <option {% if prefix == discount.prefix%}{{ 'selected="selected"' }} {% endif %} value="{{ prefix }}">{{ prefix }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="text" name="{{ name }}_discounts[{{ key }}][value]" value="{{ discount.value }}" size="3" class="form-control"/>
+                                    <select name="{{ name }}_discounts[{{ key }}][mode]" class="form-control">
+                                        {% for type, tname in discount_type %}
+                                        <option {% if type == discount.mode %}{{ 'selected="selected"' }}{% endif %} value="{{ type }}">{{ tname }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </nobr>
+                                {% if error_dostavkaplus_discounts[key].value %}
+                                <div class="text-danger">{{ error_dostavkaplus_discounts[key].value }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="text-left">
+                                <div class="well well-sm" style="height: 100px; overflow: auto;">
+                                {% if modules|length > 0 %}
+                                    {% for module_key, module in modules %}
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="{{ name }}_discounts[{{ key }}][key][]" value="{{ module_key }}" {% if discount.key is defined and discount.key|length > 0 and module_key in discount.key %}{{ 'checked="checked"' }}{% endif %}/>
+
+                                            {% if module.title_tab[config_language_id] is not empty %} 
+                                                {{ module.title_tab[config_language_id] }} 
+                                            {% else %} 
+                                                {{ module.title[config_language_id] }} 
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="well well-sm" style="height: 100px; overflow: auto;">
+                                    {% for customer_group in customer_groups %}
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="{{ name }}_discounts[{{ key }}][customer_group_id][]" value="{{ customer_group.customer_group_id }}" {% if discount.customer_group_id and discount.customer_group_id|length > 0 and customer_group.customer_group_id in discount.customer_group_id %}{{ 'checked="checked"' }}{% endif %}/>
+                                            {{ customer_group.name }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="well well-sm" style="height: 100px; overflow: auto;">
+                                    {% for geo_zone in geo_zones %}
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="{{ name }}_discounts[{{ key }}][geo_zone][]" value="{{ geo_zone.geo_zone_id }}" {% if discount.geo_zone and discount.geo_zone|length > 0 and geo_zone.geo_zone_id in discount.geo_zone %}{{ 'checked="checked"' }}{% endif %}/>
+                                            {{ geo_zone.name }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <input type="text" name="{{ name }}_discounts[{{ key }}][min_total]" value="{% if discount.min_total %}{{ discount.min_total }}{% endif %}" size="3" class="form-control"/>
+                                {% if error_dostavkaplus_discounts[key].min_total %}
+                                <div class="text-danger">{{ error_dostavkaplus_discounts[key].min_total }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="text-left">
+                                <input type="text" name="{{ name }}_discounts[{{ key }}][max_total]" value="{% if discount.max_total %}{{ discount.max_total }}{% endif %}" size="3" class="form-control"/>
+                                {% if error_dostavkaplus_discounts[key].max_total %}
+                                <div class="text-danger">{{ error_dostavkaplus_discounts[key].max_total }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="text-left"><button type="button" onclick="$('#discount-row{{ key }}').remove();return FALSE;" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="6"></td>
+                            <td class="text-left"><button type="button" onclick="addDiscount();" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            {% if show_product_groups and groups and groups|length > 0 %}
+                <div class="tab-pane" id="tab-pgroups">
+                    <div class="table-responsive">
+                        <table id="pgroup" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <td class="text-left">{{ column_module }}</td>
+                                <td class="text-left">{{ column_group }}</td>
+                                <td class="text-left">{{ column_group_logic }}</td>
+                                <td class="text-left">{{ column_min_total }}</td>
+                                <td class="text-left">{{ column_max_total }}</td>
+                                <td></td>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% if dostavkaplus_pgroups|length > 0 %}
+                                {% set pgroup_row = dostavkaplus_pgroups|length %}
+                            {% for key, pgroup in dostavkaplus_pgroups %}
+                            <tr id="pgroup-row{{ key }}">
+                                <td class="text-left">
+                                    <div class="well well-sm" style="height: 100px; overflow: auto;">
+                                        {% for module_key, module in modules %}
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="{{ name }}_pgroups[{{ key }}][key][]" value="{{ module_key }}" {% if pgroup.key and pgroup.key|length > 0 and module_key in pgroup.key %}{{ 'checked="checked"' }}{% endif %}/>
+                                                {% if dostavkaplus_title_tab[module_key] is defined %}
+                                                    {{ dostavkaplus_title_tab[module_key] }}
+                                                {% else %}
+                                                    {{ module.title }}
+                                                {% endif %}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+
+                                <td class="text-left">
+                                    <select name="{{ name }}_pgroups[{{ key }}][filter_group_id]" class="form-control"/>
+                                    <option value="0" selected="selected">{{ text_group }}</option>
+                                    {% for group in groups %}
+                                        {% if group.status == 1 %}
+                                            <option value="{{ group.group_id }}" {% if group.group_id == pgroup.filter_group_id %}{{ "selected" }}{% endif %}>{{ group.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </select>
+                                    {% if error_pgroups[key].filter_group_id %}
+                                    <div class="text-danger">{{ error_pgroups[key].filter_group_id }}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="text-left">
+                                    <select name="{{ name }}_pgroups[{{ key }}][logic]" id="{{ name }}_pgroups_{{ key }}_logic" class="form-control"/>
+                                    {% for type, tname in group_logic_type %}
+                                    <option {% if type == pgroup.logic %}{{ 'selected="selected"' }}{% endif %} value="{{ type }}">{{ tname }}</option>
+                                    {% endfor %}
+                                    </select>
+                                    <input type="text" name="{{ name }}_pgroups[{{ key }}][limit]" id="{{ name }}_pgroups_{{ key }}_limit" value="{% if pgroup.limit %}{{ pgroup.limit }}{% endif %}" size="7" class="form-control"/>
+                                </td>
+                                <td class="text-left">
+                                    <input type="text" name="{{ name }}_pgroups[{{ key }}][min_total]" value="{{ pgroup.min_total }}" size="3" class="form-control"/>
+                                    {% if error_pgroups[key].min_total %}
+                                    <div class="text-danger">{{ error_pgroups[key].min_total }}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="text-left">
+                                    <input type="text" name="{{ name }}_pgroups[{{ key }}][max_total]" value="{{ pgroup.max_total }}" size="3" class="form-control"/>
+                                    {% if error_pgroups[key].max_total %}
+                                    <div class="text-danger">{{ error_pgroups[key].max_total }}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="text-left"><button type="button" onclick="$('#pgroup-row{{ key }}').remove();return false;" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            </tbody>
+
+                            <tfoot>
+                            <tr>
+                                <td colspan="5"></td>
+                                <td class="text-left"><button type="button" onclick="addPGroup();" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button>
+                                </td>
+                            </tr>
+                            </tfoot>
+
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+
+            <div class="tab-pane" id="tab-backup">
+
+                <label class="col-sm-2 control-label" for="button-save-backup">{{ text_backup }}</label>
+                <div class="col-sm-10">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <button type="button" id="button-save-backup" class="btn btn-primary" onclick="location = '{{ backup_link }}';"><i class="fa fa-save"></i> {{ button_save }}</button>
+                        </div>
+                    </div>
+                </div>
+
+                <br/>&nbsp;<br/>
+
+                <label class="col-sm-2 control-label" for="button-restore-backup">{{ text_restore }}</label>
+                <div class="col-sm-10">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <input name="restore" type="hidden" value="0" id="restore" /><input type="file" name="import" class="form-control" />&nbsp;<button type="button" id="button-save-backup" class="btn btn-primary" onclick="$('#restore').val(1);$('#form').submit();"><i class="fa fa-copy"></i> {{ button_restore }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {% for module_row, module in modules %}
+                <div class="tab-pane" id="tab-module-{{ module_row }}">
+
+                    <ul class="nav nav-tabs" id="language-{{ module_row }}">
+                        {% for language in languages %}
+                            {% if language.status == 1 %}
+                                <li><a href="#language-{{ module_row }}-{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+
+                    <div class="tab-content">
+                        {% for language in languages %}
+                            {% if language.status == 1 %}
+                                <div class="tab-pane" id="language-{{ module_row }}-{{ language.language_id }}">
+                                    <div class="form-group required">
+                                        <label class="col-sm-2 control-label" for="input-title-{{ module_row }}-{{ language.language_id }}">{{ entry_title }}</label>
+                                        <div class="col-sm-10">
+                                            <input size="100" type="text" name="{{ name }}_module[{{ module_row }}][title][{{ language.language_id }}]" value="{% if module.title[language.language_id] is defined %}{{ module.title[language.language_id] }}{% endif %}" id="input-title-{{ module_row }}-{{ language.language_id }}" class="form-control" /><br/>
+                                            {% if error_title[module_row][language.language_id] is defined and error_title[module_row][language.language_id] is not empty %}
+                                                <div class="text-danger">{{ error_title[module_row][language.language_id] }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="input-title-tab-{{ module_row }}-{{ language.language_id }}">{{ entry_title_tab }}</label>
+                                        <div class="col-sm-10">
+                                            <input size="100" type="text" name="{{ name }}_module[{{ module_row }}][title_tab][{{ language.language_id }}]" value="{% if module.title_tab[language.language_id] is defined %}{{ module.title_tab[language.language_id] }}{% endif %}" id="input-title-tab-{{ module_row }}-{{ language.language_id }}" class="form-control" /><br/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="textarea-description-{{ module_row }}-{{ language.language_id }}">{{ entry_info }}</label>
+                                        <div class="col-sm-10">
+                                            <textarea name="{{ name }}_module[{{ module_row }}][info][{{ language.language_id }}]" id="textarea-description-{{ module_row }}-{{ language.language_id }}" data-toggle="summernote" data-lang="{{ summernote }}" class="form-control">{% if module.info[language.language_id] is defined %}{{ module.info[language.language_id] }}{% endif %}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="input-price-text-{{ module_row }}">{{ entry_price_text }}</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" name="{{ name }}_module[{{ module_row }}][price_text][{{ language.language_id }}]" value="{% if module.price_text[language.language_id] is defined %} {{ module.price_text[language.language_id] }}{% endif %}" size="30" placeholder="{{ text_for_free }}" class="form-control" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <fieldset>
+                            <legend>{{ text_settings }}</legend>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-show-description-{{ module_row }}">{{ entry_show_description }}</label>
+                                <div class="col-sm-10">
+                                    <input type="checkbox" name="{{ name }}_module[{{ module_row }}][show_description]" value="1" {% if module.show_description is defined and module.show_description == 1 %}checked="checked"{% endif %} id="input-show-description-{{ module_row }}" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-price-{{ module_row }}">{{ entry_price }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="{{ name }}_module[{{ module_row }}][price]" value="{% if module.price is defined %}{{ module.price }}{% endif %}" id="input-price-{{ module_row }}" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-currency-{{ module_row }}">{{ entry_currency }}</label>
+                                <div class="col-sm-10">
+                                    <select name="{{ name }}_module[{{ module_row }}][currency]" id="input-currency-{{ module_row }}" class="form-control">
+                                        {% for currency in currencies %}
+                                            <option value="{{ currency.code }}" {% if module.currency is defined and currency.code == module.currency %}selected="selected"{% endif %}>{{ currency.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-weight-class-id-{{ module_row }}">{{ entry_weight_class }}</label>
+                                <div class="col-sm-10">
+                                    <select name="{{ name }}_module[{{ module_row }}][weight_class_id]" id="input-weight-class-id-{{ module_row }}" class="form-control">
+                                        {% for weight_class in weight_classes %}
+                                            {% if weight_class.weight_class_id == module.weight_class_id %}
+                                            <option value="{{ weight_class.weight_class_id }}" selected="selected">{{ weight_class.title }}</option>
+                                            {% else %}
+                                            <option value="{{ weight_class.weight_class_id }}">{{ weight_class.title }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-rate-{{ module_row }}"><span data-toggle="tooltip" title="{{ help_rate }}">{{ entry_rate }}</span></label>
+                                <div class="col-sm-10">
+                                    <textarea name="{{ name }}_module[{{ module_row }}][rate]" rows="5" id="input-rate-{{ module_row }}" class="form-control">{% if module.rate is defined %}{{ module.rate }}{% endif %}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-cost-{{ module_row }}"><span data-toggle="tooltip" title="{{ help_cost }}">{{ entry_cost }}</span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="{{ name }}_module[{{ module_row }}][cost]" value="{% if module.cost %}{{ module.cost }}{% endif %}" id="input-cost-{{ module_row }}" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-image-{{ module_row }}">{{ entry_image }}</label>
+                                <div class="col-sm-10">
+                                    <a href="" id="thumb-image-{{ module_row }}" data-toggle="image" class="img-thumbnail"><img src="{{ module.thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>
+                                    <input type="hidden" name="{{ name }}_module[{{ module_row }}][image]" value="{% if module.image %}{{ module.image }}{% endif %}" id="input-image-{{ module_row }}" />
+                                </div>
+                            </div>
+
+                            <div class="form-group required">
+                                <label class="col-sm-2 control-label" for="input-store">{{ entry_store }}</label>
+
+                                <div class="col-sm-10">
+                                    <div class="well well-sm" style="height: 100px; overflow: auto;">
+                                        {% for store in stores %}
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" name="{{ name }}_module[{{ module_row }}][store][]" value="{{ store.store_id }}" {% if module.store is defined  and store.store_id in module.store %}checked="checked"{% endif %} />
+                                                    {{ store.name }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% if error_store.module_row %}
+                                        <div class="text-danger">{{ error_store.module_row }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-city-rate-{{ module_row }}"><span data-toggle="tooltip" title="{{ help_city_rate }}">{{ entry_city_rate }}</span></label>
+                                <div class="col-sm-10">
+                                    <textarea name="{{ name }}_module[{{ module_row }}][city_rate]" rows="5" id="input-city-rate-{{ module_row }}" class="form-control">{% if module.city_rate %}{{ module.city_rate }}{% endif %}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-city-rate2-{{ module_row }}"><span data-toggle="tooltip" title="{{ help_city_rate2 }}">{{ entry_city_rate2 }}</span></label>
+                                <div class="col-sm-10">
+                                    <textarea name="{{ name }}_module[{{ module_row }}][city_rate2]" rows="5" id="input-city-rate2-{{ module_row }}" class="form-control">{% if module.city_rate2 %}{{ module.city_rate2 }}{% endif %}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-value-for-total-{{ module_row }}">{{ entry_value_for_total }}</label>
+                                <div class="col-sm-10">
+                                    <select name="{{ name }}_module[{{ module_row }}][total_value]" id="input-value-for-total-{{ module_row }}" class="form-control">
+                                    {% if module.total_value%}
+                                        {% set total_value = module.total_value %}
+                                    {% else %}
+                                        {% set total_value = 'sub_total' %}
+                                    {% endif %}
+
+                                    {% for key, val in totals %}
+                                    <option value="{{ key }}" {% if total_value == key %}{{ 'selected="selected"' }}{% endif %} >{{ val }}</option>
+                                    {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-min-total-{{ module_row }}"><span data-toggle="tooltip" title="{{ help_min_total }}">{{ entry_min_total }}</span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="{{ name }}_module[{{ module_row }}][min_total]" value="{% if module.min_total %}{{ module.min_total }}{% endif %}" id="input-min-total-{{ module_row }}" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-max-total-{{ module_row }}"><span data-toggle="tooltip" title="{{ help_max_total }}">{{ entry_max_total }}</span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="{{ name }}_module[{{ module_row }}][max_total]" value="{% if module.max_total %}{{ module.max_total }}{% endif %}" id="input-max-total-{{ module_row }}" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-min-weight-{{ module_row }}"><span data-toggle="tooltip" title="{{ help_min_weight }}">{{ entry_min_weight }}</span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="{{ name }}_module[{{ module_row }}][min_weight]" value="{% if module.min_weight %}{{ module.min_weight }}{% endif %}" id="input-min-weight-{{ module_row }}" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-max-weight-{{ module_row }}"><span data-toggle="tooltip" title="{{ help_max_weight }}">{{ entry_max_weight }}</span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="{{ name }}_module[{{ module_row }}][max_weight]" value="{% if module.max_weight %}{{ module.max_weight }}{% endif %}" id="input-max-weight-{{ module_row }}" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-geo-zone-{{ module_row }}">{{ entry_geo_zone }}</label>
+                                <div class="col-sm-10">
+                                    <div class="well well-sm" style="height: 100px; overflow: auto;">
+                                        {% for geo_zone in geo_zones %}
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="{{ name }}_module[{{ module_row }}][geo_zone][]" value="{{ geo_zone.geo_zone_id }}" {% if module.geo_zone is defined and geo_zone.geo_zone_id in module.geo_zone %}checked="checked"{% endif %} />
+                                                {{ geo_zone.name }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-bibb-{{ module_row }}">{{ entry_bibb }}</label>
+                                <div class="col-sm-10">
+                                    <div class="well well-sm" style="height: 100px; overflow: auto;">
+                                        {% for code in arr_bibb %}
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="{{ name }}_module[{{ module_row }}][bibb][]" value="{{ code }}" {% if module.bibb is defined and code in module.bibb %}checked="checked"{% endif %} />
+                                                {% if code == 'zone' %} 
+                                                    {{ text_bib_zone }}
+                                                {% endif %}
+                                                {% if code == 'quantity' %} 
+                                                    {{ text_bib_quantity }}
+                                                {% endif %}
+                                                {% if code == 'weight' %} 
+                                                    {{ text_bib_weight }}
+                                                {% endif %}
+                                                {% if code == 'total' %} 
+                                                    {{ text_bib_total }}
+                                                {% endif %}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-customer_group-{{ module_row }}">{{ entry_customer_group }}</label>
+                                <div class="col-sm-10">
+                                    <div class="well well-sm" style="height: 100px; overflow: auto;">
+                                        {% for group in customer_groups %}
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="{{ name }}_module[{{ module_row }}][group][]" value="{{ group.customer_group_id }}" {% if module.group is defined and group.customer_group_id in module.group %}checked="checked"{% endif %} />
+                                                {{ group.name }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="textarea-notes-{{ module_row }}">{{ entry_notes }}</label>
+                                <div class="col-sm-10">
+                                    <textarea style="min-width: 350px; width: 100%; height: 50px;" name="{{ name }}_module[{{ module_row }}][notes] }}]" id="textarea-notes-{{ module_row }}">{% if module.notes is defined %}{{ module.notes }}{% endif %}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-status-{{ module_row }}">{{ entry_status }}</label>
+                                <div class="col-sm-10">
+                                    <select name="{{ name }}_module[{{ module_row }}][status]" id="input-status-{{ module_row }}" class="form-control">
+                                        {% if module.status %}
+                                        <option value="1" selected="selected">{{ text_enabled }}</option>
+                                        <option value="0">{{ text_disabled }}</option>
+                                        {% else %}
+                                        <option value="1">{{ text_enabled }}</option>
+                                        <option value="0" selected="selected">{{ text_disabled }}</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-sort-order-{{ module_row }}">{{ entry_sort_order }}</label>
+                                <div class="col-sm-10">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <input type="text" name="{{ name }}_module[{{ module_row }}][sort_order]" value="{% if module.sort_order %}{{ module.sort_order }}{% else %} {{ 1 }}{% endif %}" placeholder="1" id="input-sort-order-{{ module_row }}" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </fieldset>
+
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
+<link href="view/javascript/summernote/summernote.css" rel="stylesheet" />
+<script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>
+
+<script type="text/javascript"><!--
+    {% for module_row, module in modules %}
+        $('#language-{{ module_row }} a:first').tab('show');
+    {% endfor %}
+
+    $('#modules a:first').tab('show');
+//--></script></div>
+
+<script type="text/javascript"><!--
+    var module_row = {% if modules|length > 0 %}{{ modules|length + 1 }}{% else %}{{ '1' }}{% endif %};
+
+    function addModule() {
+        html = '<div class="tab-pane" id="tab-module-' + module_row + '">';
+
+        html += '<ul class="nav nav-tabs" id="language-' + module_row + '">';
+        {% for language in languages %}
+            {% if language.status == 1 %}
+                html += '<li><a href="#language-' + module_row + '-{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>';
+            {% endif %}
+        {% endfor %}
+        html += '</ul>';
+
+        html += '   <div class="tab-content">';
+        {% for language in languages %}
+            {% if language.status == 1 %}
+                html += '<div class="tab-pane" id="language-' + module_row + '-{{ language.language_id }}">';
+                html += '   <div class="form-group required">';
+                html += '       <label class="col-sm-2 control-label" for="input-title-' + module_row + '-{{ language.language_id }}">{{ entry_title }}</label>';
+                html += '       <div class="col-sm-10">';
+                html += '           <input size="100" type="text" name="{{ name }}_module[' + module_row + '][title][{{ language.language_id }}]" value="" id="input-title-' + module_row + '-{{ language.language_id }}" class="form-control" /><br/>';
+
+                html += '       </div>';
+                html += '   </div>';
+
+                html += '   <div class="form-group">';
+                html += '       <label class="col-sm-2 control-label" for="input-title-tab-' + module_row + '-{{ language.language_id }}">{{ entry_title_tab }}</label>';
+                html += '       <div class="col-sm-10">';
+                html += '           <input size="100" type="text" name="{{ name }}_module[' + module_row + '][title_tab][{{ language.language_id }}]" value="" id="input-title-tab-' + module_row + '-{{ language.language_id }}" class="form-control" />';
+                html += '       </div>';
+                html += '   </div>';
+
+                html += '   <div class="form-group">';
+                html += '       <label class="col-sm-2 control-label" for="textarea-description-' + module_row + '-{{ language.language_id }}">{{ entry_info }}</label>';
+                html += '       <div class="col-sm-10">';
+                html += '           <textarea name="{{ name }}_module[' + module_row + '][info][{{ language.language_id }}]" id="textarea-description-' + module_row + '-{{ language.language_id }}" data-toggle="summernote" data-lang="{{ summernote }}" class="form-control"></textarea>';
+                html += '       </div>';
+                html += '   </div>';
+
+
+                html += '   <div class="form-group">';
+                html += '   <label class="col-sm-2 control-label" for="input-price-text-' + module_row + '">{{ entry_price_text }}</label>';
+                html += '   <div class="col-sm-10">';
+                html += '   <input type="text" name="{{ name }}_module[' + module_row + '][price_text][{{ language.language_id }}]" value="" size="30" placeholder="{{ text_for_free }}" class="form-control" />';
+                html += '   </div>';
+                html += '   </div>';
+
+                html += '</div>';
+            {% endif %}
+        {% endfor %}
+
+        html += '   <fieldset>';
+        html += '       <legend>{{ text_settings }}</legend>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-show-description-' + module_row + '">{{ entry_show_description }}</label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <input type="checkbox" name="{{ name }}_module[' + module_row + '][show_description]" value="1" id="input-show-description-' + module_row + '" class="form-control" />';
+        html += '       </div>';
+        html += '   </div>';
+
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-price-' + module_row + '">{{ entry_price }}</label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <input type="text" name="{{ name }}_module[' + module_row + '][price]" value="" id="input-price-' + module_row + '" class="form-control" />';
+        html += '       </div>';
+        html += '   </div>';
+
+
+        html += '   <div class="form-group">';
+        html += '   <label class="col-sm-2 control-label" for="input-currency-' + module_row + '">{{ entry_currency }}</label>';
+        html += '   <div class="col-sm-10">';
+        html += '   <select name="{{ name }}_module[' + module_row + '][currency]" id="input-currency-' + module_row + '" class="form-control">';
+            {% for currency in currencies %}
+                html += '   <option value="{{ currency.code }}" >{{ currency.title }}</option>';
+            {% endfor %}
+        html += '   </select>';
+        html += '   </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-weight-class-id-' + module_row + '">{{ entry_weight_class }}</label>';
+        html += '       <div class="col-sm-10">';
+        html += '       <select name="{{ name }}_module[' + module_row + '][weight_class_id]" id="input-weight-class-id-' + module_row + '" class="form-control">';
+                        {% for weight_class in weight_classes %}
+                            html += '   <option value="{{ weight_class.weight_class_id }}">{{ weight_class.title }}</option>';
+                        {% endfor %}
+        html += '       </select>';
+        html += '   </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-rate-' + module_row + '"><span data-toggle="tooltip" title="{{ help_rate }}">{{ entry_rate }}</span></label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <textarea name="{{ name }}_module[' + module_row + '][rate]" rows="5" id="input-rate-' + module_row + '" class="form-control"></textarea>';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-cost-' + module_row + '"><span data-toggle="tooltip" title="{{ help_cost }}">{{ entry_cost }}</span></label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <input type="text" name="{{ name }}_module[' + module_row + '][cost]" value="" id="input-cost-' + module_row + '" class="form-control" />';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-image-' + module_row + '">{{ entry_image }}</label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <a href="" id="thumb-image-' + module_row + '" data-toggle="image" class="img-thumbnail"><img src="{{ placeholder }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>';
+        html += '           <input type="hidden" name="{{ name }}_module[' + module_row + '][image]" value="" id="input-image-' + module_row + '" />';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group required">';
+        html += '       <label class="col-sm-2 control-label" for="input-store">{{ entry_store }}</label>';
+
+        html += '       <div class="col-sm-10">';
+        html += '           <div class="well well-sm" style="height: 100px; overflow: auto;">';
+        {% for store in stores %}
+            html += '           <div class="checkbox">';
+            html += '               <label>';
+            html += '                   <input type="checkbox" name="{{ name }}_module[' + module_row + '][store][]" value="{{ store.store_id }}" checked="checked" />';
+            html += '{{ store.name }}';
+            html += '               </label>';
+            html += '           </div>';
+        {% endfor %}
+        html += '           </div>';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-city-rate-' + module_row + '"><span data-toggle="tooltip" title="{{ help_city_rate }}">{{ entry_city_rate }}</span></label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <textarea name="{{ name }}_module[' + module_row + '][city_rate]" rows="5" id="input-city-rate-' + module_row + '" class="form-control"></textarea>';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-city-rate2-' + module_row + '"><span data-toggle="tooltip" title="{{ help_city_rate2 }}">{{ entry_city_rate2 }}</span></label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <textarea name="{{ name }}_module[' + module_row + '][city_rate2]" rows="5" id="input-city-rate2-' + module_row + '" class="form-control"></textarea>';
+        html += '       </div>';
+        html += '   </div>';
+
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-value-for-total-' + module_row + '">{{ entry_value_for_total }}</label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <select name="{{ name }}_module[' + module_row + '][total_value]" id="input-value-for-total-' + module_row + '" class="form-control">';
+
+        {% if module.total_value %}
+            {% set total_value = module.total_value %}
+        {% else %}
+            {% set total_value = 'sub_total' %}
+        {% endif %}
+
+        {% for key, val in totals %}
+            html += '           <option value="{{ key }}">{{ val }}</option>';
+        {% endfor %}
+
+        html += '           </select>';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-min-total-' + module_row + '"><span data-toggle="tooltip" title="{{ help_min_total }}">{{ entry_min_total }}</span></label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <input type="text" name="{{ name }}_module[' + module_row + '][min_total]" value="" id="input-min-total-' + module_row + '" class="form-control" />';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-max-total-' + module_row + '"><span data-toggle="tooltip" title="{{ help_max_total }}">{{ entry_max_total }}</span></label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <input type="text" name="{{ name }}_module[' + module_row + '][max_total]" value="" id="input-max-total-' + module_row + '" class="form-control" />';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-min-weight-' + module_row + '"><span data-toggle="tooltip" title="{{ help_min_weight }}">{{ entry_min_weight }}</span></label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <input type="text" name="{{ name }}_module[' + module_row + '][min_weight]" value="" id="input-min-weight-' + module_row + '" class="form-control" />';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-max-weight-' + module_row + '"><span data-toggle="tooltip" title="{{ help_max_weight }}">{{ entry_max_weight }}</span></label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <input type="text" name="{{ name }}_module[' + module_row + '][max_weight]" value="" id="input-max-weight-' + module_row + '" class="form-control" />';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-geo-zone-' + module_row + '">{{ entry_geo_zone }}</label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <div class="well well-sm" style="height: 100px; overflow: auto;">';
+        {% for geo_zone in geo_zones %}
+            html += '   <div class="checkbox">';
+            html += '       <label>';
+            html += '           <input type="checkbox" name="{{ name }}_module[' + module_row + '][geo_zone][]" value="{{ geo_zone.geo_zone_id }}" />';
+            html += '           {{ geo_zone.name }}';
+            html += '       </label>';
+            html += '   </div>';
+        {% endfor %}
+        html += '           </div>';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-bibb-' + module_row + '">{{ entry_bibb }}</label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <div class="well well-sm" style="height: 100px; overflow: auto;">';
+        {% for code in arr_bibb %}
+            html += '   <div class="checkbox">';
+            html += '       <label>';
+            html += '           <input type="checkbox" name="{{ name }}_module[' + module_row + '][bibb][]" value="{{ code }}" />';
+
+                {% if code == 'zone' %} 
+                    html += '{{ text_bib_zone }}';
+                {% endif %}
+                {% if code == 'quantity' %} 
+                    html += '{{ text_bib_quantity }}';
+                {% endif %}
+                {% if code == 'weight' %} 
+                    html += '{{ text_bib_weight }}';
+                {% endif %}
+                {% if code == 'total' %} 
+                    html += '{{ text_bib_total }}';
+                {% endif %}
+
+            html += '       </label>';
+            html += '   </div>';
+        {% endfor %}
+        html += '           </div>';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-customer_group-' + module_row + '">{{ entry_customer_group }}</label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <div class="well well-sm" style="height: 100px; overflow: auto;">';
+        {% for group in customer_groups %}
+            html += '   <div class="checkbox">';
+            html += '       <label>';
+            html += '       <input type="checkbox" name="{{ name }}_module[' + module_row + '][group][]" value="{{ group.customer_group_id }}" checked="checked" />';
+            html += '       {{ group.name }}';
+            html += '       </label>';
+            html += '   </div>';
+        {% endfor %}
+        html += '           </div>';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '   <label class="col-sm-2 control-label" for="textarea-notes-' + module_row + '">{{ entry_notes }}</label>';
+        html += '   <div class="col-sm-10">';
+        html += '   <textarea style="min-width: 350px; width: 100%; height: 50px;" name="{{ name }}_module[' + module_row + '][notes] }}]" id="textarea-notes-' + module_row + '"></textarea>';
+        html += '   </div>';
+        html += '   </div>';
+
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-status-' + module_row + '">{{ entry_status }}</label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <select name="{{ name }}_module[' + module_row + '][status]" id="input-status-' + module_row + '" class="form-control">';
+        html += '               <option value="1">{{ text_enabled }}</option>';
+        html += '               <option value="0" selected="selected">{{ text_disabled }}</option>';
+        html += '           </select>';
+        html += '       </div>';
+        html += '   </div>';
+
+        html += '   <div class="form-group">';
+        html += '       <label class="col-sm-2 control-label" for="input-sort-order-' + module_row + '">{{ entry_sort_order }}</label>';
+        html += '       <div class="col-sm-10">';
+        html += '           <div class="row">';
+        html += '               <div class="col-sm-4">';
+        html += '                   <input type="text" name="{{ name }}_module[' + module_row + '][sort_order]" value="" placeholder="1" id="input-sort-order-' + module_row + '" class="form-control" />';
+        html += '               </div>';
+        html += '           </div>';
+        html += '       </div>';
+        html += '   </div>';
+
+
+        html += '   </fieldset>';
+
+        html += '   </div>';
+        html += '</div>';
+
+        $('#modules-tabs').append(html);
+
+        $('#language-' + module_row + ' a:first').tab('show');
+
+        $('#module-add').before('<li><a href="#tab-module-' + module_row + '" id="module-' + module_row + '" data-toggle="tab">{{ tab_module }} ' + module_row + '&nbsp;&nbsp;&nbsp;<i class="fa fa-minus-circle" onClick="$(\'#modules li > a:first\').trigger(\'click\'); $(\'#module-' + module_row + '\').remove(); $(\'#tab-module-' + module_row + '\').remove(); return false; "></i></a></li>');
+
+        $('#module-' + module_row).trigger('click');
+
+        module_row++;
+    }
+
+
+    var discount_row = {% if discount_row %}{{ discount_row }}{% else %}{{ '0' }}{% endif %};
+
+    function addDiscount() {
+        var html = '<tr id="discount-row' + discount_row + '">';
+
+        html += '       <td class="text-left">';
+        html += '           <select class="form-control" name="{{ name }}_discounts[' + discount_row + '][prefix]">';
+        {% set arr_prefix = ['-', '+'] %}
+        {% for prefix in arr_prefix %}
+            html += '               <option value="{{ prefix }}">{{ prefix }}</option>';
+        {% endfor %}
+        html += '           </select>';
+        html += '           <input type="text" name="{{ name }}_discounts[' + discount_row + '][value]" value="" size="3" class="form-control" />';
+        html += '           <select class="form-control" name="{{ name }}_discounts[' + discount_row + '][mode]">';
+        {% for type, tname in discount_type %}
+            html += '               <option value="{{ type }}">{{ tname }}</option>';
+        {% endfor %}
+        html += '           </select>';
+        html += '       </td>';
+
+        html += '       <td class="text-left">';
+
+        html += '           <div class="well well-sm" style="height: 100px; overflow: auto;">';
+
+        {% if modules|length > 0 %}
+            {% for module_key, module in modules %}
+            html += '<div class="checkbox">';
+                html += '<label>';
+                    html += '<input type="checkbox" name="{{ name }}_discounts[{{ discount_row }}][key][]" value="{{ module_key }}"/>';
+
+                    html += '{% if module.title_tab[config_language_id] is not empty %}{{ module.title_tab[config_language_id] }}{% else %}{{ module.title[config_language_id] }}{% endif %}';
+                html += '</label>';
+            html += '</div>';
+            {% endfor %}
+        {% endif %}
+
+
+        html += '           </div>';
+        html += '       </td>';
+        html += '       <td class="text-left">';
+        html += '           <div class="well well-sm" style="height: 100px; overflow: auto;">';
+
+        {% if customer_groups|length > 0 %}
+            {% for customer_group in customer_groups %}
+                html += '               <div class="checkbox"><label>';
+                html += '               <input type="checkbox" name="{{ name }}_discounts[' + discount_row + '][customer_group_id][]" value="{{ customer_group.customer_group_id }}" />';
+                html += '               {{ customer_group.name }}';
+                html += '               </label></div>';
+            {% endfor %}
+        {% endif %}
+
+        html += '           </div>';
+        html += '       </td>';
+        html += '       <td class="text-left">';
+        html += '           <div class="well well-sm" style="height: 100px; overflow: auto;">';
+
+        {% if geo_zones|length > 0 %}
+            {% for geo_zone in geo_zones %}
+                html += '               <div class="checkbox"><label>';
+                html += '                   <input type="checkbox" name="{{ name }}_discounts[' + discount_row + '][geo_zone][]" value="{{ geo_zone.geo_zone_id }}" />';
+                html += '                   {{ geo_zone.name }}';
+                html += '               </label></div>';
+            {% endfor %}
+        {% endif %}
+
+        html += '           </div>';
+        html += '       </td>';
+
+
+        html += '       <td class="text-left">';
+        html += '           <input type="text" name="{{ name }}_discounts[' + discount_row + '][min_total]" value="" size="3" class="form-control" />';
+        html += '       </td>';
+
+        html += '       <td class="text-left">';
+        html += '           <input type="text" name="{{ name }}_discounts[' + discount_row + '][max_total]" value="" size="3" class="form-control" />';
+        html += '       </td>';
+
+        html += '       <td class="text-left"><button type="button" onclick="$(\'#discount-row' + discount_row + '\').remove();return false;" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+
+        html += '</tr>';
+
+        $('#discount tbody').append(html);
+
+        discount_row++;
+    }
+
+
+    {% if show_product_groups and groups and groups|length > 0 %}
+        var group_row = {% if pgroup_row %}{{ pgroup_row }}{% else %}{{ '0' }}{% endif %};
+
+        function addPGroup() {
+
+            var html = '<tr id="pgroup-row' + group_row + '">';
+            html += '		<tr id="pgroup-row' + group_row + '">';
+            html += '		<td class="text-left">';
+            html += '		<div class="well well-sm" style="height: 100px; overflow: auto;">';
+
+            {% if modules|length > 0 %}
+                {% for module_key, module in modules %}              
+                    html += '		<div class="checkbox">';
+                    html += '		<label>';
+                    html += '		<input type="checkbox" name="{{ name }}_pgroups. + group_row + [key][]" value="dostavkaplus.sh{{ module_key }}" />';
+                    html += '{% if module.title_tab[config_language_id] is not empty %}{{ module.title_tab[config_language_id]}}{% else %}{{ module.title[config_language_id] }}{% endif %}';
+                    html += '		</label>';
+                    html += '		</div>';
+                {% endfor %}
+            {% endif %}
+
+            html += '		</div>';
+            html += '		</td>';
+            html += '		<td class="text-left">';
+            html += '		<select name="{{ name }}_pgroups. + group_row + [filter_group_id]" class="form-control">';
+            html += '		<option value="0" selected="selected">{{ text_group }}</option>';
+
+            {% if groups|length > 0 %}
+    		  {% for group in groups %}
+                    {% if group.status == 1 %}
+                        html += '       <option value="{{ group.group_id }}">{{ group.name }}</option>';
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            html += '		</select>';
+            html += '		</td>';
+            html += '		<td class="text-left">';
+            html += '		<select name="{{ name }}_pgroups. + group_row + [logic]" class="form-control">';
+            {% for type, tname in group_logic_type %}
+                html += '       <option value="{{ type }}">{{ tname }}</option>';
+            {% endfor %}
+            html += '		</select>';
+            html += '		</td>';
+            html += '		<td class="text-left"><button type="button" onclick="$(\'#pgroup-row' + group_row + '\').remove();return FALSE;" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+            html += '		</tr>';
+
+
+            ('#pgroup tbody').append(html);
+
+            group_row++;
+
+        }
+    {% endif %}
+//-->
+</script>
+
+
+{{ footer }}

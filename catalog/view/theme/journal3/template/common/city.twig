@@ -1,0 +1,122 @@
+{{ header }}
+<div class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      
+      {# Header #}
+      <div class="city-header" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 3rem 2rem; margin-bottom: 2rem; border-radius: 8px;">
+        <div class="text-center">
+          <h1 style="font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem;">{{ city_title }}</h1>
+          <p style="font-size: 1.25rem; opacity: 0.9;">{{ city_description }}</p>
+        </div>
+      </div>
+
+      {# Main Content #}
+      <div class="row" style="margin-bottom: 2rem;">
+        {# Delivery Info #}
+        <div class="col-md-6">
+          <div class="panel panel-default" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: none; border-radius: 8px;">
+            <div class="panel-body" style="padding: 2rem;">
+              <h2 style="font-size: 1.5rem; font-weight: bold; color: #1f2937; margin-bottom: 1.5rem;">Условия доставки</h2>
+              <div style="margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                  <div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; margin-top: 8px; margin-right: 12px; flex-shrink: 0;"></div>
+                  <div>
+                    <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Время доставки</h3>
+                    <p style="color: #4b5563; margin: 0;">Доставка в течение {{ delivery_time }} с момента заказа</p>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                  <div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; margin-top: 8px; margin-right: 12px; flex-shrink: 0;"></div>
+                  <div>
+                    <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Стоимость доставки</h3>
+                    <p style="color: #4b5563; margin: 0;">{{ delivery_cost }}</p>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: flex-start;">
+                  <div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; margin-top: 8px; margin-right: 12px; flex-shrink: 0;"></div>
+                  <div>
+                    <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Бесплатная доставка</h3>
+                    <p style="color: #4b5563; margin: 0;">При заказе {{ free_delivery }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {# Contact Info #}
+        <div class="col-md-6">
+          <div class="panel panel-default" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: none; border-radius: 8px;">
+            <div class="panel-body" style="padding: 2rem;">
+              <h2 style="font-size: 1.5rem; font-weight: bold; color: #1f2937; margin-bottom: 1.5rem;">Контакты для заказа</h2>
+              <div class="row">
+                <div class="col-sm-4 text-center" style="margin-bottom: 1.5rem;">
+                  <div style="font-size: 2rem; color: #3b82f6; margin-bottom: 0.5rem;">📞</div>
+                  <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Телефон</h3>
+                  <p style="color: #4b5563; margin: 0;">{{ phone }}</p>
+                </div>
+                <div class="col-sm-4 text-center" style="margin-bottom: 1.5rem;">
+                  <div style="font-size: 2rem; color: #3b82f6; margin-bottom: 0.5rem;">💬</div>
+                  <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">WhatsApp</h3>
+                  <p style="color: #4b5563; margin: 0;">{{ phone }}</p>
+                </div>
+                <div class="col-sm-4 text-center" style="margin-bottom: 1.5rem;">
+                  <div style="font-size: 2rem; color: #3b82f6; margin-bottom: 0.5rem;">📧</div>
+                  <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Email</h3>
+                  <p style="color: #4b5563; margin: 0;">{{ email }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {# Popular Bouquets #}
+      <div class="panel panel-default" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: none; border-radius: 8px; margin-bottom: 2rem;">
+        <div class="panel-body" style="padding: 2rem;">
+          <h2 style="font-size: 1.5rem; font-weight: bold; color: #1f2937; margin-bottom: 1.5rem;">Популярные букеты в {{ city_name }}</h2>
+          <div class="row">
+            <div class="col-md-4 text-center" style="margin-bottom: 1.5rem;">
+              <div style="background: #f3f4f6; height: 200px; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; color: #9ca3af;">
+                <span>Фото букета</span>
+              </div>
+              <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Букет роз</h3>
+              <p style="color: #4b5563; margin: 0;">от 2500 ₽</p>
+            </div>
+            <div class="col-md-4 text-center" style="margin-bottom: 1.5rem;">
+              <div style="background: #f3f4f6; height: 200px; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; color: #9ca3af;">
+                <span>Фото букета</span>
+              </div>
+              <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Букет тюльпанов</h3>
+              <p style="color: #4b5563; margin: 0;">от 1800 ₽</p>
+            </div>
+            <div class="col-md-4 text-center" style="margin-bottom: 1.5rem;">
+              <div style="background: #f3f4f6; height: 200px; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; color: #9ca3af;">
+                <span>Фото букета</span>
+              </div>
+              <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Смешанный букет</h3>
+              <p style="color: #4b5563; margin: 0;">от 2200 ₽</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{ content_bottom }}
+    </div>
+    {{ column_right }}
+  </div>
+</div>
+{{ footer }}

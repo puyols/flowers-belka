@@ -1,0 +1,17 @@
+<div class="container">
+    <h3>Генерация текста с LM Studio</h3>
+    <form method="post" action="{{ action }}">
+        <div class="form-group">
+            <label for="prompt">Запрос:</label>
+            <textarea id="prompt" name="prompt" class="form-control" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Сгенерировать текст</button>
+    </form>
+
+    {% if generated_text %}
+        <div class="mt-4">
+            <h4>Результат:</h4>
+            <p>{{ generated_text }}</p>
+        </div>
+    {% endif %}
+</div>

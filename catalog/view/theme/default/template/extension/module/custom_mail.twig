@@ -1,0 +1,262 @@
+{% if forms %}
+<form action="{{ action }}" method="post" enctype="multipart/form-data" class="form-horizontal custom_mail">
+<div class="custom_order">
+
+    <div class="modal-header">
+        <h3 class="modal-title">{{ forms.name }}</h3>
+        <h5>{{ forms.description }}</h5>
+        <input type="hidden" name="title" value="{{ forms.name }}" class="form-control">
+    </div>
+    <div class="modal-body">
+
+        {% if forms.form_mail %}
+        <div class="row">
+            <div class="col-sm-12">
+                {% set color_form = []  %}
+                {% set str = ''  %}
+                {% set cl_t = ''  %}
+                {% for key, form in forms.form_mail %}
+                    {% if form.color %}
+                        {% set str = '#input-custom-'~key  %}
+                    {% if form.color_text %}
+                        {% set cl_t = ';color:'~ form.color_text  %}
+                    {% else %}
+                        {% set cl_t = ''  %}
+                    {% endif %}
+                        {% set color_form = color_form|merge([{ (str) : form.color ~ cl_t }]) %}
+                    {% endif %}
+                <div id="custom-{{ key }}" class="form-group custom-field {%  if(form.required) %} required {% endif %}" data-sort="{{ key }}">
+                    <label class="control-label" style="margin-left:15px" for="input-custom-{{ key }}">{{ form.title }}</label>
+                    <input type="hidden" name="form[{{ key }}][title]" value="{{ form.title }}" class="form-control">
+                    <input type="hidden" name="form[{{ key }}][type]" value="{{ form.select_form }}" class="form-control">
+                    <div class="col-sm-12 custom_form">
+                        {% if form.image %}
+                        <img src="/image/{{ form.image }}" style="margin-right: 3px;">
+                        {% endif %}
+                        {% if form.select_form == 'email' %}
+                        <input type="text" name="form[{{ key }}][{{ form.input_name }}]" value="" {%  if(form.required) %} required {% endif %} placeholder="{{ form.placeholder }}" id="input-custom-{{ key }}" class="form-control">
+                            {% if error[key]['email'] %}
+                                <div class="text-danger">{{ error[key]['email'] }}</div>
+                            {% endif %}
+                        {% endif %}
+                        {% if form.select_form == 'text' %}
+                            <input type="text" name="form[{{ key }}][{{ form.input_name }}]" value="" {%  if(form.required) %} required {% endif %} placeholder="{{ form.placeholder }}" id="input-custom-{{ key }}" class="form-control">
+                            {% if error[key]['text'] %}
+                                <div class="text-danger">{{ error[key]['text'] }}</div>
+                            {% endif %}
+                        {% endif %}
+                        {% if form.select_form == 'tel' %}
+                            <input type="text" name="form[{{ key }}][{{ form.input_name }}]" value="" {%  if(form.required) %} required {% endif %} placeholder="{{ form.placeholder }}" id="input-custom-{{ key }}" class="form-control">
+                            <script>
+                                $('#input-custom-{{ key }}').mask('{{ forms.mask }}');
+                            </script>
+                        {% endif %}
+                        {% if form.select_form == 'date' %}
+                            <input type="date" name="form[{{ key }}][{{ form.input_name }}]" value="" {%  if(form.required) %} required {% endif %} placeholder="{{ form.placeholder }}" id="input-custom-{{ key }}" class="form-control">
+                            {% if error[key]['date'] %}
+                                <div class="text-danger">{{ error[key]['date'] }}</div>
+                            {% endif %}
+                        {% endif %}
+                        {% if form.select_form == 'file' %}
+                            <div class="field__wrapper">
+
+                                <input name="form[{{ key }}][{{ form.input_name }}][]" type="file"  id="file-custom-{{ key }}" {%  if(form.required) %} required {% endif %} class="field field__file" multiple>
+
+                                <label class="field__file-wrapper" for="file-custom-{{ key }}">
+                                    <div class="field__file-fake" id="input-custom-{{ key }}" >{{ entry_file_text_button_no }}</div>
+                                    <div class="field__file-button" style="color:{{ form.color_text }}">{{ form.placeholder }}</div>
+                                </label>
+
+                            </div>
+
+                            {% if error[key]['file'] %}
+                                <div class="text-danger">{{ error[key]['file'] }}</div>
+                            {% endif %}
+                        {% endif %}
+                        {% if form.select_form == 'textarea' %}
+                            <textarea name="form[{{ key }}][{{ form.input_name }}]" rows="5" placeholder="{{ form.placeholder }}" id="input-custom-{{ key }}" class="form-control"></textarea>
+                            {% if error[key]['textarea'] %}
+                                <div class="text-danger">{{ error[key]['textarea'] }}</div>
+                            {% endif %}
+                        {% endif %}
+                        {% if form.select_form == 'checkbox' %}
+                        <div class="checkbox {%  if(form.required) %} required {% endif %}" id="input-custom-{{ key }}">
+                            {% if form.checkbox %}
+                                {% for checkbox in form.checkbox %}
+                            <label><input type="checkbox" name="form[{{ key }}][{{ form.input_name }}][]" value="{{ checkbox }}"  >  {{ checkbox }} </label>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        {% if form.select_form == 'radio' %}
+                            <div class="radio {%  if(form.required) %} required {% endif %}" id="input-custom-{{ key }}">
+                                {% if form.radio %}
+                                    {% for radio in form.radio %}
+                                        <label><input type="radio" name="form[{{ key }}][{{ form.input_name }}]" value="{{ radio }}"  >  {{ radio }} </label>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        {% if form.select_form == 'select' %}
+                            <div class="select {%  if(form.required) %} required {% endif %}" id="input-custom-{{ key }}">
+                                {% if form.select %}
+                                <select name="form[{{ key }}][{{ form.input_name }}]" class="form-control">
+                                    {% for select in form.select %}
+                                        <option value="{{ select }}">{{ select }}</option>
+
+                                    {% endfor %}
+                                </select>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+            <div class="col-sm-12">
+            </div>
+        </div>
+            <style>
+				.custom_order .modal-title, .custom_order h5 {text-align:center;}
+                .custom_order .modal-footer {text-align: center;}
+                .custom_order .control-label, .custom_order h3 { color: {{ forms.color_text }} }
+                .custom_form {display: flex;align-items: center;justify-content: center;}
+                .custom_form .text-danger { position: absolute; }
+                .custom_form img{width: 30px;height: 30px;}
+				.custom_form .radio, .custom_form .checkbox, .custom_form .select {padding: 10px 10px;}
+				{% if forms.image %}
+				.custom_mail {
+					background-image: url(image/{{ forms.image }});
+					background-repeat: no-repeat;
+					background-position: center;
+					-moz-background-size: 100%;
+					-webkit-background-size: 100%;
+					-o-background-size: 100%;
+					background-size: cover;
+				}
+				{% endif %}
+                {% for color in color_form %}
+                   {% for id, value in color %}
+                      {{ id }} { background: {{ value }} }
+                   {% endfor %}
+                {% endfor %}
+                .field__wrapper {
+                    width: 100%;
+                    position: relative;
+                    margin: 15px 0;
+                    text-align: center;
+                }
+
+                .field__file {
+                    opacity: 0;
+                    visibility: hidden;
+                    position: absolute;
+                }
+
+                .field__file-wrapper {
+                    width: 100%;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-pack: justify;
+                    -ms-flex-pack: justify;
+                    justify-content: space-between;
+                    -webkit-box-align: center;
+                    -ms-flex-align: center;
+                    align-items: center;
+                    -ms-flex-wrap: wrap;
+                    flex-wrap: wrap;
+                }
+
+                .field__file-fake {
+                    height: 60px;
+                    width: calc(100% - 130px);
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                    -ms-flex-align: center;
+                    align-items: center;
+                    padding: 0 15px;
+                    border: 1px solid #c7c7c7;
+                    border-radius: 3px 0 0 3px;
+                    border-right: none;
+
+                }
+
+                .field__file-button {
+                    width: 130px;
+                    height: 60px;
+                    background: #1bbc9b;
+
+                    font-size: 1.125rem;
+                    font-weight: 700;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                    -ms-flex-align: center;
+                    align-items: center;
+                    -webkit-box-pack: center;
+                    -ms-flex-pack: center;
+                    justify-content: center;
+                    border-radius: 0 3px 3px 0;
+                    cursor: pointer;
+                }
+                .btn-custom-mail {
+                    color: #ffffff;
+                    height: 60px;
+                    background: #1bbc9b;
+                    font-size: 1.125rem;
+                    font-weight: 700;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                    -ms-flex-align: center;
+                    align-items: center;
+                    -webkit-box-pack: center;
+                    -ms-flex-pack: center;
+                    justify-content: center;
+                    border-radius: 0 3px 3px 0;
+                    cursor: pointer;
+                    margin: 0 auto;
+                }
+            </style>
+        {% endif %}
+        {{ captcha }}
+
+        <div class="order-form-success"></div>
+    </div>
+    <div class="modal-footer">
+        <input class="btn btn-custom-mail" type="submit" value="{{ forms.name_bottom }}">
+
+    </div>
+</div>
+</form>
+    <script>
+        let fields = document.querySelectorAll('.field__file');
+
+        Array.prototype.forEach.call(fields, function (input) {
+            let label = input.nextElementSibling,
+                labelVal = label.querySelector('.field__file-fake').innerText;
+
+            input.addEventListener('change', function (e) {
+                let countFiles = '';
+                let nameFiles = '';
+
+                if (this.files && this.files.length >= 1)
+                    countFiles = this.files.length;
+                for (var i = 0; i < this.files.length; i++) {
+                    nameFiles += this.files[i].name+'; ';
+                }
+
+                if (countFiles)
+                    label.querySelector('.field__file-fake').innerText = '{{ entry_file_text_button_yes }}' + nameFiles;
+                else
+                    label.querySelector('.field__file-fake').innerText = labelVal;
+            });
+        });
+    </script>
+{% endif %}

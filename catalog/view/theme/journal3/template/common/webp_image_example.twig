@@ -1,0 +1,163 @@
+{# 
+Примеры использования оптимизированных изображений с WebP поддержкой
+#}
+
+{# Простое оптимизированное изображение #}
+{{ webp_image('catalog/product-image.jpg', 'Название товара', 'product-image', 'medium', true) }}
+
+{# Адаптивное изображение с полной поддержкой WebP #}
+{{ responsive_image('catalog/banner.jpg', 'Баннер', 'banner-image', true, '(max-width: 768px) 100vw, 50vw') }}
+
+{# Получение оптимального URL изображения #}
+<img src="{{ optimal_image('catalog/thumb.jpg', 'thumbnail') }}" alt="Миниатюра" loading="lazy">
+
+{# Проверка оптимизации изображения #}
+{% if is_image_optimized('catalog/product.jpg') %}
+    <span class="badge badge-success">Оптимизировано</span>
+{% else %}
+    <span class="badge badge-warning">Требует оптимизации</span>
+{% endif %}
+
+{# Использование данных изображения в JavaScript #}
+<script>
+var imageData = {{ image_data('catalog/gallery.jpg') }};
+console.log('Image data:', imageData);
+</script>
+
+{# Карточка товара с оптимизированным изображением #}
+<div class="product-card">
+    <div class="product-image">
+        {% if product.image %}
+            <picture class="responsive-image">
+                <source srcset="{{ optimal_image(product.image, 'thumbnail') }} 300w, 
+                               {{ optimal_image(product.image, 'medium') }} 600w,
+                               {{ optimal_image(product.image, 'large') }} 1200w" 
+                        sizes="(max-width: 576px) 100vw, (max-width: 768px) 50vw, 33vw"
+                        type="image/webp">
+                <source srcset="{{ optimal_image(product.image, 'thumbnail') }} 300w, 
+                               {{ optimal_image(product.image, 'medium') }} 600w,
+                               {{ optimal_image(product.image, 'large') }} 1200w" 
+                        sizes="(max-width: 576px) 100vw, (max-width: 768px) 50vw, 33vw"
+                        type="image/jpeg">
+                <img src="{{ optimal_image(product.image, 'medium') }}" 
+                     alt="{{ product.name }}" 
+                     loading="lazy"
+                     class="product-thumb">
+            </picture>
+        {% else %}
+            <img src="{{ optimal_image('placeholder.png', 'medium') }}" 
+                 alt="Нет изображения" 
+                 class="product-thumb placeholder">
+        {% endif %}
+    </div>
+    <div class="product-info">
+        <h3>{{ product.name }}</h3>
+        <p class="price">{{ product.price }}</p>
+    </div>
+</div>
+
+{# Галерея изображений #}
+<div class="image-gallery">
+    {% for image in gallery_images %}
+        <div class="gallery-item">
+            <a href="{{ optimal_image(image.path, 'large') }}" data-lightbox="gallery">
+                {{ responsive_image(image.path, image.alt, 'gallery-thumb', true) }}
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+{# Баннер с критическим изображением (загружается сразу) #}
+<div class="hero-banner">
+    <picture class="banner-image">
+        <source media="(max-width: 768px)" 
+                srcset="{{ optimal_image('catalog/banner-mobile.jpg', 'large') }}"
+                type="image/webp">
+        <source media="(max-width: 768px)" 
+                srcset="{{ optimal_image('catalog/banner-mobile.jpg', 'large') }}"
+                type="image/jpeg">
+        <source srcset="{{ optimal_image('catalog/banner-desktop.jpg', 'large') }}"
+                type="image/webp">
+        <source srcset="{{ optimal_image('catalog/banner-desktop.jpg', 'large') }}"
+                type="image/jpeg">
+        <img src="{{ optimal_image('catalog/banner-desktop.jpg', 'large') }}" 
+             alt="Главный баннер" 
+             data-critical="true"
+             class="hero-image">
+    </picture>
+    <div class="banner-content">
+        <h1>Добро пожаловать!</h1>
+        <p>Лучшие цветы с быстрой доставкой</p>
+    </div>
+</div>
+
+{# Список товаров с lazy loading #}
+<div class="products-grid">
+    {% for product in products %}
+        <div class="product-item">
+            <div class="product-image-wrapper">
+                {% if product.image %}
+                    <picture class="product-image lazy-image">
+                        <source data-srcset="{{ optimal_image(product.image, 'thumbnail') }} 300w, 
+                                              {{ optimal_image(product.image, 'medium') }} 600w" 
+                                sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 25vw"
+                                type="image/webp">
+                        <source data-srcset="{{ optimal_image(product.image, 'thumbnail') }} 300w, 
+                                              {{ optimal_image(product.image, 'medium') }} 600w" 
+                                sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 25vw"
+                                type="image/jpeg">
+                        <img src="/image/placeholder.png" 
+                             data-src="{{ optimal_image(product.image, 'medium') }}" 
+                             alt="{{ product.name }}" 
+                             class="lazy-load">
+                    </picture>
+                {% endif %}
+            </div>
+            <div class="product-details">
+                <h4>{{ product.name }}</h4>
+                <p class="price">{{ product.price }}</p>
+                <button class="btn btn-primary">В корзину</button>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{# Подключение стилей и скриптов #}
+<link rel="stylesheet" href="catalog/view/theme/journal3/stylesheet/webp-images.css">
+<script src="catalog/view/javascript/webp-lazy-loading.js"></script>
+
+{# Инициализация lazy loading #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация уже происходит автоматически в webp-lazy-loading.js
+    
+    // Дополнительные настройки если нужны
+    if (window.WebPLazyLoading) {
+        console.log('WebP Lazy Loading initialized');
+        
+        // Проверяем поддержку WebP
+        window.WebPLazyLoading.supportsWebP().then(function(supported) {
+            console.log('WebP supported:', supported);
+        });
+    }
+});
+</script>
+
+{# CSS для улучшения производительности #}
+<style>
+/* Критические стили для предотвращения layout shift */
+.product-image, .gallery-thumb, .hero-image {
+    aspect-ratio: 4/3;
+    object-fit: cover;
+}
+
+.product-item {
+    break-inside: avoid;
+}
+
+/* Оптимизация для Core Web Vitals */
+.lazy-image {
+    content-visibility: auto;
+    contain-intrinsic-size: 300px 225px;
+}
+</style>

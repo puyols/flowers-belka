@@ -1,0 +1,6 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="linear-gradient(45deg, #f0f9ff, #e0e7ff)"/>
+  <rect x="150" y="100" width="100" height="150" rx="10" fill="#6366f1" opacity="0.3"/>
+  <circle cx="200" cy="120" r="35" fill="#ec4899" opacity="0.8"/>
+  <text x="200" y="300" text-anchor="middle" fill="#374151" font-size="16" font-family="Arial">📦 Коробка 008</text>
+</svg>

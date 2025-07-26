@@ -1,0 +1,13 @@
+<div class="container">
+    <h3>{{ heading_title }}</h3>
+    <form method="post" action="{{ action }}">
+        <div class="form-group">
+            <label for="status">Статус:</label>
+            <select id="status" name="status" class="form-control">
+                <option value="1" {% if status %}selected{% endif %}>Включен</option>
+                <option value="0" {% if not status %}selected{% endif %}>Отключен</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+</div>

@@ -1,0 +1,977 @@
+{
+    "products": [
+        {
+            "id": 467,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 2900,
+            "images": [
+                "\/images\/products\/1234.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 0,
+            "dateAdded": "2022-01-28 18:30:34"
+        },
+        {
+            "id": 490,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 750,
+            "images": [
+                "\/images\/products\/2021-03-07 19-15-53.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 0,
+            "dateAdded": "2022-03-01 18:51:10"
+        },
+        {
+            "id": 384,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 2700,
+            "images": [
+                "\/images\/products\/25.jpg"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 5,
+            "inStock": true,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-03-18 16:49:27"
+        },
+        {
+            "id": 385,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 2700,
+            "images": [
+                "\/images\/products\/a_luxurious_mono_bouquet_of_peach_roses_with_soft_delicate_petals_in_various_shades_of_peach_and_co_98yt96m7uax1tjiahbc3_7.png"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-03-18 16:50:37"
+        },
+        {
+            "id": 386,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 8200,
+            "images": [
+                "\/images\/products\/1t6ohmw1log000owws4ko04oo8gcow.jpg"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-03-18 16:51:57"
+        },
+        {
+            "id": 388,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3800,
+            "images": [
+                "\/images\/products\/2021-06-07 19-02-26.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 5,
+            "inStock": true,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-03-21 18:21:27"
+        },
+        {
+            "id": 389,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 14280,
+            "images": [
+                "\/images\/products\/2021-07-05 16-15-11.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-05 20:36:00"
+        },
+        {
+            "id": 391,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4600,
+            "images": [
+                "\/images\/products\/2021-06-10 17-43-20.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-05 20:48:09"
+        },
+        {
+            "id": 394,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3900,
+            "images": [
+                "\/images\/products\/2021-05-23 11-08-41.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-05 21:07:57"
+        },
+        {
+            "id": 396,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3500,
+            "images": [
+                "\/images\/products\/2021-07-07 17-42-08.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-07 17:43:10"
+        },
+        {
+            "id": 397,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3500,
+            "images": [
+                "\/images\/products\/2021-02-28 14-35-50.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 5,
+            "inStock": true,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-07 17:50:25"
+        },
+        {
+            "id": 398,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3900,
+            "images": [
+                "\/images\/products\/2021-01-28 15-56-51.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-07 17:55:04"
+        },
+        {
+            "id": 399,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3300,
+            "images": [
+                "\/images\/products\/2021-07-08 18-49-243.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-08 19:03:18"
+        },
+        {
+            "id": 400,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4100,
+            "images": [
+                "\/images\/products\/2021-07-07 19-59-14.JPG",
+                "\/images\/products\/2021-07-07 19-59-32.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-08 19:11:55"
+        },
+        {
+            "id": 401,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4100,
+            "images": [
+                "\/images\/products\/2020-06-27 15-34-44.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-08 19:26:41"
+        },
+        {
+            "id": 403,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 2700,
+            "images": [
+                "\/images\/products\/2020-08-17 20-37-44.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-12 20:42:05"
+        },
+        {
+            "id": 404,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 2700,
+            "images": [
+                "\/images\/products\/IMG_20200818_125726.jpg"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-12 20:54:24"
+        },
+        {
+            "id": 405,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 2700,
+            "images": [
+                "\/images\/products\/2020-08-17 20-24-03.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 111,
+            "inStock": true,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-12 20:56:37"
+        },
+        {
+            "id": 406,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 8800,
+            "images": [
+                "\/images\/products\/2021-02-06 19-03-51.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-12 21:22:20"
+        },
+        {
+            "id": 407,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 8800,
+            "images": [
+                "\/images\/products\/2021-02-06 15-47-26.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-12 21:25:33"
+        },
+        {
+            "id": 408,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 4250,
+            "images": [
+                "\/images\/products\/2020-02-12 16-51-00.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-12 21:31:46"
+        },
+        {
+            "id": 412,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3900,
+            "images": [
+                "\/images\/products\/2020-07-04 13-37-52.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-14 15:41:42"
+        },
+        {
+            "id": 413,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3300,
+            "images": [
+                "\/images\/products\/2021-07-14 16-15-36.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 5,
+            "inStock": true,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-14 18:51:10"
+        },
+        {
+            "id": 414,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4500,
+            "images": [
+                "\/images\/products\/2021-07-13 13-52-35.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 5,
+            "inStock": true,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-14 18:57:07"
+        },
+        {
+            "id": 415,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 6000,
+            "images": [
+                "\/images\/products\/2021-04-15 16-59-29.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-14 19:03:44"
+        },
+        {
+            "id": 416,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3700,
+            "images": [
+                "\/images\/products\/2021-07-14 19-56-36.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-16 16:47:09"
+        },
+        {
+            "id": 417,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 5300,
+            "images": [
+                "\/images\/products\/2021-07-18 11-40-05.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-18 16:36:15"
+        },
+        {
+            "id": 418,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 7500,
+            "images": [
+                "\/images\/products\/2021-07-31 10-48-12.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-07-31 11:24:39"
+        },
+        {
+            "id": 419,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4900,
+            "images": [
+                "\/images\/products\/2021-09-13 11-30-41.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-09-15 14:04:08"
+        },
+        {
+            "id": 420,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4300,
+            "images": [
+                "\/images\/products\/2021-09-13 11-30-14.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-09-15 14:15:01"
+        },
+        {
+            "id": 421,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4200,
+            "images": [
+                "\/images\/products\/2021-09-13 11-29-37.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-09-15 14:19:43"
+        },
+        {
+            "id": 422,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 2700,
+            "images": [
+                "\/images\/products\/2021-09-06 21-25-21.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 4,
+            "inStock": true,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-09-15 14:24:59"
+        },
+        {
+            "id": 423,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 5800,
+            "images": [
+                "\/images\/products\/2022-06-05 19-55-31.JPG",
+                "\/images\/products\/2022-06-05 19-55-34.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-09-15 14:29:52"
+        },
+        {
+            "id": 424,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3800,
+            "images": [
+                "\/images\/products\/2021-09-05 15-46-16.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-09-15 14:35:23"
+        },
+        {
+            "id": 425,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4200,
+            "images": [
+                "\/images\/products\/2021-09-05 15-45-19.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-09-15 14:39:02"
+        },
+        {
+            "id": 426,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 6500,
+            "images": [
+                "\/images\/products\/2021-09-02 17-15-40.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 5,
+            "inStock": true,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-09-15 14:43:14"
+        },
+        {
+            "id": 427,
+            "name": "Букет 1",
+            "slug": "укет-1",
+            "price": 3100,
+            "images": [
+                "\/images\/products\/2021-09-01 11-02-02.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 1",
+            "sku": "",
+            "quantity": 1,
+            "inStock": true,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-09-15 14:47:28"
+        },
+        {
+            "id": 433,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4000,
+            "images": [
+                "\/images\/products\/2021-12-03 20-33-14.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 1,
+            "inStock": true,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-04 13:09:58"
+        },
+        {
+            "id": 435,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4900,
+            "images": [
+                "\/images\/products\/2021-12-13 10-38-47.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-14 22:22:17"
+        },
+        {
+            "id": 437,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 5100,
+            "images": [
+                "\/images\/products\/2021-12-13 10-37-34.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-14 22:32:51"
+        },
+        {
+            "id": 438,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4500,
+            "images": [
+                "\/images\/products\/2021-12-13 10-39-52.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-14 22:36:44"
+        },
+        {
+            "id": 439,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 4300,
+            "images": [
+                "\/images\/products\/2020-12-15 14-58-09.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-14 22:52:58"
+        },
+        {
+            "id": 440,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 2800,
+            "images": [
+                "\/images\/products\/2020-12-21 12-12-50.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-14 22:56:04"
+        },
+        {
+            "id": 441,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 2900,
+            "images": [
+                "\/images\/products\/2020-12-14 20-48-09.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-14 23:00:07"
+        },
+        {
+            "id": 442,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 7500,
+            "images": [
+                "\/images\/products\/2019-12-04 22-12-44.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-14 23:04:27"
+        },
+        {
+            "id": 443,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3500,
+            "images": [
+                "\/images\/products\/2019-12-18 11-16-03_1584963230314.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-14 23:08:25"
+        },
+        {
+            "id": 444,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3600,
+            "images": [
+                "\/images\/products\/2019-12-20 12-00-27.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-14 23:10:51"
+        },
+        {
+            "id": 445,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 3500,
+            "images": [
+                "\/images\/products\/2022-12-04 11-29-11.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-17 11:38:49"
+        },
+        {
+            "id": 446,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 5000,
+            "images": [
+                "\/images\/products\/2021-12-16 20-37-48.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-17 11:43:26"
+        },
+        {
+            "id": 447,
+            "name": "Букет 005",
+            "slug": "укет-005",
+            "price": 6000,
+            "images": [
+                "\/images\/products\/2021-12-17 11-16-05.JPG"
+            ],
+            "description": "",
+            "shortDescription": "",
+            "category": "Букеты",
+            "model": "Букет 005",
+            "sku": "",
+            "quantity": 0,
+            "inStock": false,
+            "isHit": true,
+            "sortOrder": 1,
+            "dateAdded": "2021-12-17 11:50:33"
+        }
+    ],
+    "categories": [
+        {
+            "id": 1,
+            "name": "Flowers",
+            "slug": "flowers",
+            "description": "Fresh flowers and bouquets",
+            "parentId": 0,
+            "sortOrder": 1
+        },
+        {
+            "id": 2,
+            "name": "Gifts",
+            "slug": "gifts",
+            "description": "Gift items and accessories",
+            "parentId": 0,
+            "sortOrder": 2
+        }
+    ],
+    "exportDate": "2025-07-22 23:31:55",
+    "totalProducts": 50,
+    "totalCategories": 2
+}

@@ -1,0 +1,57 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#fdf2f8"/>
+      <stop offset="100%" style="stop-color:#f3e8ff"/>
+    </radialGradient>
+    <radialGradient id="flower1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#fce7f3"/>
+      <stop offset="100%" style="stop-color:#ec4899"/>
+    </radialGradient>
+    <radialGradient id="flower2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#fef3c7"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </radialGradient>
+    <radialGradient id="flower3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ecfdf5"/>
+      <stop offset="100%" style="stop-color:#10b981"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="400" fill="url(#bg)"/>
+  
+  <!-- Stems -->
+  <line x1="200" y1="350" x2="180" y2="200" stroke="#22c55e" stroke-width="8" stroke-linecap="round"/>
+  <line x1="200" y1="350" x2="220" y2="180" stroke="#22c55e" stroke-width="8" stroke-linecap="round"/>
+  <line x1="200" y1="350" x2="160" y2="160" stroke="#22c55e" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Leaves -->
+  <ellipse cx="170" cy="280" rx="15" ry="25" fill="#16a34a" transform="rotate(-20 170 280)"/>
+  <ellipse cx="230" cy="260" rx="12" ry="20" fill="#16a34a" transform="rotate(15 230 260)"/>
+  
+  <!-- Flowers -->
+  <!-- Pink Rose -->
+  <circle cx="180" cy="120" r="35" fill="url(#flower1)"/>
+  <circle cx="180" cy="120" r="25" fill="#f472b6" opacity="0.8"/>
+  <circle cx="180" cy="120" r="15" fill="#ec4899" opacity="0.6"/>
+  
+  <!-- Yellow Flower -->
+  <circle cx="220" cy="100" r="30" fill="url(#flower2)"/>
+  <circle cx="220" cy="100" r="20" fill="#fbbf24" opacity="0.8"/>
+  <circle cx="220" cy="100" r="10" fill="#f59e0b" opacity="0.6"/>
+  
+  <!-- Green/White Flower -->
+  <circle cx="160" cy="80" r="28" fill="url(#flower3)"/>
+  <circle cx="160" cy="80" r="18" fill="#34d399" opacity="0.8"/>
+  <circle cx="160" cy="80" r="8" fill="#10b981" opacity="0.6"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="140" cy="140" r="8" fill="#f472b6" opacity="0.4"/>
+  <circle cx="240" cy="130" r="6" fill="#fbbf24" opacity="0.4"/>
+  <circle cx="200" cy="60" r="5" fill="#34d399" opacity="0.4"/>
+  
+  <!-- Ribbon -->
+  <rect x="180" y="320" width="40" height="15" fill="#ec4899" rx="7"/>
+  <rect x="185" y="325" width="30" height="5" fill="#f472b6" rx="2"/>
+</svg>

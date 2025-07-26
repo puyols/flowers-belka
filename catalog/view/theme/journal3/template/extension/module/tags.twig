@@ -1,0 +1,33 @@
+{% if tags %}
+	{% if taglist_title %}
+		<h3 class="seotags_cloud_title">{{ taglist_title }}</h3>
+	{% endif %}
+	<div id="tags_cloud" class="seotags_cloud">
+		<div class="seotags_list">
+			{% for key, tag in tags %}
+                <a href="{{ tag.href|replace({'&amp;':'&'}) }}">{{ tag.name }}</a>
+                {% if taglist_type == '1' and key < count_tag - 1 %}{{ ', ' }}{% endif %}
+            {% endfor %}
+		</div>
+		{% if count_tag > 3  and taglist_type=='4' %}
+			<div class="seotags_list_nav">
+				<span class="seotags_list_button" data-type="open">{{ text_seotags_expand }}</span>
+				<span class="seotags_list_button" data-type="close">{{ text_seotags_hide }}</span>
+			</div>
+		{% endif %}
+	</div>
+	<style>
+		{% if taglist_type != '1' %}
+			.seotags_cloud .seotags_list a {color:#{{color_text}};background:#{{color_bg}};border:1px solid #{{color_border}};border-radius:{{border_rad}}px;}
+			.seotags_cloud .seotags_list a:hover {color:#{{color_htext}};background:#{{color_hbg}};border:1px solid #{{color_hborder}};}
+			.seotags_cloud .seotags_list_button[data-type="open"] {color:#{{color_expand}};}
+			.seotags_cloud .seotags_list_button[data-type="open"]:hover {color:#{{color_hexpand}};}
+			.seotags_cloud .seotags_list_button[data-type="close"] {color:#{{color_hide}};}
+			.seotags_cloud .seotags_list_button[data-type="close"]:hover {color:#{{color_hhide}};}
+			.seotags_cloud .slick-arrow:before {color:#{{color_arrow}};}
+			.seotags_cloud .slick-arrow:hover:before {color:#{{color_harrow}};}
+		{% endif %}
+		{% if taglist_type == '3' %}.seotags_cloud .slick-slider {margin-right:0;}{% endif %}
+		{{ seotags_custom_css }}
+	</style>
+{% endif %}

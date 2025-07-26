@@ -1,0 +1,480 @@
+{{ header }} {{ column_left }}
+    <div id="content">
+        <div class="page-header">
+            <div class="container-fluid">
+                <div class="pull-right">
+					<button id="dubli_url" class="btn btn-warning" title="Добавить префикс к URL с одинаковыми названиями (Категории, товары, статьи)" data-toggle="tooltip">{{ text_dubli }}</button>
+					<button id="update_url" class="btn btn-primary" title="Записать отсутствующие ЧПУ (Категории, товары)" data-toggle="tooltip">{{ text_url }}</button>
+                    <button id="update_meta" class="btn btn-danger">{{ text_run_update }}</button>
+					<button id="update_meta_m" class="btn btn-danger">{{ text_run_update_m }}</button>
+                    <button id="update_meta_i" class="btn btn-danger">{{ text_run_update_i }}</button>
+                    <button id="reset_meta" class="btn btn-success">{{ text_reset_update }}</button>
+                    <button type="submit" form="form-information" data-toggle="tooltip"
+                            title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i>
+                    </button>
+                    <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}"
+                       class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+                <h1>{{ heading_title }}</h1>
+                <ul class="breadcrumb">
+                   {% for breadcrumb in breadcrumbs %}
+                        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="container-fluid">
+            {% if error_warning %}
+                <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+            {% endif %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="form-meta" action="{{ action }}" method="post" enctype="multipart/form-data">
+                        <pre><b> <b>Пример: Текст {n} текст, текст {m} текст, {текст1|текст2|текст3|текст4|текст5}, текст {md}</b></pre>
+                        <div class="col-sm-9">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-12 control-label" for="chpucat">{{ text_chpucat }}</label>
+                                    <div class="col-sm-12 input-group">
+                                        <input class="chbk" type="checkbox" name="module_update_meta_chpucat" id="chpucat" value="{{ update_meta_chpucat }}" {% if update_meta_chpucat %} checked='checked' {% endif %}/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="col-sm-12 control-label" for="chpuupd">{{ text_chpu_upd }}</label>
+                                    <div class="col-sm-12 input-group">
+                                        <input class="chbk" type="checkbox" name="module_update_meta_chpu_upd" id="chpuupd" value="{{ update_meta_chpu_upd }}" {% if update_meta_chpu_upd %} checked='checked' {% endif %}/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="col-sm-12 control-label" for="chpupref">{{ text_chpu_pref }}</label>
+                                    <div class="col-sm-12 input-group">
+                                        <input class="chbk" type="checkbox" name="module_update_meta_chpu_pref" id="chpupref" value="{{ update_meta_chpu_pref }}" {% if update_meta_chpu_pref %} checked='checked' {% endif %}/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+						<div class="tab-content">
+                            <div class="tab-pane active" id="tab-general">
+                                <ul class="nav nav-tabs" id="language">
+                                    {% for language in languages %}
+                                        <li {% if language.code ==  lang_code %} class="active" {% endif %}><a href="#language{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="tab-content">{% for language in languages %}
+                                    <div class="tab-pane {% if language.code ==  lang_code %} active {% endif %}" id="language{{ language.language_id }}">
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#prod_cat{{ language.language_id }}" data-toggle="tab">Категории и товары</a></li>
+                                            <li><a href="#manuf{{ language.language_id }}" data-toggle="tab">Производители</a></li>
+                                            <li><a href="#inform{{ language.language_id }}" data-toggle="tab">Статьи</a></li>
+                                        </ul>
+										<div class="tab-content">
+											<div class="tab-pane active" id="prod_cat{{ language.language_id }}">
+												 <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <div class="text-center" style="font-size: 16px;margin-bottom: 10px;"><b style="padding: 4px 16px;background: #f13b3b;color:#fff;">{{ entry_category }}</b></div>
+
+                                                        <div class="col-sm-12">
+                                                            <div class="well well-sm" style="min-height: 150px;max-height: 300px;overflow: auto;">
+                                                                <table class="table table-striped">
+																	{% for category in categories[language.language_id] %}
+                                                                    
+                                                                    <tr>
+                                                                        <td >
+                                                                            <label>
+																				{% if category.category_id in product_category[language.language_id] %}
+                                                                                
+                                                                                <input type="checkbox" name="module_update_meta[{{ language.language_id }}][product_category][]" value="{{ category.category_id }}" checked="checked" />
+                                                                                {{ category.name }}
+                                                                                {% else %}
+                                                                                <input type="checkbox" name="module_update_meta[{{ language.language_id }}][product_category][]" value="{{ category.category_id }}" />
+                                                                                {{ category.name }}
+                                                                                {% endif %}
+                                                                            </label>
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                </table>
+                                                            </div>
+
+                                                            <a onclick="$(this).parent().find(':checkbox').prop('checked', true);">{{ text_select_all }}</a> / <a onclick="$(this).parent().find(':checkbox').prop('checked', false);">{{ text_unselect_all }}</a></div>
+                                                    </div>
+                                                </div>
+												<div class="col-sm-6">
+													<div class="text-center"><h4>{{ text_meta_product }}</h4>
+														<b style="padding: 4px 6px; background: #000;color:#fff">{n} - Наименование, {текст|текст} - Рандомный текст (неог-ое кол-во текста через разделитель |), {p} - Цена, {m} - Производитель, {md} - Модель, {cn} - Категория, {sn} - Название магазина </b>
+													</div>
+													<div class="form-group">
+														<label for="meta-meta_h1-product{{ language.language_id }}">{{ text_meta_h1 }}</label>
+														<input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_h1-product]"
+															   value="{{ meta_h1_product[language.language_id] }}" id="meta-meta_h1-product{{ language.language_id }}" placeholder=""
+															   class="form-control"/>
+													</div>
+													<div class="form-group">
+														<label for="meta-meta_title-product{{ language.language_id }}">{{ text_meta_title }}</label>
+														<input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_title-product]"
+															   value="{{ meta_title_product[language.language_id] }}" id="meta-meta_title-product{{ language.language_id }}"
+															   placeholder="" class="form-control"/>
+													</div>
+													<div class="form-group">
+														<label for="meta-meta_keyword-product{{ language.language_id }}">{{ text_meta_keyword }}</label>
+														<input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_keyword-product]"
+															   value="{{ meta_keyword_product[language.language_id] }}" id="meta-meta_keyword-product{{ language.language_id }}"
+															   placeholder="" class="form-control"/>
+													</div>
+													<div class="form-group">
+														<label for="meta-meta_keyword-product{{ language.language_id }}">{{ text_meta_description }}</label>
+														<textarea class="form-control" name="module_update_meta[{{ language.language_id }}][meta-meta_description-product]"
+																  id="meta-meta_description-product{{ language.language_id }}">{{ meta_description_product[language.language_id] }}</textarea>
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<div class="text-center"><h4>{{ text_meta_category }}</h4>
+														<b style="padding: 4px 6px; background: #000;color:#fff">{n} - Наименование, {текст|текст} - Рандомный текст (неог-ое кол-во текста через разделитель |), {min_p} - Минимальная цена, {max_p} - Максимальная цена, {sn} - Название магазина </b>
+													</div>
+													<div class="form-group">
+														<label for="meta-meta_h1-category{{ language.language_id }}">{{ text_meta_h1 }}</label>
+														<input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_h1-category]" value="{{ meta_h1_category[language.language_id] }}"
+															   id="meta-meta_h1-category{{ language.language_id }}" class="form-control"/>
+													</div>
+													<div class="form-group">
+														<label for="meta-meta_title-category{{ language.language_id }}">{{ text_meta_title }}</label>
+														<input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_title-category]" value="{{ meta_title_category[language.language_id] }}"
+															   id="meta-meta_title-category{{ language.language_id }}" placeholder="" class="form-control"/>
+													</div>
+													<div class="form-group">
+														<label for="meta-meta_keyword-category{{ language.language_id }}">{{ text_meta_keyword }}</label>
+														<input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_keyword-category]" value="{{ meta_keyword_category[language.language_id] }}"
+															   id="meta-meta_keyword-category{{ language.language_id }}" placeholder="" class="form-control"/>
+													</div>
+													<div class="form-group">
+														<label for="meta-meta_description-category{{ language.language_id }}">{{ text_meta_description }}</label>
+														<textarea class="form-control" name="module_update_meta[{{ language.language_id }}][meta-meta_description-category]"
+																  id="meta-meta_description-category{{ language.language_id }}">{{ meta_description_category[language.language_id] }}</textarea>
+													</div>
+												</div>
+												<div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6 control-label" for="cat_per{{ language.language_id }}">{{ text_cat_per }}</label>
+                                                        <div class="col-sm-6 input-group">
+                                                            <input class="chbk" type="checkbox" name="module_update_meta[{{ language.language_id }}][cat_per]" id="cat_per{{ language.language_id }}" value="{{ update_meta_catPer[language.language_id] }}" {% if update_meta_catPer[language.language_id] %} checked='checked' {% endif %}/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+											</div>
+											<div class="tab-pane" id="manuf{{ language.language_id }}">
+                                                <div class="col-sm-8">
+                                                    <div class="text-center"><h4>{{ text_meta_manufacturer }}</h4>
+                                                        <b style="padding: 4px 6px; background: #000;color:#fff">{n} - Наименование, {текст|текст} - Рандомный текст (неог-ое кол-во текста через разделитель |), {min_p} - Мин-ая цена, {max_p} - Макc-ая цена, {sn} - Название магазина </b>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-meta_h1-manufacturer{{ language.language_id }}">{{ text_meta_h1 }}</label>
+                                                        <input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_h1-manufacturer]" value="{{ meta_h1_manufacturer[language.language_id] }}"
+                                                               id="meta-meta_h1-manufacturer{{ language.language_id }}" class="form-control"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-meta_title-manufacturer{{ language.language_id }}">{{ text_meta_title }}</label>
+                                                        <input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_title-manufacturer]" value="{{ meta_title_manufacturer[language.language_id] }}"
+                                                               id="meta-meta_title-manufacturer{{ language.language_id }}" placeholder="" class="form-control"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-meta_keyword-manufacturer{{ language.language_id }}">{{ text_meta_keyword }}</label>
+                                                        <input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_keyword-manufacturer]" value="{{ meta_keyword_manufacturer[language.language_id] }}"
+                                                               id="meta-meta_keyword-manufacturer{{ language.language_id }}" placeholder="" class="form-control"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-meta_description-manufacturer{{ language.language_id }}">{{ text_meta_description }}</label>
+                                                        <textarea class="form-control" name="module_update_meta[{{ language.language_id }}][meta-meta_description-manufacturer]"
+                                                                  id="meta-meta_description-manufacturer{{ language.language_id }}">{{ meta_description_manufacturer[language.language_id] }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6 control-label" for="manuf_per{{ language.language_id }}">{{ text_manuf_per }}</label>
+                                                        <div class="col-sm-6 input-group">
+                                                            <input class="chbk" type="checkbox" name="module_update_meta[{{ language.language_id }}][manuf_per]" id="manuf_per{{ language.language_id }}" value="{{ update_meta_manufPer[language.language_id] }}" {% if update_meta_manufPer[language.language_id] %} checked='checked' {% endif %}/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+											<div class="tab-pane" id="inform{{ language.language_id }}">
+                                                <div class="col-sm-8">
+                                                    <div class="text-center"><h4>{{ text_meta_information }}</h4>
+                                                        <b style="padding: 4px 6px; background: #000;color:#fff">{n} - Наименование, {текст|текст} - Рандомный текст (неог-ое кол-во текста через разделитель |), {sn} - Название магазина </b>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-meta_h1-information{{ language.language_id }}">{{ text_meta_h1 }}</label>
+                                                        <input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_h1-information]" value="{{ meta_h1_information[language.language_id] }}"
+                                                               id="meta-meta_h1-information{{ language.language_id }}" class="form-control"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-meta_title-information{{ language.language_id }}">{{ text_meta_title }}</label>
+                                                        <input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_title-information]" value="{{ meta_title_information[language.language_id] }}"
+                                                               id="meta-meta_title-information{{ language.language_id }}" placeholder="" class="form-control"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-meta_keyword-information{{ language.language_id }}">{{ text_meta_keyword }}</label>
+                                                        <input type="text" name="module_update_meta[{{ language.language_id }}][meta-meta_keyword-information]" value="{{ meta_keyword_information[language.language_id] }}"
+                                                               id="meta-meta_keyword-information{{ language.language_id }}" placeholder="" class="form-control"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-meta_description-information{{ language.language_id }}">{{ text_meta_description }}</label>
+                                                        <textarea class="form-control" name="module_update_meta[{{ language.language_id }}][meta-meta_description-information]"
+                                                                  id="meta-meta_description-information{{ language.language_id }}">{{ meta_description_information[language.language_id] }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6 control-label" for="inform_per{{ language.language_id }}">{{ text_inform_per }}</label>
+                                                        <div class="col-sm-6 input-group">
+                                                            <input class="chbk" type="checkbox" name="module_update_meta[{{ language.language_id }}][inform_per]" id="manuf_per{{ language.language_id }}" value="{{ update_meta_informPer[language.language_id] }}" {% if update_meta_informPer[language.language_id] %} checked='checked' {% endif %}/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+										</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="message-modal" tabindex="-1" role="dialog" aria-labelledby="message-modal"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content block_result_settings">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center" id="title_message"></h4>
+                </div>
+                <div class="modal-body">
+                    <div id="result_message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+		$('input[type=\'checkbox\']').checkboxpicker({html: true, onLabel:'Да', offLabel:'Нет'});
+        $('#update_meta').on('click', function (e) {
+
+            var formData = new FormData($('#form-meta')[0]);
+
+            if (confirm("{{ text_run_update }}")) {
+
+                $.ajax({
+                    url: '{{ run }}',
+                    type: 'post',
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (json) {
+                        console.log(json);
+                        if (json['success']) {
+                            $('#message-modal').modal('toggle');
+
+                            $('#result_message').html('<div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> ' + json['success'] + '</div>');
+                            $('#title_message').html('{{ text_success_all }}');
+                        }
+
+                        if (json['error']) {
+                            //$('#message-modal').modal('toggle');
+                            //
+                            //$('#result_message').html('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '</div>');
+                            //$('#title_message').html('<?php //print $text_error }}//');
+                        }
+
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+            }
+        });
+		//Производители
+            $('#update_meta_m').on('click', function (e) {
+
+                var formData = new FormData($('#form-meta')[0]);
+
+                if (confirm("{{ text_run_update }}")) {
+
+                    $.ajax({
+                        url: '{{ run_manuf }}',
+                        type: 'post',
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function (json) {
+                            console.log(json);
+                            if (json['success']) {
+                                $('#message-modal').modal('toggle');
+
+                                $('#result_message').html('<div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> ' + json['success'] + '</div>');
+                                $('#title_message').html('{{ text_success_all }}');
+                            }
+
+                            if (json['error']) {
+                                $('#message-modal').modal('toggle');
+                                //
+                                $('#result_message').html('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '</div>');
+                                $('#title_message').html('{{ text_error }}');
+                            }
+
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                        }
+                    });
+                }
+            });
+			//Статьи
+            $('#update_meta_i').on('click', function (e) {
+
+                var formData = new FormData($('#form-meta')[0]);
+
+                if (confirm("{{ text_run_update }}")) {
+
+                    $.ajax({
+                        url: '{{ run_inform }}',
+                        type: 'post',
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function (json) {
+                            console.log(json);
+                            if (json['success']) {
+                                $('#message-modal').modal('toggle');
+
+                                $('#result_message').html('<div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> ' + json['success'] + '</div>');
+                                $('#title_message').html('{{ text_success_all }}');
+                            }
+
+                            if (json['error']) {
+                                $('#message-modal').modal('toggle');
+                                //
+                                $('#result_message').html('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '</div>');
+                                $('#title_message').html('{{ text_error }}');
+                            }
+
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                        }
+                    });
+                }
+            });
+		$('#update_url').on('click', function (e) {
+			
+            if (confirm("{{ text_url }}")) {
+
+                $.ajax({
+                    url: '{{ seo_url }}',
+                    type: 'post',
+                    dataType: 'json',
+					data: { chpucat : $('input[name=\'module_update_meta_chpucat\']').val(),chpuupd : $('input[name=\'module_update_meta_chpu_upd\']').val(),chpupref : $('input[name=\'module_update_meta_chpu_pref\']').val()},
+                    cache: false,
+                    success: function (json) {
+                        console.log(json);
+                        if (json['success']) {
+                            $('#message-modal').modal('toggle');
+
+                            $('#result_message').html('<div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> ' + json['success'] + '</div>');
+                            $('#title_message').html('{{ text_success_all }}');
+                        }
+
+                        if (json['error']) {
+                            //$('#message-modal').modal('toggle');
+                            //
+                            //$('#result_message').html('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '</div>');
+                            //$('#title_message').html('<?php //print $text_error }}//');
+                        }
+
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+            }
+        });
+		$('#dubli_url').on('click', function (e) {
+			
+            if (confirm("{{ text_dubli }}")) {
+
+                $.ajax({
+                    url: '{{ seo_url_dubli }}',
+                    type: 'post',
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    success: function (json) {
+                        console.log(json);
+                        if (json['success']) {
+                            $('#message-modal').modal('toggle');
+
+                            $('#result_message').html('<div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> ' + json['success'] + '</div>');
+                            $('#title_message').html('{{ text_success_all }}');
+                        }
+
+                        if (json['error']) {
+                            //$('#message-modal').modal('toggle');
+                            //
+                            //$('#result_message').html('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '</div>');
+                            //$('#title_message').html('<?php //print $text_error }}//');
+                        }
+
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+            }
+        });
+        $('#reset_meta').on('click', function (e) {
+
+            if (confirm("{{ text_run_update }}")) {
+
+                $.ajax({
+                    url: '{{ reset }}',
+                    success: function (json) {
+                        console.log(json);
+                        if (json['success']) {
+                            $('#message-modal').modal('toggle');
+
+                            $('#result_message').html('<div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> ' + json['success'] + '</div>');
+                            $('#title_message').html('{{ text_success_all }}');
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+            }
+        });
+		$('input.chbk').change(function () {
+			var in_val = $(this);
+			if (in_val.is(':checked')){
+				var input = '1';
+				in_val.attr('value',input);
+			} else {
+				var input = '0';
+				in_val.attr('value',input);
+			}
+
+
+		});
+    </script>
+{{ footer }}

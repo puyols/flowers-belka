@@ -1,0 +1,6 @@
+/* my_button */
+#filter_vier .btn_fv:active{top:.1em;left:.1em;}
+#filter_vier .btn_fv:hover:not(.css_disabled):not(.count_0){}
+#filter_vier .btn_fv{ vertical-align:middle;text-align:center;text-decoration:none;outline:none;padding: 2px 5px;}
+#filter_vier .btn_fv.actionis{}
+/* end my_button */

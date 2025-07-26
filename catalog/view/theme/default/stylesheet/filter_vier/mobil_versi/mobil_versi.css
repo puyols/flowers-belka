@@ -1,0 +1,4 @@
+#column-left, #column-right {display: block !important; z-index: 10;}
+#column-left > *:not(#block_filter_vier), #column-right > *:not(#block_filter_vier) {display: none !important;}
+#head_filter {width: 100%;}
+#filter_vier .block_param {width: 100%;}

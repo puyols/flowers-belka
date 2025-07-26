@@ -1,0 +1,7 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="linear-gradient(45deg, #fef7ff, #f3e8ff)"/>
+  <circle cx="200" cy="150" r="55" fill="#ec4899" opacity="0.8"/>
+  <circle cx="160" cy="120" r="40" fill="#ef4444" opacity="0.7"/>
+  <circle cx="240" cy="180" r="35" fill="#f59e0b" opacity="0.6"/>
+  <text x="200" y="300" text-anchor="middle" fill="#374151" font-size="20" font-family="Arial">🌹 Букет 053</text>
+</svg>

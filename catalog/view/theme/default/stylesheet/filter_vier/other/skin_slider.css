@@ -1,0 +1,20 @@
+.irs {height: 57px;}
+.irs-with-grid {height: 75px;}
+.irs-slider {box-shadow: 1px 1px 3px rgba(0,0,0,0.3);cursor: pointer;}
+.irs-from,.irs-to,.irs-single {line-height: 1.333;text-shadow: none;padding: 1px 2px;}
+.irs-slider.state_hover,.irs-slider:hover {/*opacity: 0.9;*/}
+.irs-line-left {height: 8px;}
+.irs-line-mid {height: 8px;}
+.irs-line-right {height: 8px;}
+.irs-bar-edge {height: 10px; top: 33px;width: 14px;border: 1px solid #428bca;border-right: 0;background: #428bca;background: linear-gradient(to top, rgba(66,139,202,1) 0%,rgba(127,195,232,1) 100%);border-radius: 16px 0 0 16px;-moz-border-radius: 16px 0 0 16px;}
+.irs-shadow {height: 2px; top: 38px;background: #000;opacity: 0.3;border-radius: 5px;-moz-border-radius: 5px;}
+.lt-ie9 .irs-shadow {filter: alpha(opacity=30);}
+.irs-min, .irs-max {color: #333;font-size: 12px; line-height: 1.333;text-shadow: none;top: 0;padding: 1px 5px;background: rgba(0,0,0,0.1);border-radius: 3px;-moz-border-radius: 3px;}
+.lt-ie9 .irs-min, .lt-ie9 .irs-max {background: #ccc;}
+.lt-ie9 .irs-from, .lt-ie9 .irs-to, .lt-ie9 .irs-single {background: #999;}
+.irs-grid {height: 27px;}
+.irs-grid-pol {opacity: 0.5;}
+.irs-grid-pol.small {/*background: #999;*/}
+.irs-grid-text {bottom: 5px;}
+.irs-disabled {}
+.sld_attr .irs-grid-pol.small {height: 0;}

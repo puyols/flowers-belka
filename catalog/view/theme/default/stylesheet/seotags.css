@@ -1,0 +1,123 @@
+.seotags_cloud {
+    position: relative;
+    margin: 20px 0;
+}
+.seotags_cloud .seotags_list_open {
+    height: auto !important;
+}
+.seotags_cloud .seotags_list_relative {
+    position: relative !important;
+    top: 0px !important;
+}
+.seotags_cloud .seotags_list {
+    display: block;
+    position: relative;
+    font-size: 14px;
+    padding: 0;
+    width: auto;
+}
+.seotags_cloud .slick-slider {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    margin-right: 100px;
+    padding-left: 26px;
+    padding-right: 26px;
+    height: max-content;
+}
+.seotags_cloud .seotags_list_nav {
+    position: absolute;
+    top: 10px;
+    right: 0px;
+}
+.seotags_cloud .seotags_list_button {
+    position: relative;
+    cursor: pointer;
+    color: #229ac8;
+    text-decoration: dotted underline;
+    font-size: 14px;
+    top: -4px;
+}
+.seotags_cloud .seotags_list_button:hover {
+    color: red;
+}
+.seotags_cloud .seotags_list_button[data-type="close"]{
+    display: none;
+    float: right;
+}
+.seotags_cloud .slick-arrow {
+    position: absolute;
+    display: block;
+    top: 0;
+    line-height: 0px;
+    font-size: 0px;
+    cursor: pointer;
+    background: transparent;
+    color: transparent;
+    padding: 0;
+    border: none;
+    outline: none;
+    width: 26px;
+    height: 30px;
+    z-index: 1;
+}
+.seotags_cloud .slick-prev {
+    left: 0px;
+}
+.seotags_cloud .slick-next {
+    right: 0px;
+}
+.seotags_cloud .slick-arrow:before {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #229ac8;
+    font-size: 26px;
+    vertical-align: middle;
+}
+.seotags_cloud .slick-prev:before {
+    content: "<";
+}
+.seotags_cloud .slick-next:before {
+    content: ">";
+}
+.seotags_cloud .slick-arrow:hover:before{
+    color: red;
+}
+.seotags_cloud .seotags_list a {
+    display: inline-block;
+    color: #23a1d1;
+    border: 1px solid #23a1d1;
+    padding: 4px 20px;
+    margin: 0 5px 10px 5px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+.seotags_cloud .seotags_list a:hover {
+    color: red;
+    border: 1px solid red;
+    outline: 0;
+    box-shadow: none;
+    text-decoration: none;
+}
+.seotags_cloud .seotags_list a:focus {
+    outline: 0;
+    box-shadow: none;
+    text-decoration: none;
+}
+@media (max-width: 560px) {
+    .seotags_cloud .seotags_list_nav {
+        position: initial;
+        float: right;
+    }
+    .seotags_cloud .seotags_list_nav:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+    .seotags_cloud .seotags_list {
+        margin-right: initial;
+    }
+}

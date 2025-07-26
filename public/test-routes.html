@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестирование маршрутов - Flowers Belka</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .category { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .category h3 { margin-top: 0; color: #333; }
+        .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; }
+        .links a { display: block; padding: 8px 12px; background: #f5f5f5; text-decoration: none; color: #333; border-radius: 3px; }
+        .links a:hover { background: #e0e0e0; }
+        .status { margin-left: 10px; font-size: 12px; }
+        .success { color: green; }
+        .error { color: red; }
+        .loading { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>🌸 Тестирование маршрутов Flowers Belka</h1>
+    <p>Проверка всех URL согласно структуре действующего сайта</p>
+
+    <div class="category">
+        <h3>🏠 Главная страница</h3>
+        <div class="links">
+            <a href="/" target="_blank">Главная <span class="status" id="status-home"></span></a>
+        </div>
+    </div>
+
+    <div class="category">
+        <h3>🌹 Категории товаров</h3>
+        <div class="links">
+            <a href="/bukety_tsvetov" target="_blank">Букеты цветов <span class="status" id="status-bukety"></span></a>
+            <a href="/rozy" target="_blank">Розы <span class="status" id="status-rozy"></span></a>
+            <a href="/tulpany" target="_blank">Тюльпаны <span class="status" id="status-tulpany"></span></a>
+            <a href="/tsvety_v_korobke" target="_blank">Цветы в коробке <span class="status" id="status-korobke"></span></a>
+            <a href="/sukhotsvety" target="_blank">Сухоцветы <span class="status" id="status-sukhotsvety"></span></a>
+            <a href="/noviygod" target="_blank">Новый год <span class="status" id="status-noviygod"></span></a>
+            <a href="/8marta" target="_blank">8 марта <span class="status" id="status-8marta"></span></a>
+            <a href="/piony" target="_blank">Пионы <span class="status" id="status-piony"></span></a>
+            <a href="/podpiska_na_cvety" target="_blank">Подписка на цветы <span class="status" id="status-podpiska"></span></a>
+        </div>
+    </div>
+
+    <div class="category">
+        <h3>🛍️ Примеры товаров</h3>
+        <div class="links">
+            <a href="/rozy/beliye_rozy" target="_blank">Букет белых роз <span class="status" id="status-beliye-rozy"></span></a>
+            <a href="/tulpany/jeltiye_tulpany" target="_blank">Букет желтых тюльпанов <span class="status" id="status-jeltiye-tulpany"></span></a>
+            <a href="/bukety_tsvetov/vesna001" target="_blank">Букет весна 001 <span class="status" id="status-vesna001"></span></a>
+            <a href="/tsvety_v_korobke/rozy_v_korobke" target="_blank">Розы в коробке <span class="status" id="status-rozy-korobke"></span></a>
+            <a href="/sukhotsvety/buket_sukhotsvet_001" target="_blank">Букет сухоцвет 001 <span class="status" id="status-sukhotsvet001"></span></a>
+        </div>
+    </div>
+
+    <div class="category">
+        <h3>📄 Информационные страницы</h3>
+        <div class="links">
+            <a href="/o_nas" target="_blank">О нас <span class="status" id="status-o-nas"></span></a>
+            <a href="/dostavka" target="_blank">Доставка <span class="status" id="status-dostavka"></span></a>
+            <a href="/pravila_i_usloviya" target="_blank">Правила и условия <span class="status" id="status-pravila"></span></a>
+        </div>
+    </div>
+
+    <div class="category">
+        <h3>🔧 Служебные страницы</h3>
+        <div class="links">
+            <a href="/catalog" target="_blank">Каталог <span class="status" id="status-catalog"></span></a>
+            <a href="/product-collection" target="_blank">Коллекция товаров <span class="status" id="status-collection"></span></a>
+            <a href="/search" target="_blank">Поиск <span class="status" id="status-search"></span></a>
+            <a href="/cart" target="_blank">Корзина <span class="status" id="status-cart"></span></a>
+            <a href="/checkout" target="_blank">Оформление заказа <span class="status" id="status-checkout"></span></a>
+        </div>
+    </div>
+
+    <div class="category">
+        <h3>🆕 Новые маршруты (альтернативные)</h3>
+        <div class="links">
+            <a href="/category/rozy" target="_blank">Категория: Розы <span class="status" id="status-cat-rozy"></span></a>
+            <a href="/product/beliye_rozy" target="_blank">Товар: Белые розы <span class="status" id="status-prod-beliye"></span></a>
+            <a href="/info/o_nas" target="_blank">Инфо: О нас <span class="status" id="status-info-o-nas"></span></a>
+        </div>
+    </div>
+
+    <script>
+        // Функция для проверки доступности URL
+        async function checkUrl(url, statusElementId) {
+            const statusElement = document.getElementById(statusElementId);
+            statusElement.textContent = '⏳';
+            statusElement.className = 'status loading';
+            
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                if (response.ok) {
+                    statusElement.textContent = '✅';
+                    statusElement.className = 'status success';
+                } else {
+                    statusElement.textContent = `❌ ${response.status}`;
+                    statusElement.className = 'status error';
+                }
+            } catch (error) {
+                statusElement.textContent = '❌ Error';
+                statusElement.className = 'status error';
+            }
+        }
+
+        // Проверяем все URL при загрузке страницы
+        window.addEventListener('load', () => {
+            const checks = [
+                ['/', 'status-home'],
+                ['/bukety_tsvetov', 'status-bukety'],
+                ['/rozy', 'status-rozy'],
+                ['/tulpany', 'status-tulpany'],
+                ['/tsvety_v_korobke', 'status-korobke'],
+                ['/sukhotsvety', 'status-sukhotsvety'],
+                ['/noviygod', 'status-noviygod'],
+                ['/8marta', 'status-8marta'],
+                ['/piony', 'status-piony'],
+                ['/podpiska_na_cvety', 'status-podpiska'],
+                ['/rozy/beliye_rozy', 'status-beliye-rozy'],
+                ['/tulpany/jeltiye_tulpany', 'status-jeltiye-tulpany'],
+                ['/bukety_tsvetov/vesna001', 'status-vesna001'],
+                ['/tsvety_v_korobke/rozy_v_korobke', 'status-rozy-korobke'],
+                ['/sukhotsvety/buket_sukhotsvet_001', 'status-sukhotsvet001'],
+                ['/o_nas', 'status-o-nas'],
+                ['/dostavka', 'status-dostavka'],
+                ['/pravila_i_usloviya', 'status-pravila'],
+                ['/catalog', 'status-catalog'],
+                ['/product-collection', 'status-collection'],
+                ['/search', 'status-search'],
+                ['/cart', 'status-cart'],
+                ['/checkout', 'status-checkout'],
+                ['/category/rozy', 'status-cat-rozy'],
+                ['/product/beliye_rozy', 'status-prod-beliye'],
+                ['/info/o_nas', 'status-info-o-nas']
+            ];
+
+            checks.forEach(([url, statusId]) => {
+                setTimeout(() => checkUrl(url, statusId), Math.random() * 2000);
+            });
+        });
+    </script>
+</body>
+</html>

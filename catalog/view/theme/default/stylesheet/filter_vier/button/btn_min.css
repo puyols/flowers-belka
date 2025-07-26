@@ -1,0 +1,22 @@
+/* btn_min */
+.btn_fv {
+    border: none;
+    padding: 3px 5px;
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    background: #ffffff;
+	color: #999;
+}
+.btn_fv:hover {
+    color: #333;
+    background-color: #e6e6e6;
+}
+
+.btn_fv:active {
+  top: .1em;
+  left: .1em;
+  box-shadow: 0 0 0 60px rgba(0,0,0,.05) inset;
+}
+
+/* / btn_min */

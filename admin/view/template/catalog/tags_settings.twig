@@ -1,0 +1,443 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-tag" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    {% if success %}
+    <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_form }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-tag" class="form-horizontal">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-general" data-toggle="tab">{{ tab_general }}</a></li>
+            <li><a href="#tab-import" data-toggle="tab">{{ tab_import }}</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active in" id="tab-general">
+              <div class="tab-content">
+
+                <legend>{{ legend_other }}</legend>
+
+                 <!--Заголовок для списка тегов-->
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_taglist_title }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="setting_taglist_title" value="{{ setting_taglist_title }}" class="form-control">
+                  </div>
+                </div>
+
+                <!--Размещение тегов в категории-->
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_taglist_loc }}</label>
+                  <div class="col-sm-10">
+                     <select name="setting_taglist_loc" class="form-control">
+                       <option value="1"{% if setting_taglist_loc == '1' %} selected{% endif %}>{{ text_taglist_loc1 }}</option>
+                       <option value="2"{% if setting_taglist_loc == '2' %} selected{% endif %}>{{ text_taglist_loc2 }}</option>
+                     </select>
+                  </div>
+                </div>
+
+                <!--Лимит тегов в списке/облаке-->
+                <div class="form-group">
+                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_limit }}">{{ entry_taglist_qty }}</span></label>
+                  <div class="col-sm-10">
+                      <input type="text" name="setting_taglist_qty" value="{{ setting_taglist_qty }}" class="form-control">
+                  </div>
+                </div>
+                
+                <!--Счетчик товаров-->
+                <div class="form-group">
+                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_count }}">{{ entry_count }}</span></label>
+                  <div class="col-sm-10">
+                     <label class="radio-inline">
+                      {% if setting_count %}
+                      <input type="radio" name="setting_count" value="1" checked="checked" />
+                      {{ text_yes }}
+                      {% else %}
+                      <input type="radio" name="setting_count" value="1" />
+                      {{ text_yes }}
+                      {% endif %} 
+                    </label>
+                    <label class="radio-inline">
+                      {% if not setting_count %}
+                      <input type="radio" name="setting_count" value="0" checked="checked" />
+                      {{ text_no }}
+                      {% else %}
+                      <input type="radio" name="setting_count" value="0" />
+                      {{ text_no }}
+                      {% endif %} 
+                    </label>
+                  </div>
+                </div>
+                
+                <legend>{{ legend_styles }}</legend>
+
+                <!--Тип списка тегов список/плитка/слайдер-->
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_taglist_type }}</label>
+                  <div class="col-sm-10">
+                     <select name="setting_taglist_type" onchange="showHideStyles(this.value);" class="form-control">
+                       <option value="1"{% if setting_taglist_type == '1' %} selected{% endif %}>{{ text_taglist_type1 }}</option>
+                       <option value="2"{% if setting_taglist_type == '2' %} selected{% endif %}>{{ text_taglist_type2 }}</option>
+                       <option value="3"{% if setting_taglist_type == '3' %} selected{% endif %}>{{ text_taglist_type3 }}</option>
+                       <option value="4"{% if setting_taglist_type == '4' %} selected{% endif %}>{{ text_taglist_type4 }}</option>
+                     </select>
+                  </div>
+                </div>
+          
+                <!--Цвета тегов-->
+                <div class="form-group only_grid">
+                  <label class="col-sm-2 control-label">{{ entry_color_text }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="setting_color_text" value="{{ setting_color_text }}" class="jscolor">
+                      {{ text_on_hover }}
+                      <input type="text" name="setting_color_htext" value="{{ setting_color_htext }}" class="jscolor">
+                  </div>
+                </div>
+                <div class="form-group only_grid">
+                  <label class="col-sm-2 control-label">{{ entry_color_border }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="setting_color_border" value="{{ setting_color_border }}" class="jscolor">
+                      {{ text_on_hover }}
+                      <input type="text" name="setting_color_hborder" value="{{ setting_color_hborder }}" class="jscolor">
+                  </div>
+                </div>
+                <div class="form-group only_grid">
+                  <label class="col-sm-2 control-label">{{ entry_color_bg }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="setting_color_bg" value="{{ setting_color_bg }}" class="jscolor">
+                      {{ text_on_hover }}
+                      <input type="text" name="setting_color_hbg" value="{{ setting_color_hbg }}" class="jscolor">
+                  </div>
+                </div>
+                <div class="form-group only_slider">
+                  <label class="col-sm-2 control-label">{{ entry_color_arrow }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="setting_color_arrow" value="{{ setting_color_arrow }}" class="jscolor">
+                      {{ text_on_hover }}
+                      <input type="text" name="setting_color_harrow" value="{{ setting_color_harrow }}" class="jscolor">
+                  </div>
+                </div>
+                <div class="form-group grid_slider">
+                  <label class="col-sm-2 control-label">{{ entry_color_expand }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="setting_color_expand" value="{{ setting_color_expand }}" class="jscolor">
+                      {{ text_on_hover }}
+                      <input type="text" name="setting_color_hexpand" value="{{ setting_color_hexpand }}" class="jscolor">
+                  </div>
+                </div>
+                <div class="form-group grid_slider">
+                  <label class="col-sm-2 control-label">{{ entry_color_hide }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="setting_color_hide" value="{{ setting_color_hide }}" class="jscolor">
+                      {{ text_on_hover }}
+                      <input type="text" name="setting_color_hhide" value="{{ setting_color_hhide }}" class="jscolor">
+                  </div>
+                </div>
+
+                <!--Border radius-->
+                <div class="form-group only_grid">
+                  <label class="col-sm-2 control-label">{{ entry_border_rad }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" name="setting_border_rad" value="{{ setting_border_rad }}" class="form-control">
+                  </div>
+                </div>
+
+                <!--Пользовательский CSS-->
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_custom_css }}</label>
+                  <div class="col-sm-10">
+                      <textarea type="text" name="setting_custom_css" rows="7" class="form-control">{{ setting_custom_css }}</textarea>
+                  </div>
+                </div>
+                
+                <legend>{{ legend_tag }}</legend>
+
+                <!--Теги на странице тега-->
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_taglist_related }}</label>
+                  <div class="col-sm-10">
+                     <select name="setting_taglist_related" class="form-control">
+                       <option value="1"{% if setting_taglist_related == '1' %} selected{% endif %}>{{ text_taglist_related1 }}</option>
+                       <option value="2"{% if setting_taglist_related == '2' %} selected{% endif %}>{{ text_taglist_related2 }}</option>
+                       <option value="3"{% if setting_taglist_related == '3' %} selected{% endif %}>{{ text_taglist_related3 }}</option>
+                     </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_etopd }}">{{ entry_etopd }}</span></label>
+                  <div class="col-sm-10">
+                     <label class="radio-inline">
+                      {% if setting_etopd %}
+                      <input type="radio" name="setting_etopd" value="1" checked="checked" />
+                      {{ text_yes }}
+                      {% else %}
+                      <input type="radio" name="setting_etopd" value="1" />
+                      {{ text_yes }}
+                      {% endif %} 
+                    </label>
+                    <label class="radio-inline">
+                      {% if not setting_etopd %}
+                      <input type="radio" name="setting_etopd" value="0" checked="checked" />
+                      {{ text_no }}
+                      {% else %}
+                      <input type="radio" name="setting_etopd" value="0" />
+                      {{ text_no }}
+                      {% endif %} 
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_ebottomd }}">{{ entry_ebottomd }}</span></label>
+                  <div class="col-sm-10">
+                     <label class="radio-inline">
+                      {% if setting_ebottomd %}
+                      <input type="radio" name="setting_ebottomd" value="1" checked="checked" />
+                      {{ text_yes }}
+                      {% else %}
+                      <input type="radio" name="setting_ebottomd" value="1" />
+                      {{ text_yes }}
+                      {% endif %} 
+                    </label>
+                    <label class="radio-inline">
+                      {% if not setting_ebottomd %}
+                      <input type="radio" name="setting_ebottomd" value="0" checked="checked" />
+                      {{ text_no }}
+                      {% else %}
+                      <input type="radio" name="setting_ebottomd" value="0" />
+                      {{ text_no }}
+                      {% endif %} 
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_only }}">{{ entry_only }}</span></label>
+                  <div class="col-sm-10">
+                     <label class="radio-inline">
+                      {% if setting_only %}
+                      <input type="radio" name="setting_only" value="1" checked="checked" />
+                      {{ text_yes }}
+                      {% else %}
+                      <input type="radio" name="setting_only" value="1" />
+                      {{ text_yes }}
+                      {% endif %} 
+                    </label>
+                    <label class="radio-inline">
+                      {% if not setting_only %}
+                      <input type="radio" name="setting_only" value="0" checked="checked" />
+                      {{ text_no }}
+                      {% else %}
+                      <input type="radio" name="setting_only" value="0" />
+                      {{ text_no }}
+                      {% endif %} 
+                    </label>
+                  </div>
+                </div>
+
+                <legend>{{ legend_category }}</legend>
+                
+                <!--Теги в категории-->
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_taglist_category }}</label>
+                  <div class="col-sm-10">
+                     <select name="setting_taglist_category" class="form-control">
+                       <option value="1"{% if setting_taglist_category == '1' %} selected{% endif %}>{{ text_taglist_category1 }}</option>
+                       <option value="3"{% if setting_taglist_category == '3' %} selected{% endif %}>{{ text_taglist_category3 }}</option>
+                       <option value="2"{% if setting_taglist_category == '2' %} selected{% endif %}>{{ text_taglist_category2 }}</option>
+                       <option value="4"{% if setting_taglist_category == '4' %} selected{% endif %}>{{ text_taglist_category4 }}</option>
+                     </select>
+                  </div>
+                </div>
+                
+                <legend>{{ legend_product }}</legend>
+                <!--Теги в карточке товара-->
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_taglist_product }}</label>
+                  <div class="col-sm-10">
+                     <select name="setting_taglist_product" class="form-control">
+                       <option value="1"{% if setting_taglist_product == '1' %} selected{% endif %}>{{ text_taglist_product1 }}</option>
+                       <option value="3"{% if setting_taglist_product == '3' %} selected{% endif %}>{{ text_taglist_product3 }}</option>
+                       <option value="4"{% if setting_taglist_product == '4' %} selected{% endif %}>{{ text_taglist_product4 }}</option>
+                     </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-import">
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="setting_delimiter">{{ entry_delimiter }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" id="setting_delimiter" name="setting_delimiter" value="{{ setting_delimiter }}" class="form-control">
+                      <p>{{ help_delimiter }}</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="template_name">{{ entry_template_name }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" id="template_name" name="setting_template_name" value="{{ setting_template_name }}" class="form-control">
+                      <p>{{ available_tags }}</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="template_h1">{{ entry_template_h1 }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" id="template_h1" name="setting_template_h1" value="{{ setting_template_h1 }}" class="form-control">
+                      <p>{{ available_tags }}</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="template_desc1">{{ entry_template_desc1 }}</label>
+                  <div class="col-sm-10">
+                      <textarea id="template_desc1" name="setting_template_desc1" rows="7" class="form-control">{{ setting_template_desc1 }}</textarea>
+                      <p>{{ available_tags }}</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="template_desc2">{{ entry_template_desc2 }}</label>
+                  <div class="col-sm-10">
+                      <textarea id="template_desc2" name="setting_template_desc2" rows="7" class="form-control">{{ setting_template_desc2 }}</textarea>
+                      <p>{{ available_tags }}</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="template_meta_title">{{ entry_template_meta_title }}</label>
+                  <div class="col-sm-10">
+                      <input type="text" id="template_meta_title" name="setting_template_meta_title" value="{{ setting_template_meta_title }}" class="form-control">
+                      <p>{{ available_tags }}</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="template_meta_desc">{{ entry_template_meta_desc }}</label>
+                  <div class="col-sm-10">
+                      <textarea id="template_meta_desc" name="setting_template_meta_desc" rows="3" class="form-control">{{ setting_template_meta_desc }}</textarea>
+                      <p>{{ available_tags }}</p>
+                  </div>
+                </div>   
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_translit }}</label>
+                  <div class="col-sm-10">
+                     <label class="radio-inline">
+                      {% if setting_translit %}
+                      <input type="radio" name="setting_translit" value="1" checked="checked" />
+                      {{ text_yes }}
+                      {% else %}
+                      <input type="radio" name="setting_translit" value="1" />
+                      {{ text_yes }}
+                      {% endif %} 
+                    </label>
+                    <label class="radio-inline">
+                      {% if not setting_translit %}
+                      <input type="radio" name="setting_translit" value="0" checked="checked" />
+                      {{ text_no }}
+                      {% else %}
+                      <input type="radio" name="setting_translit" value="0" />
+                      {{ text_no }}
+                      {% endif %} 
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_update }}</label>
+                  <div class="col-sm-10">
+                     <label class="radio-inline">
+                      {% if setting_update %}
+                      <input type="radio" name="setting_update" value="1" checked="checked" />
+                      {{ text_yes }}
+                      {% else %}
+                      <input type="radio" name="setting_update" value="1" />
+                      {{ text_yes }}
+                      {% endif %} 
+                    </label>
+                    <label class="radio-inline">
+                      {% if not setting_update %}
+                      <input type="radio" name="setting_update" value="0" checked="checked" />
+                      {{ text_no }}
+                      {% else %}
+                      <input type="radio" name="setting_update" value="0" />
+                      {{ text_no }}
+                      {% endif %} 
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_autoproducts }}</label>
+                  <div class="col-sm-10">
+                    <div class="row">
+                    <div class="col-sm-6">
+                    <label class="radio">
+                      <input type="radio" name="setting_autoproducts" value="0" {% if not setting_autoproducts %}checked="checked"{% endif %}/> 
+                      {{ text_no }}
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="setting_autoproducts" value="1" {% if setting_autoproducts == 1 %}checked="checked"{% endif %}/> 
+                      {{ entry_autoproducts1 }}
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="setting_autoproducts" value="2" {% if setting_autoproducts == 2 %}checked="checked"{% endif %}/> 
+                      {{ entry_autoproducts2 }}
+                    </label>
+                    <input type="text" name="setting_exclude" value="{{ setting_exclude }}" placeholder="{{ entry_exclude }}" class="form-control">
+                      <p>{{ entry_exclude }}</p>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="alert alert-info">{{ help_autoproducts }}</div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </form>
+        <script>
+          function showHideStyles(ctype) {
+            if (ctype=='1') {
+              $('.only_grid,.only_slider,.grid_slider').hide();
+            } else if (ctype=='2') {
+              $('.only_slider,.grid_slider').hide();
+              $('.only_grid').show();
+            } else if (ctype=='3') {
+              $('.grid_slider').hide();
+              $('.only_grid,.only_slider').show();
+            } else {
+              $('.only_grid,.only_slider,.grid_slider').show();
+            }
+          }
+          $(document).ready(function() {
+            showHideStyles('{{ setting_taglist_type }}');
+          });
+        </script>
+      </div>
+      <div style="background: #233746;color: #ffffff;font-size: 130%;padding: 10px;border-color: #233746;border-radius: 3px;margin-top: 20px;">Еще больше модулей для Opencart 3.x на нашем сайте <a style="color: #fffc00;" href="https://opencart3x.ru/">opencart3x.ru </a>!</div>
+    </div>
+  </div>
+<script type="text/javascript"><!--
+  $('#language a:first').tab('show');
+</script>
+</div>
+{{ footer }}

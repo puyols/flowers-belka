@@ -1,0 +1,290 @@
+/**
+ * Стили для оптимизированных изображений с WebP поддержкой
+ */
+
+/* Базовые стили для изображений */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Picture элементы */
+picture {
+    display: block;
+    line-height: 0;
+}
+
+picture img {
+    width: 100%;
+    height: auto;
+}
+
+/* Lazy loading стили */
+img[data-src] {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    background-color: #f8f9fa;
+    background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                      linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                      linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                      linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    animation: loading-shimmer 1.5s infinite linear;
+}
+
+img[data-src].loaded,
+img.loaded {
+    opacity: 1;
+    background: none;
+    animation: none;
+}
+
+/* Анимация загрузки */
+@keyframes loading-shimmer {
+    0% {
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+    100% {
+        background-position: 20px 20px, 20px 30px, 30px 10px, 10px 20px;
+    }
+}
+
+/* Плавное появление изображений */
+picture.loaded {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Стили для критических изображений */
+img[data-critical="true"] {
+    opacity: 1;
+    background: none;
+}
+
+/* Адаптивные изображения */
+.responsive-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.responsive-image picture,
+.responsive-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Карточки товаров */
+.product-thumb .image {
+    position: relative;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.product-thumb .image picture,
+.product-thumb .image img {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.product-thumb .image:hover picture,
+.product-thumb .image:hover img {
+    transform: scale(1.05);
+}
+
+/* Галерея изображений */
+.gallery-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-image picture,
+.gallery-image img {
+    transition: transform 0.3s ease;
+}
+
+.gallery-image:hover picture,
+.gallery-image:hover img {
+    transform: scale(1.02);
+}
+
+/* Миниатюры */
+.thumbnail-image {
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+.thumbnail-image picture,
+.thumbnail-image img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+/* Баннеры */
+.banner-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-image picture,
+.banner-image img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.5s ease;
+}
+
+.banner-image:hover picture,
+.banner-image:hover img {
+    transform: scale(1.03);
+}
+
+/* Оптимизация для WebP */
+.webp .fallback-jpeg {
+    display: none;
+}
+
+.no-webp .webp-source {
+    display: none;
+}
+
+/* Индикатор загрузки */
+.image-loading {
+    position: relative;
+}
+
+.image-loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Ошибка загрузки */
+img[data-error="true"] {
+    background-color: #f8d7da;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23dc3545"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 24px 24px;
+    min-height: 100px;
+}
+
+/* Прогрессивное улучшение */
+@supports (object-fit: cover) {
+    .aspect-ratio-image {
+        object-fit: cover;
+    }
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+    .responsive-image {
+        margin-bottom: 1rem;
+    }
+    
+    .product-thumb .image {
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .gallery-image {
+        border-radius: 4px;
+    }
+    
+    .banner-image picture,
+    .banner-image img {
+        height: auto;
+        min-height: 200px;
+        object-fit: cover;
+    }
+}
+
+/* Высокие DPI экраны */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .high-dpi-image {
+        /* Специальные стили для высоких DPI */
+    }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+    img[data-src] {
+        background-color: #2d3748;
+        background-image: linear-gradient(45deg, #4a5568 25%, transparent 25%), 
+                          linear-gradient(-45deg, #4a5568 25%, transparent 25%), 
+                          linear-gradient(45deg, transparent 75%, #4a5568 75%), 
+                          linear-gradient(-45deg, transparent 75%, #4a5568 75%);
+    }
+    
+    .product-thumb .image,
+    .thumbnail-image {
+        background-color: #2d3748;
+    }
+}
+
+/* Уменьшение движения для пользователей с ограниченными возможностями */
+@media (prefers-reduced-motion: reduce) {
+    img[data-src],
+    picture.loaded,
+    .product-thumb .image picture,
+    .product-thumb .image img,
+    .gallery-image picture,
+    .gallery-image img,
+    .banner-image picture,
+    .banner-image img {
+        transition: none;
+        animation: none;
+    }
+    
+    .product-thumb .image:hover picture,
+    .product-thumb .image:hover img,
+    .gallery-image:hover picture,
+    .gallery-image:hover img,
+    .banner-image:hover picture,
+    .banner-image:hover img {
+        transform: none;
+    }
+}
+
+/* Печать */
+@media print {
+    img[data-src] {
+        opacity: 1;
+        background: none;
+    }
+    
+    .product-thumb .image:hover picture,
+    .product-thumb .image:hover img,
+    .gallery-image:hover picture,
+    .gallery-image:hover img {
+        transform: none;
+    }
+}

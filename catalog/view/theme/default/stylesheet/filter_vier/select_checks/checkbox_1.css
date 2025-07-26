@@ -1,0 +1,5 @@
+/* checkbox */
+#filter_vier .link_fv .checkb:before, #filter_vier .link_fv .checka:before {width: 23px; height: 23px; padding-right: 5px !important; top: -1px; vertical-align: middle;}
+#filter_vier .link_fv .checka:before {background: transparent url("../../../image/filter_vier/checkbox_1.png") no-repeat scroll 0px 0px;}
+#filter_vier .link_fv .checkb:before {background: transparent url("../../../image/filter_vier/checkbox_1.png") no-repeat scroll -29px 0px;}
+/* end checkbox */

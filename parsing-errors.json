@@ -1,0 +1,27 @@
+[
+  {
+    "slug": "vesna001",
+    "name": "Букет весна 001",
+    "error": "Client network socket disconnected before secure TLS connection was established"
+  },
+  {
+    "slug": "vesna002",
+    "name": "Букет весна 002",
+    "error": "Client network socket disconnected before secure TLS connection was established"
+  },
+  {
+    "slug": "vesna003",
+    "name": "Букет весна 003",
+    "error": "Client network socket disconnected before secure TLS connection was established"
+  },
+  {
+    "slug": "vesna004",
+    "name": "Букет весна 004",
+    "error": "Client network socket disconnected before secure TLS connection was established"
+  },
+  {
+    "slug": "vesna005",
+    "name": "Букет весна 005",
+    "error": "Client network socket disconnected before secure TLS connection was established"
+  }
+]

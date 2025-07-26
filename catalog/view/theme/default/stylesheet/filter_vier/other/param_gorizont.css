@@ -1,0 +1,9 @@
+/* param_gorizont */
+.block_sl {display: inline-block;}
+.block_sl:not(:last-child) {padding-right: 20px; width: 35%;}
+#cler_prs {text-align: center; padding-right: 5px !important;}
+#prim_prs {text-align: left;}
+.manufs .block_param, .prs .block_param, .qnp .block_param, .chc .block_param {width: 100%;}
+.link_price {display: inline-block;}
+.onli_param_get {display: inline-block;}
+/* end param_gorizont */

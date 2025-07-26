@@ -1,0 +1,1555 @@
+{% if hiden %}<!-- if_hiden -->
+{# setting #}
+    {# ajax #}
+{# set ajax_err = true #}
+{% set clear_sl = true %}
+{% if ajax_filter %}
+    {% set clear_sl = false %}
+{% endif %}
+    {# css #}
+{% set css_hide_text = 'hidis' %}
+{% set css_curs_point = 'curs_point' %}
+{% set css_scrl_text = 'scropis' %}
+{% set css_bloc_slid = 'slid' %}
+{% set css_through = 'text_through' %}
+{% set cls_no_src = 'no_src' %}
+    {# animal-speed #}
+{% set animal_blok = 300 %}
+    {# arrow #}
+{% set icon_visi = '<span class="strel_hid_fa"><i class="' ~ icon_awesome['title_filter']['icon_visi'] ~ '" aria-hidden="true"></i></span>' %}
+{% set icon_hidi = '<span class="strel_hid_fa"><i class="' ~ icon_awesome['title_filter']['icon_hidi'] ~ '" aria-hidden="true"></i></span>' %}
+{% set shabl_title = '<span class="title_p_f">%s</span> %s' %}
+
+{% set cls_hiden1 = 'fa-caret-right' %}
+{% set cls_visit1 = 'fa-caret-down' %}
+{% set unfoldi_hid = '<span class="strel_hid_fa"><i class="fa ' ~ cls_hiden1 ~ '" aria-hidden="true"></i></span>' %}
+{% set unfoldi_vis = '<span class="strel_hid_fa"><i class="fa ' ~ cls_visit1 ~ '" aria-hidden="true"></i></span>' %}
+{% set displ_unfoldi = '<div class="displ"><span class="unfoldi">' ~ legend_more ~ unfoldi_hid ~ '</span></div>' %}
+    {# / arrow #}
+    {# others #}
+{% set position_hide = position_set %}
+{% set a_rel_nf = 'rel="nofollow"' %}
+{% set txt_nofollow = noindex_rel ? a_rel_nf : null %}
+{% set arr_pz = ['qnts','nows','psp'] %}
+    {# links #}
+{% set link_js = 'onclick="javascript:location=\'%s\'"' %}
+{% if ajax_filter %}
+    {% set link_js = '' %}
+{% endif %}
+{% set link_html = 'href="%s"' %}
+{% set suff = '_html' %}
+{% if url_js %}
+    {% set suff = '_js' %}
+{% endif %}
+{% set href_link_del = _context['link' ~ suff] %}
+{% set href_link = _context['link' ~ suff] %}
+{{ start_bloc }}
+<!--/**
+ * {{ versi_module ~ '; ' ~ cntr ~ ' sec: ' ~ sec }}
+ **/-->
+  <div id="name_filter"><div id="head_filter" class="blok">{{ name_filter }}<span class="arrow_n_f"><span class="strel_fa_mob"><i class="{{ icon_awesome['head_filter']['icon_visi'] }}" aria-hidden="true"></i></span></span></div></div>
+  <div id="ajx_bloc_filter"></div>
+    {# if fix_attrtool['fix_attrtool'] %}
+        <style type="text/css"> .qtip {max-width: {{ fix_attrtool['attrtool_maxwidth'] }}.'px';}</style>
+    {% endif #}
+    <div id="filter_vier">
+    {% for view_get, view_val in view_posit %} {# for_view_posit #}
+        {% if view_get == 'chc' %} {# if_choice #}
+            {% if view_chc %}
+                {% if get_url_action %} {# if_get_url_action #}
+                <div id="action_get" class="block_fv {{ view_get }}">
+                    <div class="tec_vibor block_param">
+                        <div class="blok title_filter">{{ legend_choice }} 
+                            <span class="text_dia"><a {{ a_rel_nf }} href="{{ clear_filter }}"> {{ legend_clears }}</a></span>
+							<!-- div class="clears"></div -->
+                        </div>
+                        {% if not mini_sel %} {# if_not_mini_sel #}
+                            {% for acti_gets in get_url_action %} {# for_get_url_action #}
+                                {% for acti_get in acti_gets %} {# for_acti_gets #}
+                                    <div class="onli_param_get">
+									<span class="imt_p ligend_get">{{ acti_get[acti_get|keys|first]['legend'] }}</span>
+                                    {% for action_get in acti_get %}
+                                        {% set action_get_text = action_get['text'] %}
+                                        <span class="botton_fv {{ cls_btn }}"><a {{ a_rel_nf }} class="checkg actionis" href="{{ action_get['del'] }}" title="{{ legend_remove_position }} {{ action_get_text }}">{{ action_get_text }}<span class="delis">&times;</span></a></span>
+                                    {% endfor %}
+                                    </div>
+                                {% endfor %} {# / for_acti_gets #}
+                            {% endfor %} {# / for_get_url_action #}
+                        {% endif %} {# / if_not_mini_sel #}
+                    </div>
+                </div>
+                {% endif %}{# / if_get_url_action #}
+            {% endif %}{# / if_choice #}
+        {% elseif view_get in arr_pz %}{# if_qnts_nows_psp #}
+            {% if _context['view_' ~ view_get] %}{# if_view_view_get #}
+                {% set rel_nf = canonic_view[view_get] ? a_rel_nf : null %}
+                {% set href_link1 = href_link %}
+				{% if noindex_rel_nopp %}
+                    {% set rel_nf =  a_rel_nf %}
+                    {% if _context['view_' ~ view_get]['blok_noindex'] %}
+                        {% set rel_nf = null %}
+						{% set href_link1 = link_html %}
+                    {% endif %}
+                {% endif %}
+            <div class="block_fv {{ view_get }} qnp">
+                <div class="block_param">
+					<div class="onli_param blok title_filter qnp link_fv">
+					{% set name_text = _context['legend_' ~ view_get] %}
+                    {% set total_all = null %}
+					{% if flag_count[view_get] %}
+						{% set total_all = forms_total|format(_context['view_' ~ view_get]['total_css'], _context['view_' ~ view_get]['total']) %}
+					{% endif %}
+					{% set text_through = 'actionis' %}
+					{% if _context['view_' ~ view_get]['action'] %}{# if_viev_view_get_action #}
+						{% if _context['view_' ~ view_get]['total'] == 0 %}
+							{% set text_through = css_through %}
+						{% endif %}
+						{% set href = href_link_del|format(_context['view_' ~ view_get]['del_href']) %}
+						<div class="{{ text_through }} row_blok"><label><input type="hidden" name="{{ view_get }}[1]" value="0" /><a {{ rel_nf }} class="checka actionis" {{ href }} title="{{ legend_remove_position }}"><span class="text_param">{{ name_text ~ total_all }}</span></a></label></div>  
+					{% elseif _context['view_' ~ view_get]['total'] == 0 %}
+						<div class="text_through row_blok"><label><span class="imt_a checkb curs_def"><span class="text_param">{{ name_text ~ total_all }}</span></span></label></div>
+					{% else %}
+						{% set href = href_link1|format(_context['view_' ~ view_get]['href']) %}
+						<div><label><input type="hidden" name="{{ view_get }}[1]" value="0" /><a {{ rel_nf }} class="checkb" {{ href }}><span class="text_param">{{ name_text ~ total_all }}</span></a></label></div>
+					{% endif %}{# / if_viev_view_get_action #}
+					</div>
+				</div>
+            </div>
+            {% endif %}{# if_view_view_get #}
+            {# / if_qnts_nows_psp #}
+        {% elseif view_get == 'prs' %}{# if_prices #}
+            {% if view_prs or slider_status %}{# if_status_prices #}
+                {% set main_id = 1 %}
+                {# position #}
+                {% set strelka = null %}
+                {% set css_hide = null %}
+                {% set text_curs = null %}
+                {% if null_position_prs %}
+                    {% set strelka = action_prs ? icon_hidi : icon_visi %}
+                    {% set css_hide = css_hide_text %}
+                    {% set text_curs = css_curs_point %}
+                {% endif %}
+                {% set text_title = legend_price %}
+                {% set es_sl = false %}
+                {% set act_sl = null %}
+                {% if action_prs %}
+                    {% set es_sl = true %}
+                    {% set act_sl = 'actionis' %}
+                    {% set css_hide = null %}
+                {% endif %}
+            <div class="block_fv {{ view_get }}">
+                <div class="block_param">
+                {% if text_title %}
+                    <div class="blok title_filter {{ text_curs }}">{{ shabl_title|format(text_title, strelka) }}</div>
+                {% endif %}
+                    <div class="onli_param blok slid {{ css_hide }}{{ slider_status ? '' : ' link_fv' }}">
+                {% if slider_status %}{# if_slider_status #}
+						<div class="slider_attrib">
+                            <div class="block_sl input_blok">
+                                <table class="width_100_pr input_slider">
+                                    <tr>
+                                        <td><input name="prs[min]" id="left_count" class="form-control" type="text" value=""/></td>
+                                        <td class="symbol_sld">{% if not del_symbol %}<span>{{ symbol }}</span>{% endif %}</td>
+                                        <td><input name="prs[max]" id="right_count" class="form-control" type="text" value=""/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="block_sl shkala">
+                                <input class="attrb_sl" type="text" id="price_slider" value="" />
+								<input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="" /><span class="slidez {{ act_sl }}"></span>
+                            </div>
+                            <div class="block_sl height_prim">
+                                <table class="width_100_pr">
+                                    <tr>
+                                        <td id="cler_prs">
+										{% if es_sl and clear_sl %}
+											<span class="text_clears"><a class="clear_slider" href="{{ base_prs['del_href'] }}">{{ legend_clears }}</a></span>
+											{% endif %}
+										</td>
+                                        {% if not ajax_filter %}
+                                        <td><div id="prim_prs" class="button_slider">
+                                        <span id="button_price{{ base_prs['bloc_slider'] }}" class="botton_fv bot_filt {{ cls_btn }} {{ base_prs['bloc_slider'] }}">{{ legend_apply }}</span>
+                                        </div></td>
+                                        {% endif %}
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <script>
+                            $(document).ready(function() {
+                                var $cler_sl = $('#cler_prs')
+                                    {% if not ajax_filter %}
+                                    ,$button_sld = $('#button_price')
+                                    {% endif %}
+                                    ,razdelit = '{{ delit_param }}'
+                                    ,c_price = ''
+                                    ,get_main_bloc = '{{ view_get }}[{{ main_id }}]'
+                                    ,flag_es_sl = {{ es_sl ? 'true' : 'false' }}
+                                    ,$rangeSld = $("#price_slider")
+                                    ,$from = $("#left_count")
+                                    ,$to = $("#right_count")
+                                    ,clear_slider = false
+                                    ,range_sld
+                                    {% for v in base_prs['arr_view'] %}
+                                        ,{{ v }} = {{ base_prs[v] }}
+                                    {% endfor %}
+                                    ,disable = {{ base_prs['disable'] }}
+                                    ,input_values_separator = razdelit
+                                    ,step = '{{ base_prs['step'] }}'
+                                    ,symbol = '{{ symbol }}'
+                                    ,grid = {{ base_prs['grid'] }};
+
+                                $from.attr('value', from);
+                                $to.attr('value', to);
+                                var updateValues = function () {
+                                    if(isNaN(from)) {
+                                        from = min;
+                                    }
+                                    if(isNaN(to)) {
+                                        to = max;
+                                    }
+                                    $from.prop("value", from);
+                                    $to.prop("value", to);
+                                };
+
+                                $rangeSld.ionRangeSlider({
+                                    type: 'double'
+                                    ,hide_min_max: true
+                                    ,hide_from_to: true
+                                    //,hide_from_to: false
+                                    ,input_values_separator: input_values_separator
+                                    ,keyboard: true
+                                    ,force_edges: true
+                                    ,disable: disable
+                                    ,from: from
+                                    ,to: to
+                                    ,min: min
+                                    ,max: max
+                                    ,step: step
+                                    ,grid: grid
+                                    //,grid_num: 5
+                                    //,grid_snap: true
+                                    //,prefix: symbol
+                                    //,postfix: symbol
+                                    //,values: values
+                                    //,prettify_enabled: false
+                                    {% if ajax_filter %}
+                                    ,onStart: function() {
+                                        var temp_param = corectPrice('-', '');
+                                        $rangeSld.next('input').attr('value', temp_param);
+                                    }
+                                    ,onFinish: function() {
+                                        var temp_param = corectPrice('-', '');
+                                        getDataPoles($rangeSld, $cler_sl, temp_param, get_main_bloc, clear_slider);
+                                    }
+                                    ,onUpdate: function() {
+                                        var temp_param = corectPrice('-', '');
+                                        getDataPoles($rangeSld, $cler_sl, temp_param, get_main_bloc, clear_slider);
+                                    }
+                                    {% endif %}
+                                    ,onChange: function (data) {
+                                        from = data.from;
+                                        to = data.to;
+                                        updateValues();
+                                    }
+                                });
+                                
+                                {% if ajax_filter %}
+                                $cler_sl.on('click', 'a', function(e) {
+                                    e.preventDefault();
+                                    var slider = $rangeSld.data("ionRangeSlider");
+                                    slider.reset();
+                                    $from.val(slider.old_from);
+                                    $to.val(slider.old_to);
+                                    $cler_sl.empty();
+                                    $rangeSld.next('input').attr('value', '').next('.slidez').removeClass('actionis');
+                                    actionGet();
+                                });
+                                {% endif %}
+
+                                range_sld = $rangeSld.data("ionRangeSlider");
+                                var updateRange = function () {
+                                    range_sld.update({
+                                        from: from,
+                                        to: to
+                                    });
+                                };
+                                $from.on("change", function () {
+                                    from = +$(this).prop("value");
+                                    if (from < min) {
+                                        from = min;
+                                    }
+                                    if (from > to) {
+                                        from = to;
+                                    }
+                                    updateValues();
+                                    updateRange();
+                                });
+                                $to.on("change", function () {
+                                    to = +$(this).prop("value");
+                                    if (to > max) {
+                                        to = max;
+                                    }
+                                    if (to < from) {
+                                        to = from;
+                                    }
+                                    updateValues();
+                                    updateRange();
+                                });
+
+                                function corectPrice(razdelit, c_price) {
+                                    var curs_tax = {{ base_prs['tec_curs_tax'] }};
+                                    var decimal_tec = {{ decimal_tec }};
+                                    var correct_curs = 0;
+                                    if(decimal_tec == 0) {
+                                        if(curs_tax != 1) {
+                                            decimal_tec = 2;
+                                        }
+                                        if(curs_tax < 1) {
+                                            correct_curs = 0.0499;
+                                        }
+                                    }
+                                    var shz = /\./g;
+                                    var val_attrbs = $rangeSld.val();
+                                    var all_min_max_prs = '';
+                                    var arr_atrb = val_attrbs.split('-');
+                                    if((arr_atrb[0] !== undefined) && (arr_atrb[1] !== undefined)) {
+                                        var pr_min = arr_atrb[0];
+                                        var pr_max = arr_atrb[1];
+                                        if(pr_min === pr_max) {
+                                            all_min_max_prs = ((pr_min / curs_tax - correct_curs).toFixed(decimal_tec));
+                                        }
+                                        else {
+                                            var pr_min_tax = ((pr_min / curs_tax - correct_curs).toFixed(decimal_tec));
+                                            var pr_max_tax = ((pr_max / curs_tax + correct_curs).toFixed(decimal_tec));
+                                            all_min_max_prs = pr_min_tax + razdelit + pr_max_tax;
+                                        }
+                                        if(c_price) {
+                                            all_min_max_prs = all_min_max_prs.replace(shz, c_price);
+                                        }
+                                    }
+                                    return all_min_max_prs;
+                                }
+                                {% if not ajax_filter %}
+                                    var seo_url_short = '';
+                                    {% if base_prs['seo_url'] %}
+                                        razdelit = '{{ separators[1] }}';
+                                        c_price = '{{ cent_delit }}';
+                                        seo_url_short = '{{ path_seo_url }}';
+                                    {% endif %}
+                                    $button_sld.on('click', function() {
+                                        var all_min_max_prs = corectPrice(razdelit, c_price);
+                                        if(all_min_max_prs) {
+                                            var shabl = '{{ base_prs['shabl'] }}';
+                                            var slidery_u = '{{ base_prs['href'] }}'.replace(shabl, all_min_max_prs);
+                                            if(seo_url_short) {
+                                                var temp_url = slidery_u.replace(seo_url_short, '');
+                                                corrShortLink(temp_url, function(data){
+                                                    if(data) {slidery_u = slidery_u.replace(temp_url, data);}
+                                                    otpravUrl(corrUrl(slidery_u));
+                                                });
+                                            }
+                                            else {
+                                                otpravUrl(corrUrl(slidery_u));
+                                            }
+                                        }
+                                    });
+                                {% endif %}
+                            });
+                        </script>
+                {% else %}{# / if_slider_status, start_link_price #}
+                    {% set rel_nf = null_position_prs ? txt_nofollow : null %}
+                    {% for val in view_prs %}{# for_view_prs #}
+                        {% set name_text = val['text'] %}
+						{% set total_all = null %}
+						{% set href_link1 = href_link %}
+						{% if noindex_rel_nopp %}
+                            {% set rel_nf =  a_rel_nf %}
+                            {% if val['blok_noindex'] %}
+                                {% set rel_nf = null %}
+								{% set href_link1 = link_html %}
+                            {% endif %}
+                        {% endif %}
+                        {% if flag_count[view_get] %}
+                            {% set total_all = forms_total|format(val['total_css'], val['total']) %}
+                        {% endif %}
+                        {% set param_id = val['start'] ~ '-' ~ val['end'] %}
+						{% if val['temp_action'] %}{# if_prs_action #}
+                        <div class="link_price text_through">
+                            <label><span class="checka curs_def imt_a"><span class="text_param">{{ name_text ~ total_all }}</span></span></label>
+                        </div>
+                        {% elseif val['total'] == 0 %}
+                        <div class="link_price text_through">
+                            <label><span class="checkb curs_def imt_a"><span class="text_param">{{ name_text ~ total_all }}</span></span></label>
+                        </div>
+						{% else %}
+							{% if val['action'] %}
+								{% set text_through = 'actionis' %}
+								{% if val['total'] == 0 %} 
+									{% set text_through = css_through %}
+								{% endif %}
+									{% set href = href_link_del|format(val['del_href']) %}
+									{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="checka actionis" title="' ~ legend_remove_position ~ '"' %}
+                            {% else %}
+								{% set text_through = '' %}
+								{% set href = href_link1|format(val['href']) %}
+								{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="checkb"' %}
+							{% endif %}
+                        <div class="link_price {{ text_through }}">
+                            <label><input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ param_id }}" /><a {{ link_a }}><span class="text_param">{{ name_text ~ total_all }}</span></a></label>
+                        </div>
+						{% endif %}{# /if_prs_action #}
+                    {% endfor %}{# /for_view_prs #}
+                {% endif %}{# /start_link_price #}
+                </div>
+            </div>
+        </div>
+        {% endif %}{# /if_status_prices #}
+        {# / if_prices #}
+        {% elseif view_get == 'attrb' %}{# if_attrb #}
+            {% if view_attrb %}{# if_view_attrb #}
+            <div class="block_fv {{ view_get }}">
+                {% if legend_attr %}
+                    <div class="blok head_group">{{ legend_attr }}</div>
+                {% endif %}
+                {% for k_id_group, attributes in view_attrb %}{# for_k_id_group #}
+                    {% if attributes['group_view'] %}
+						<div class="blok head_group group_attrb">{{ attributes['group_view'] }}</div>
+                    {% endif %}
+                    {% for attribute in attributes['data'] if attribute['slider'] or not count_not_dislay or attribute['count_param'] >= count_not_dislay %}{# for_attributes_data #}
+                        {% set strelka = null %}
+                        {% set css_hide = null %}
+                        {% set text_curs = null %}
+                        {% set css_bloc = null %}
+						{% set main_id = attribute['main_id'] %}
+                        {% set flag_slider = attribute['slider'] %}
+                        {% set flag_botton = attribute['button'] %}
+                        {% set flag_select = attribute['select'] %}
+                        {% set flag_radio = attribute['radio'] %}
+                        {% set flag_image = attribute['image'] %}
+                        {% set dislay_fv = 'link_fv' %}
+                        {% if flag_botton %}
+                            {% set dislay_fv = 'img_fv' %}
+                        {% elseif flag_image %}
+                            {% set dislay_fv = 'img_fv blok_img' %}
+                        {% elseif flag_radio %}
+                            {% set dislay_fv = 'radio_fv' %}
+                        {% elseif flag_select %}
+                            {% set del_href = null %}
+                            {% if attributes['action'][main_id] %}
+                                {% set del_href = attributes['action'][main_id] %}
+                            {% elseif attributes['action_gr'] %}
+                                {% set del_href = attributes['action_gr'] %}
+                            {% endif %}
+                            {% if del_href and not ajax_filter %}
+                                {% set dislay_fv = 'select_fv act_sel' %}
+                            {% else %}
+                                {% set dislay_fv = 'select_fv' %}
+                            {% endif %}
+                        {% endif %}
+                        {% set null_position = attribute['null_position'] %}
+                        {% set position_hide = null_position ? 0 : position_set %}
+                        {% if attributes['flag_group'] %}
+                            {% set id_attrb = 'gr_attrb_' ~ k_id_group %}
+                        {% else %}
+                            {% set id_attrb = 'attrb_' ~ main_id %}
+                        {% endif %}
+                        {% if null_position %}
+                            {% set text_curs = css_curs_point %}
+                            {% set strelka = icon_visi %}
+                            {% set css_hide = css_hide_text %}
+                            {% if attributes['action_gr'] or attributes['action'][main_id] %}
+                                {% set css_hide = null %}
+								{% set strelka = icon_hidi %}
+                            {% endif %}
+                            {% if not css_hide %}
+                                {% set position_hide = position_set %}
+                            {% endif %}
+                        {% endif %}
+                        
+                        {% if flag_slider %}
+                            {% set css_bloc = css_bloc_slid %}
+                            {% if slider_attr[main_id] %}
+                                {% set base_sl = slider_attr[main_id] %}
+                                {% set in_sl = 'attrb_sl_' ~ main_id %}
+                                {% set bt_sl = 'bt_sl_' ~ main_id %}
+                                {% set cler_sl = 'cler_sl_' ~ main_id %}
+                                {% set es_sl = false %}
+                                {% set act_sl = null %}
+                                {% if base_sl['del_href']  %}
+                                    {% set css_hide = null %}
+                                    {% set es_sl = true %}
+                                    {% set act_sl = 'actionis' %}
+                                    {% if null_position %}
+                                        {% set strelka = icon_hidi %}
+                                    {% endif %}
+                                {% endif  %}
+                            {% endif %}
+                        {% endif %}
+                        {% set text_title = attribute['name'] %}
+                    <div class="block_param">
+						<div id="{{ id_attrb }}" class="blok title_filter {{ text_curs }}">{{ shabl_title|format(text_title, strelka) }}</div>
+						{% set es_next = false %}
+                        {% set count_text = attribute['count_param'] %}
+                        {% set css_scrl = null %}
+                        {% if scroll_item and not css_bloc  %}
+                            {% if count_text > blok_item %}
+                                {% set css_scrl = css_scrl_text %}
+                            {% endif %}
+                        {% endif %}
+                        <div class="onli_param blok {{ css_bloc }} {{ css_hide }} {{ css_scrl }} {{ dislay_fv }}">
+            {% if flag_select %}{# if_flag_select #}
+                        <select class="form-control"{{ ajax_filter ? '' : ' onchange="location=this.value;"' }}>
+                            <option disabled="disabled" selected="selected" style="display:none;">- - -</option>
+                            {% set tec_main_id = null %}
+                            {% set tec_param_id = null %}
+                            {% for val in attribute['param'] %}
+                                {% set main_id = val['main_id'] %}
+                                {% set name_text = val['text'] %}
+                                {% set param_id = val['param_id'] %}
+                                {% set total_all = null %}
+                                {% if flag_count[view_get] %}
+                                    {% set total_all = ' (' ~ val['total'] ~ ')' %}
+                                {% endif %}
+                                {% if val['total'] == 0 %}
+                            <option disabled="disabled">{{ name_text ~ total_all }}</option>
+                                {% else %}
+                                    {% if val['action'] %}
+                                        {% set total_all = null %}
+                                        {% set text_through = 'selected="selected"' %}
+                                        {% set link_a = '' %}
+                                        {% set tec_main_id = main_id %}
+                                        {% set tec_param_id = param_id %}
+                                    {% else %}
+                                        {% set text_through = '' %}
+                                        {% set link_a = val['href'] %}
+                                    {% endif %}
+                                    {% if ajax_filter %}
+                            <option {{ text_through }} value="{{ link_a }}" nam_val="{{ view_get }}[{{ main_id }}]_{{ param_id }}">{{ name_text ~ total_all }}</option>
+                                    {% else %}
+                            <option {{ text_through }} value="{{ link_a }}">{{ name_text ~ total_all }}</option>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        {% if ajax_filter %}
+                        <input type="hidden" name="{{ view_get }}[{{ tec_main_id }}]" value="{{ tec_param_id }}" /><span class="selectz {{ del_href ? 'actionis' : '' }}"></span>
+                        {% endif %}
+                        {% if not ajax_filter and del_href %}
+                        <div class="button_slider">
+                            <span class="text_clears"><a class="clear_slider" href="{{ del_href }}">{{ legend_clears }}</a></span>
+                        </div>
+                        {% endif %}
+            {% elseif flag_slider %}{# / if_flag_select, if_flag_slider #}
+                        <div class="slider_attrib">
+                            {% if input_slider_attrb %}
+                            <div class="input_blok">
+                                <table class="width_100_pr input_slider">
+                                    <tr>
+                                        <td><input id="{{ in_sl ~ '_from' }}" class="form-control text_input" type="text" value=""/></td>
+                                        <td class="width_10pr"></td>
+                                        <td><input id="{{ in_sl ~ '_to' }}" class="form-control text_input" type="text" value=""/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            {% endif %}
+                            <div class="shkala{{ input_slider_attrb ? '' : '1' }}">
+                                <input class="attrb_sl" type="text" id="{{ in_sl }}" value="" />
+                                <input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ base_sl['val_get'] }}" /><span class="slidez {{ act_sl }}"></span>
+                            </div>
+                            <div class="height_prim">
+                                <table class="width_100_pr">
+                                    <tr>
+                                        <td id="{{ cler_sl }}">
+                                        {% if es_sl and clear_sl %}
+                                            <span class="text_clears"><a class="clear_slider" href="{{ base_sl['del_href'] }}">{{ legend_clears }}</a></span>
+                                        {% endif %}
+                                        </td>
+                                        {% if not ajax_filter %}
+                                        <td><div class="button_slider">
+											<span id="{{ bt_sl }}{{ base_sl['bloc_slider'] }}" class="botton_fv bot_filt {{ cls_btn }} {{ base_sl['bloc_slider'] }}">{{ legend_apply }}</span>
+										</div></td>
+                                        {% endif %}
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <script>
+                            $(document).ready(function() {
+                                var $cler_sl = $('#{{ cler_sl }}')
+                                    {% if not ajax_filter %}
+                                    ,$button_sld = $('#{{ bt_sl }}')
+                                    {% endif %}
+                                    ,legend_clears = '{{ legend_clears }}'
+                                    ,get_main_bloc = '{{ view_get }}[{{ main_id }}]'
+                                    ,clear_slider = false
+                                    ,$rangeSld = $("#{{ in_sl }}")
+                                    ,disable = {{ base_sl['disable'] }}
+                                    ,separ = '{{ base_sl['separ'] }}'
+                                    ,from = {{ base_sl['from'] }}
+                                    ,to = {{ base_sl['to'] }}
+                                    ,min = {{ base_sl['min'] }}
+                                    ,max = {{ base_sl['max'] }}
+                                    ,step = {{ base_sl['step'] }}
+                                    ,grid = {{ base_sl['grid'] }}
+                                    ,val_attrbs;
+                                
+                                $rangeSld.ionRangeSlider({
+                                    type: 'double'
+                                    ,hide_min_max: true
+                                    ,hide_from_to: {{ input_slider_attrb ? 'true' : 'false' }}
+                                    ,input_values_separator: separ
+                                    ,keyboard: true
+                                    ,force_edges: true
+                                    ,disable: disable
+                                    ,from: from
+                                    ,to: to
+                                    ,min: min
+                                    ,max: max
+                                    ,step: step
+                                    ,extra_classes: 'sld_attr {{ bt_sl }}'
+                                    ,grid: grid
+                                    ,grid_snap: true
+                                    //,grid_margin: false
+                                    //,grid_num: 5
+                                    //,prefix: "$"
+                                    //,postfix: ""
+                                    //,values: ""
+                                    //,prettify_enabled: false
+                                    {% if ajax_filter %}
+                                    ,onFinish: function(data) {
+                                        val_attrbs = getMinMax('{{ in_sl }}', separ, true);
+                                        getDataPoles($rangeSld, $cler_sl, val_attrbs, get_main_bloc, clear_slider);
+                                    }
+                                        {% if input_slider_attrb %}
+                                    ,onUpdate: function() {
+                                        val_attrbs = getMinMax('{{ in_sl }}', separ, true);
+                                        getDataPoles($rangeSld, $cler_sl, val_attrbs, get_main_bloc, clear_slider);
+                                    }
+                                        {% endif %}                                                                                                                    
+                                    {% endif %}
+                                    {% if input_slider_attrb %}
+                                    ,onChange: function (data) {
+                                        from = data.from;
+                                        to = data.to;
+                                        updateValues();
+                                    }
+                                    {% endif %}
+                                });
+                                {% if ajax_filter %}
+                                $cler_sl.on('click', 'a', function(e) {
+                                    e.preventDefault();
+                                    var slider = $rangeSld.data("ionRangeSlider");
+                                    slider.reset();
+                                    $cler_sl.empty();
+                                    $rangeSld.next('input').attr('value', '').next('.slidez').removeClass('actionis');
+                                    actionGet();
+                                });
+                                {% else %}
+                                $button_sld.on('click', function() {
+                                    var shabl = '{{ shabl ~ main_id }}';
+                                    val_attrbs = getMinMax('{{ in_sl }}', separ, false);
+                                    var seo_url_short = '';
+                                    {% if base_sl['seo_url'] %}
+                                        var shz = /\./g;
+                                        val_attrbs = val_attrbs.replace(shz, '{{ cent_delit }}');
+                                        seo_url_short = '{{ path_seo_url }}';
+                                    {% endif %}
+                                    var slidery_u = '{{ base_sl['href'] }}'.replace(shabl, val_attrbs);
+                                    if(seo_url_short) {
+                                        var temp_url = slidery_u.replace(seo_url_short, '');
+                                        corrShortLink(temp_url, function(data){
+                                            if(data) {slidery_u = slidery_u.replace(temp_url, data);}
+                                            otpravUrl(corrUrl(slidery_u));
+                                        });
+                                    }
+                                    else {
+                                        otpravUrl(corrUrl(slidery_u));
+                                    }
+                                });
+                                {% endif %}
+                                {% if input_slider_attrb %}
+                                var $from = $("#{{ in_sl ~ '_from' }}")
+                                    ,$to = $("#{{ in_sl ~ '_to' }}");
+                                $from.attr('value', from);$to.attr('value', to);
+                                var updateValues = function () {
+                                    if(isNaN(from)) {from = min;}
+                                    if(isNaN(to)) {to = max;}
+                                    $from.prop("value", from);
+                                    $to.prop("value", to);
+                                };
+                                var updateRange = function () {
+                                    $rangeSld.data("ionRangeSlider").update({from: from,to: to});
+                                };
+                                $from.on("change", function () {
+                                    from = +$(this).prop("value");
+                                    if (from < min) {from = min;}
+                                    if (from > to) {from = to;}
+                                    updateValues();
+                                    updateRange();
+                                });
+                                $to.on("change", function () {
+                                    to = +$(this).prop("value");
+                                    if (to > max) {to = max;}
+                                    if (to < from) { to = from;}
+                                    updateValues();
+                                    updateRange();
+                                });
+                                {% endif %}
+                            });
+                        </script>
+            {% else %}{# / if_flag_slider, start_attrb_link #}
+                {% set iter = 0 %}
+                {% for val in attribute['param'] %}{# for_attribute_param #}
+                            {% set main_id = val['main_id'] %}
+							{% set name_text = val['text'] %}
+                            {% set param_id = val['param_id'] %}
+                            {% set rel_nf = null_position ? txt_nofollow : null %}
+							{% set href_link1 = href_link %}
+							{% if noindex_rel_nopp %}
+								{% set rel_nf =  a_rel_nf %}
+								{% if val['blok_noindex'] %}
+									{% set rel_nf = null %}
+									{% set href_link1 = link_html %}
+								{% endif %}
+							{% endif %}
+                        {% if val['button'] %}{# if_button_attrb #}
+					<div class="botton_opts">
+						{% if val['total'] == 0 %}
+						<label><span class="botton_fv {{ cls_btn }} css_disabled">{{ name_text }}</span></label>
+						{% else %}
+							{% if val['action'] %}
+								{% set actionis = 'actionis' %}
+								{% set href = href_link_del|format(val['del_href']) %}
+								{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="actionis"' %}
+                                {% set title = 'data-toggle="tooltip" title="' ~ legend_remove_position ~ '"' %}
+							{% else %}
+								{% set actionis = '' %}
+								{% set href = href_link1|format(val['href']) %}
+								{% set link_a = rel_nf ~ ' ' ~ href %}
+                                {% set title = '' %}
+							{% endif %}
+						<label {{ title }}><input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ param_id }}" /><a {{ link_a }}><span class="botton_fv {{ cls_btn }} {{ actionis }}">{{ name_text }}</span></a></label>
+						{% endif %}
+					</div>
+                        {% elseif flag_image %}
+                            {% set src_img = val['image'] %}
+                            {% set src_null = src_img ? null : cls_no_src %}
+					<div class="botton_opts {{ src_null }}">
+							{% if val['total'] == 0 %}
+						<label><span class="curs_def"><img class="img_param_null" alt="{{ name_text }}" src="{{ src_img }}"/></span></label>
+							{% else %}
+								{% if val['action'] %}
+									{% set actionis = 'actionis' %}
+									{% set href = href_link_del|format(val['del_href']) %}
+									{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="actionis"' %}
+                                    {% set title = 'data-toggle="tooltip" title="' ~ legend_remove_position ~ '"' %}
+								{% else %}
+									{% set actionis = '' %}
+									{% set href = href_link1|format(val['href']) %}
+									{% set link_a = rel_nf ~ ' ' ~ href %}
+                                    {% set title = 'data-toggle="tooltip" title="' ~ name_text ~ '"' %}
+								{% endif %}
+						<label {{ title }}><input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ param_id }}" /><a {{ link_a }}><img class="img_param {{ actionis }}" alt="{{ name_text }}" src="{{ src_img }}"/></a></label>
+							{% endif %}
+					</div>
+                        {% else %}{# /if_button_attrb, #}
+                            {% set total_all = null %}
+                            {% if flag_count[view_get] %}
+                                {% set total_all = forms_total|format(val['total_css'], val['total']) %}
+                            {% endif %}
+                            {% set view_next = null %}
+                            {% if not css_hide %}
+                                {% if iter == position_hide  %}
+                                    {% set view_next = displ_unfoldi %}
+                                    {% set es_next = true %}
+                                {% endif %}
+                            {% endif %}
+                            {% if view_next %}
+                                {{ view_next }}
+					<div class="skrit {{ css_hide_text }}">
+                            {% endif %}
+						{% if val['total'] == 0 %}
+                        <div class="text_through row_blok">
+                            <label><span class="checkb curs_def imt_a"><span class="text_param">{{ name_text ~ total_all }}</span></span></label>
+                        </div>
+						{% else %}
+							{% if val['action'] %}
+								{% set text_through = 'actionis' %}
+                                {% if val['total'] == 0 %}
+									{% set text_through = css_through %}
+								{% endif %}
+								{% set href = href_link_del|format(val['del_href']) %}
+								{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="checka actionis"' %}
+                            {% else %}
+								{% set text_through = '' %}
+								{% set href = href_link1|format(val['href']) %}
+								{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="checkb"' %}
+							{% endif %}
+                        <div class="{{ text_through }} row_blok">
+                            <label><input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ param_id }}" /><a {{ link_a }}><span class="text_param">{{ name_text ~ total_all }}</span></a></label>
+                        </div>
+						{% endif %}
+					{% if es_next and iter == count_text - 1 %}
+					</div>
+					{% endif %}
+                        {% endif %}{# /if_button_attrb #}
+                        {% set iter = iter + 1 %}
+                    {% endfor %}{# /for_attribute_param #}
+                {% endif %}{# /if_flag_slider, /start_attrb_link #}
+                    </div>
+                </div>
+            {% endfor %}{# / for_attributes_data #}
+        {% endfor %}{# / for_k_id_group #}
+			</div>
+            {% endif %}{# /if_view_attrb #}
+        {# / if_attrb #}
+        {% elseif view_get == 'optv' %}{# if_optv #}
+            {% if view_optv %}{# if_view_optv #}
+            <div class="block_fv {{ view_get }}">
+            {% if legend_option %}
+                <div class="blok head_group">{{ legend_option }}</div>
+            {% endif %}
+            {% for option in view_optv if not count_not_dislay or option['count_param'] >= count_not_dislay %}{# for_option_data #}
+                <div class="block_param">
+                        {% set main_id = option['main_id'] %}
+                        {% set null_position = option['null_position'] %}
+                        {% set position_hide = null_position ? 0 : position_set %}
+                        {% set strelka = null %}
+                        {% set css_hide = null %}
+                        {% set text_curs = null %}
+                        {% set rel_nf = null_position ? txt_nofollow : null %}
+						{% if null_position %}
+                            {% set text_curs = css_curs_point %}
+                            {% set strelka = icon_visi %}
+                            {% set css_hide = css_hide_text %}
+                            {# bloc_hide #}
+                            {% if option['action'] %}
+                                {% set css_hide = null %}
+								{% set strelka = icon_hidi %}
+                            {% endif %}
+                            {# / bloc_hide #}
+                            {% if not css_hide %}
+                                {% set position_hide = position_set %}
+                            {% endif %}
+                        {% endif %}
+                        {% set dislay_fv = option['dislay_fv'] %}
+                        {% set dislay = option['dislay'] %}
+                        {% if dislay == 'select' and option['action'] and not ajax_filter %}
+                            {% set dislay_fv = dislay_fv ~ ' act_sel' %}
+                        {% endif %}
+                        {% set text_title = option['name'] %}
+                    <div class="blok title_filter {{ text_curs }}">{{ shabl_title|format(text_title, strelka) }}</div>
+                        {% set es_next = false %}
+                        {% set count_text = option['count_param'] %}
+                        {% set css_scrl = null %}
+                        {% if scroll_item %}
+                            {% if count_text > blok_item %}
+                                {% set css_scrl = css_scrl_text %}
+                            {% endif %}
+                        {% endif %}
+                    <div class="onli_param blok {{ css_hide }} {{ css_scrl }} {{ dislay_fv }}">
+                    {% if dislay == 'select' %}
+                        <select class="form-control"{{ ajax_filter ? '' : ' onchange="location=this.value;"' }}>
+                            <option disabled="disabled" selected="selected" style="display:none;">- - -</option>
+                            {% set tec_main_id = null %}
+                            {% set tec_param_id = null %}
+                            {% set del_href = option['action'] %}
+                            {% for val in option['param'] %}
+                                {% set name_text = val['text'] %}
+                                {% set param_id = val['param_id'] %}
+                                {% set total_all = null %}
+                                {% if flag_count[view_get] %}
+                                    {% set total_all = ' (' ~ val['total'] ~ ')' %}
+                                {% endif %}
+                                {% if val['total'] == 0 %}
+                            <option disabled="disabled">{{ name_text ~ total_all }}</option>
+                                {% else %}
+                                    {% if val['action'] %}
+                                        {% set total_all = null %}
+                                        {% set text_through = 'selected="selected"' %}
+                                        {% set link_a = '' %}
+                                        {% set tec_main_id = main_id %}
+                                        {% set tec_param_id = param_id %}
+                                    {% else %}
+                                        {% set text_through = '' %}
+                                        {% set link_a = val['href'] %}
+                                    {% endif %}
+                                    {% if ajax_filter %}
+                            <option {{ text_through }} value="{{ link_a }}" nam_val="{{ view_get }}[{{ main_id }}]_{{ param_id }}">{{ name_text ~ total_all }}</option>
+                                    {% else %}
+                            <option {{ text_through }} value="{{ link_a }}">{{ name_text ~ total_all }}</option>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        {% if ajax_filter %}
+                        <input type="hidden" name="{{ view_get }}[{{ tec_main_id }}]" value="{{ tec_param_id }}" /><span class="selectz {{ del_href ? 'actionis' : '' }}"></span>
+                        {% endif %}
+                        {% if not ajax_filter and del_href %}
+                        <div class="button_slider">
+                            <span class="text_clears"><a class="clear_slider" href="{{ del_href }}">{{ legend_clears }}</a></span>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        {% set iter = 0 %}
+                        {% for val in option['param'] %}{# for_option_param #}
+                            {% set param_id = val['param_id'] %}
+                            {% set name_text = val['text'] %}
+    						{% set href_link1 = href_link %}
+    						{% if noindex_rel_nopp %}
+    							{% set rel_nf =  a_rel_nf %}
+    							{% if val['blok_noindex'] %}
+    								{% set rel_nf = null %}
+    								{% set href_link1 = link_html %}
+    							{% endif %}
+    						{% endif %}
+                            {% if dislay == 'image' %}{# if_vid_optv #}
+                                {% set src_img = val['image'] %}
+                                {% set src_null = src_img ? null : cls_no_src %}
+    					<div class="botton_opts {{ src_null }}">
+    							{% if val['total'] == 0 %}
+    						<label><span class="curs_def"><img class="img_param_null" alt="{{ name_text }}" src="{{ src_img }}"/></span></label>
+    							{% else %}
+    								{% if val['action'] %}
+    									{% set actionis = 'actionis' %}
+    									{% set href = href_link_del|format(val['del_href']) %}
+    									{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="actionis"' %}
+                                        {% set title = 'data-toggle="tooltip" title="' ~ legend_remove_position ~ '"' %}
+    								{% else %}
+    									{% set actionis = '' %}
+    									{% set href = href_link1|format(val['href']) %}
+    									{% set link_a = rel_nf ~ ' ' ~ href %}
+                                        {% set title = 'data-toggle="tooltip" title="' ~ name_text ~ '"' %}
+    								{% endif %}
+    						<label {{ title }}><input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ param_id }}" /><a {{ link_a }}><img class="img_param {{ actionis }}" alt="{{ name_text }}" src="{{ src_img }}"/></a></label>
+    							{% endif %}
+    					</div>
+                            {% elseif dislay == 'button' %}{# if_vid_optv #}
+                        <div class="botton_opts">
+    							{% if val['total'] == 0 %}
+    							<label><span class="botton_fv {{ cls_btn }} css_disabled">{{ name_text }}</span></label>
+    							{% else %}
+    								{% if val['action'] %}
+    									{% set actionis = 'actionis' %}
+    									{% set href = href_link_del|format(val['del_href']) %}
+    									{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="actionis"' %}
+                                        {% set title = 'data-toggle="tooltip" title="' ~ legend_remove_position ~ '"' %}
+    								{% else %}
+    									{% set actionis = '' %}
+    									{% set href = href_link1|format(val['href']) %}
+    									{% set link_a = rel_nf ~ ' ' ~ href %}
+                                        {% set title = '' %}
+    								{% endif %}
+    							<label {{ title }}><input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ param_id }}" /><a {{ link_a }}><span class="botton_fv {{ cls_btn }} {{ actionis }}">{{ name_text }}</span></a></label>
+    							{% endif %}
+    					</div>
+                            {% else %}{# if_vid_optv #}
+                                {% set total_all = null %}
+                                {% if flag_count[view_get] %}
+                                    {% set total_all = forms_total|format(val['total_css'], val['total']) %}
+                                {% endif %}
+                                {% set view_next = null %}
+                                {% if not css_hide %}
+                                    {% if iter == position_hide  %}
+                                        {% set view_next = displ_unfoldi %}
+                                        {% set es_next = true %}
+                                    {% endif %}
+                                {% endif %}
+                                {% if view_next %}
+                                    {{ view_next }}
+                            <div class="skrit {{ css_hide_text }}">
+                                {% endif %}
+    						{% if val['total'] == 0 %}
+                            <div class="text_through row_blok">
+                                <label><span class="checkb curs_def imt_a"><span class="text_param">{{ name_text ~ total_all }}</span></span></label>
+                            </div>
+    						{% else %}
+    							{% if val['action'] %}
+    								{% set text_through = 'actionis' %}
+                                    {% if val['total'] == 0 %}
+    									{% set text_through = css_through %}
+    								{% endif %}
+    								{% set href = href_link_del|format(val['del_href']) %}
+    								{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="checka actionis"' %}
+                                {% else %}
+    								{% set text_through = '' %}
+    								{% set href = href_link1|format(val['href']) %}
+    								{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="checkb"' %}
+    							{% endif %}
+                            <div class="{{ text_through }} row_blok">
+                                <label><input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ param_id }}" /><a {{ link_a }}><span class="text_param">{{ name_text ~ total_all }}</span></a></label>
+                            </div>
+    						{% endif %}
+                                {% if es_next and iter == count_text - 1 %}
+                            </div>
+                                {% endif %}
+                          {% endif %}{# /if_vid_optv #}
+                          {% set iter = iter + 1 %}
+                        {% endfor %}{# /for_option_param #}
+                    {% endif %}
+                    </div>
+                </div>
+                {% endfor %}{# /for_option_data #}
+            </div>
+            {% endif %}{# / if_view_optv #}
+            {# / if_optv #}
+        {% elseif view_get == 'manufs' %}{# if_manufs #}
+            {% if view_manufs %}{# if_view_manufs #}
+            <div class="block_fv {{ view_get }}">
+                <div class="block_param">
+                    {% set main_id = 1 %}
+                    {% set strelka = null %}
+                    {% set css_hide = null %}
+                    {% set text_curs = null %}
+					{% set position_hide = null_position_manufs ? 0 : position_set %}
+                    {% set rel_nf = null_position_manufs ? txt_nofollow : null %}
+                    {% if null_position_manufs %}
+                        {% set text_curs = css_curs_point %}
+                        {% set strelka = icon_visi %}
+                        {% set css_hide = css_hide_text %}
+                        {# bloc_hide #}
+                        {% if manuf_action %}
+                            {% set css_hide = null %}
+							{% set strelka = icon_hidi %}
+                        {% endif %}
+                        {# / bloc_hide #}
+                        {% if not css_hide %}
+                            {% set position_hide = position_set %}
+                        {% endif %}
+                    {% endif %}
+                    {% if legend_manuf %}
+                        {% set text_title = legend_manuf %}
+                    <div class="blok title_filter {{ text_curs }}">{{ shabl_title|format(text_title, strelka) }}</div>
+                    {% endif %}
+                    {% set es_next = false %}
+                    {% set count_text = manuf_count_param %}
+                    {% set css_scrl = null %}
+                    {% if scroll_item %}
+                        {% if count_text > blok_item %}
+                            {% set css_scrl = css_scrl_text %}
+                        {% endif %}
+                    {% endif %}
+                    <div class="onli_param blok {{ css_hide }} {{ css_scrl }} {{ manufs_display_fv }}">
+                    {% if manufs_display == 'select' %}
+                        <select class="form-control"{{ ajax_filter ? '' : ' onchange="location=this.value;"' }}>
+                            <option disabled="disabled" selected="selected" style="display:none;">- - -</option>
+                            {% set tec_main_id = null %}
+                            {% set tec_param_id = null %}
+                            {% set del_href = null %}
+                            {% for val in view_manufs %}
+                                {% set name_text = val['text'] %}
+                                {% set param_id = val['param_id'] %}
+                                {% set total_all = null %}
+                                {% if flag_count[view_get] %}
+                                    {% set total_all = ' (' ~ val['total'] ~ ')' %}
+                                {% endif %}
+                                {% if val['total'] == 0 %}
+                            <option disabled="disabled">{{ name_text ~ total_all }}</option>
+                                {% else %}
+                                    {% if val['action'] %}
+                                        {% set total_all = null %}
+                                        {% set text_through = 'selected="selected"' %}
+                                        {% set link_a = '' %}
+                                        {% set tec_main_id = main_id %}
+                                        {% set tec_param_id = param_id %}
+                                        {% set del_href = val['del_href'] %}
+                                    {% else %}
+                                        {% set text_through = '' %}
+                                        {% set link_a = val['href'] %}
+                                    {% endif %}
+                                    {% if ajax_filter %}
+                            <option {{ text_through }} value="{{ link_a }}" nam_val="{{ view_get }}[{{ main_id }}]_{{ param_id }}">{{ name_text ~ total_all }}</option>
+                                    {% else %}
+                            <option {{ text_through }} value="{{ link_a }}">{{ name_text ~ total_all }}</option>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        {% if ajax_filter %}
+                        <input type="hidden" name="{{ view_get }}[{{ tec_main_id }}]" value="{{ tec_param_id }}" /><span class="selectz {{ del_href ? 'actionis' : '' }}"></span>
+                        {% endif %}
+                        {% if not ajax_filter and del_href %}
+                        <div class="button_slider">
+                            <span class="text_clears"><a class="clear_slider" href="{{ del_href }}">{{ legend_clears }}</a></span>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        {% set iter = 0 %}
+                        {% for val in view_manufs %}{# for_view_manufs #}
+                            {% set param_id = val['param_id'] %}
+                            {% set name_text = val['text'] %}
+    						{% set href_link1 = href_link %}
+    						{% if noindex_rel_nopp %}
+    							{% set rel_nf =  a_rel_nf %}
+    							{% if val['blok_noindex'] %}
+    								{% set rel_nf = null %}
+    								{% set href_link1 = link_html %}
+    							{% endif %}
+    						{% endif %}
+
+                            {% if manufs_display == 'image' %}{# if_view_img_manufs #}
+                                {% set src_img = val['image'] %}
+                                {% set src_null = src_img ? null : cls_no_src %}
+    					<div class="botton_opts {{ src_null }}">
+    							{% if val['total'] == 0 %}
+    						<label><span class="curs_def"><img class="img_param_null" alt="{{ name_text }}" src="{{ src_img }}"/></span></label>
+    							{% else %}
+    								{% if val['action'] %}
+    									{% set actionis = 'actionis' %}
+    									{% set href = href_link_del|format(val['del_href']) %}
+    									{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="actionis"' %}
+                                        {% set title = 'data-toggle="tooltip" title="' ~ legend_remove_position ~ '"' %}
+    								{% else %}
+    									{% set actionis = '' %}
+    									{% set href = href_link1|format(val['href']) %}
+    									{% set link_a = rel_nf ~ ' ' ~ href %}
+                                        {% set title = 'data-toggle="tooltip" title="' ~ name_text ~ '"' %}
+    								{% endif %}
+    						<label {{ title }}><input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ param_id }}" /><a {{ link_a }}><img class="img_param {{ actionis }}" alt="{{ name_text }}" src="{{ src_img }}"/></a></label>
+    							{% endif %}
+    					</div>
+                            {% elseif manufs_display == 'button' %}{# if_view_img_manufs #}
+                        <div class="botton_opts">
+    							{% if val['total'] == 0 %}
+    							<label><span class="botton_fv {{ cls_btn }} css_disabled">{{ name_text }}</span></label>
+    							{% else %}
+    								{% if val['action'] %}
+    									{% set actionis = 'actionis' %}
+    									{% set href = href_link_del|format(val['del_href']) %}
+    									{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="actionis"' %}
+                                        {% set title = 'data-toggle="tooltip" title="' ~ legend_remove_position ~ '"' %}
+    								{% else %}
+    									{% set actionis = '' %}
+    									{% set href = href_link1|format(val['href']) %}
+    									{% set link_a = rel_nf ~ ' ' ~ href %}
+                                        {% set title = '' %}
+    								{% endif %}
+    							<label {{ title }}><input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ param_id }}" /><a {{ link_a }}><span class="botton_fv {{ cls_btn }} {{ actionis }}">{{ name_text }}</span></a></label>
+    							{% endif %}
+    					</div>
+                            {% else %}{# if_view_img_manufs #}
+                                {% set total_all = null %}
+                                {% if flag_count[view_get] %}
+                                    {% set total_all = forms_total|format(val['total_css'], val['total']) %}
+                                {% endif %}
+                                {% set view_next = null %}
+                                {% if not css_hide %}
+                                    {% if iter == position_hide  %}
+                                        {% set view_next = displ_unfoldi %}
+                                        {% set es_next = true %}
+                                    {% endif %}
+                                {% endif %}
+                                {% if view_next %}
+                                    {{ view_next }}
+    						<div class="skrit {{ css_hide_text }}">
+                                {% endif %}
+                                {% if val['total'] == 0 %}
+                            <div class="text_through row_blok">
+                                <label><span class="checkb curs_def imt_a"><span class="text_param">{{ name_text ~ total_all }}</span></span></label>
+                            </div>
+    						{% else %}
+    							{% if val['action'] %}
+    								{% set text_through = 'actionis' %}
+                                    {% if val['total'] == 0 %}
+    									{% set text_through = css_through %}
+    								{% endif %}
+    								{% set href = href_link_del|format(val['del_href']) %}
+    								{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="checka actionis"' %}
+                                {% else %}
+    								{% set text_through = '' %}
+    								{% set href = href_link1|format(val['href']) %}
+    								{% set link_a = rel_nf ~ ' ' ~ href ~ ' class="checkb"' %}
+    							{% endif %}
+                            <div class="{{ text_through }} row_blok">
+                                <label><input type="hidden" name="{{ view_get }}[{{ main_id }}]" value="{{ param_id }}" /><a {{ link_a }}><span class="text_param">{{ name_text ~ total_all }}</span></a></label>
+                            </div>
+    						{% endif %}
+                                {% if es_next and iter == count_text - 1 %}
+                            </div>
+                                {% endif %}
+                            {% endif  %}{# /if_view_img_manufs #}
+    						{% set iter = iter + 1 %}
+                        {% endfor %}{# /for_view_manufs #}
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}{# / if_view_manufs #}
+        {% endif %}{# / if_manufs #}
+    {% endfor %} {# for_view_posit #}
+		<!-- div class="clears"></div -->
+		{% if ajax_filter and ajx_total_prod is not null%}
+        <div id="bloc_primenit"><div class="bloc_aj_all"><span class="aj_blc aj_bloc_txt">{{ legend_aj_bloc_txt }}</span><span class="aj_blc ajx_total_prod">{{ ajx_total_prod }}</span><span id="primenit_js"><span class="aj_blc aj_bloc_btn">{{ legend_aj_bloc_btn }}</span></span><span id="clear_vibor" class="aj_blc aj_blc_del"><i class="fa fa-trash-o"></i></span></div></div>
+        {% endif %}
+  </div><!-- / filter_vier -->
+<script>
+    function corrUrl(url) {
+        var shza = /&amp;/g;
+        return url.replace(shza, '&');
+    }
+    function otpravUrl(url_adr) {
+        location.assign(url_adr);
+    }
+    function corrShortLink(url, callback) {
+        $.ajax({type: 'POST', url: 'index.php?route={{ versi_put }}corr_url', data: ({'url_search': url}), success: function(data){callback(data);}});
+    }
+    function yesMobil() {
+        var oj = {};
+        var f_v_w = $("#filter_vier").width();
+        var of_left = $("#filter_vier").offset().left;
+        var margin_2 = (of_left * 2);
+        var of_f_v_w = (f_v_w + of_left);
+        var all_width = $(document.body).width();
+        //all_width = (all_width - margin_2);
+        oj["f_v_w"] = f_v_w;
+        oj["of_f_v_w"] = of_f_v_w;
+        oj["all_width"] = (all_width - margin_2);
+        oj["flag_mobil"] = false;
+        if((f_v_w + f_v_w/2) > all_width) {
+            oj["flag_mobil"] = true;
+        }
+        return oj;
+    }
+    function getMinMax(elem, separ, flag_seo) {
+        var val_attrbs = $("#"+elem).val();
+        var arr_atrb = val_attrbs.split(separ);
+        if((arr_atrb[0] !== undefined) && (arr_atrb[1] !== undefined)) {
+            if(arr_atrb[0] === arr_atrb[1]) {
+                val_attrbs = arr_atrb[0];
+            }
+            else if(flag_seo) {
+                val_attrbs = arr_atrb[0]+'-'+arr_atrb[1];
+            }
+        }
+        return val_attrbs;
+    }
+    $('.displ').on('click', function() {
+        var bloc_text = $(this).closest('.onli_param');
+        var bloc_text_null = bloc_text.find('.skrit');
+        var bloc_displ = bloc_text.find('.unfoldi');
+        {% if animal_blok %}
+            bloc_text_null.slideToggle({{ animal_blok }});
+        {% else %}
+            bloc_text_null.toggleClass('{{ css_hide_text }}');
+        {% endif %}
+        if(bloc_displ.text() == '{{ legend_more }}') {
+            bloc_displ.html('{{ legend_hide ~ unfoldi_vis }}');
+        }
+        else {
+            bloc_displ.html('{{ legend_more ~ unfoldi_hid }}');
+        }
+    });
+    $('.title_filter{{ '.' ~ css_curs_point }}').on('click', function() {
+        var bloc_text = $(this);
+        {% if animal_blok %}
+            bloc_text.next('.onli_param').slideToggle({{ animal_blok }});
+        {% else %}
+            bloc_text.next('.onli_param').toggleClass('{{ css_hide_text }}');
+        {% endif %}
+		bloc_text.find('.fa').toggleClass("{{ icon_awesome['title_filter']['icon_visi'] }} {{ icon_awesome['title_filter']['icon_hidi'] }}");
+    });
+
+    $(document).ready(function() {
+        $('#name_filter').on('click', function() {
+            var blok_fv = $('#filter_vier');
+            {% if animal_blok %}
+                blok_fv.slideToggle({{ animal_blok }});
+            {% else %}
+                blok_fv.toggle();
+            {% endif %}
+			$('#name_filter .fa').toggleClass("{{ icon_awesome['head_filter']['icon_visi'] }} {{ icon_awesome['head_filter']['icon_hidi'] }}");
+        });
+        //scroll
+        {% if scrollis %}
+            var n_ses = 'scrollis';
+            var scrollis = sessionStorage.getItem(n_ses);
+            if(scrollis) {
+                window.scrollTo(0, scrollis);
+                sessionStorage.removeItem(n_ses);
+            }
+            $('.block_fv a').click(sesScroll);
+			$('.button_slider').click(sesScroll);
+            $('#filter_vier select').click(sesScroll);
+            {% if ajax_filter %}
+                var oj = yesMobil();
+                if(!oj.flag_mobil) {
+                    $('#primenit_js').click(sesScroll);
+                    $('#clear_vibor').click(sesScroll);
+                }
+            {% endif %}
+            function sesScroll() {
+                sessionStorage.setItem(n_ses, (window.scrollY) ? window.scrollY 
+                  : document.documentElement.scrollTop ? document.documentElement.scrollTop 
+                  : document.body.scrollTop
+                );
+            }
+        {% endif %}
+        //end scroll
+        /*fix_mobil_mini*/
+        $('#mobil_mini').on('click', function() {
+			if($(this).hasClass('open_fv')) {$(this).removeClass('open_fv');} else {$(this).addClass('open_fv');}
+            if($('#column-left, #column-right').hasClass('hidden-xs')) {$('#column-left, #column-right').removeClass('hidden-xs');}
+			$('#column-left, #column-right').toggle();
+		});
+        /*end fix_mobil_mini*/
+    });
+</script>
+{% if ajax_filter %}{# if_ajax_filter #}
+<script>
+	{% if ajax_bloc_absolut and ajax_bloc_mobil_versi %}
+    $(document).mouseup(function(e) {
+        var bp = $("#bloc_primenit");
+        var bpf = $("#filter_vier");
+        if((bpf.has(e.target).length != 1) && (bp.has(e.target).length === 0)) {
+            bp.hide();
+            /*
+            setTimeout(function(){
+                primenit_js();
+            },1000);
+            */
+        }
+    });
+	{% endif %}
+
+    var legend_clears = '{{ legend_clears }}';
+    var versi_put = '{{ versi_put }}';
+
+    function getDataPoles(rangeSld, cler_sl, temp_param, nam, flag_es_sl) {
+        rangeSld.next('input').attr('value', temp_param).next('.slidez').addClass('actionis');
+        if(flag_es_sl) {
+            cler_sl.html('<span class="text_clears"><a class="clear_slider">'+legend_clears+'</a></span>');
+        }
+        onliParamGet(cler_sl, nam, true);
+    }
+    function blocFilter(flag) {
+        var $abf = $('#ajx_bloc_filter');
+        if(flag) {
+            $abf.css({"z-index":"10","width":"100%","height":"100%","position":"absolute","background":"rgba(0, 0, 0, 0.1)"});
+        }
+        else {
+            $abf.attr('style', '');
+        }
+    }
+    function ajs_filter(param, dtype, file, coord_y, coord_x) {
+        $.ajax({
+            type: 'GET'
+            ,url: 'index.php?route='+versi_put+file
+            //,async: true
+            ,dataType: dtype
+            //,cache: false
+            ,data: param
+            ,beforeSend: function(){
+                blocFilter(true);
+            }
+            ,success: function(data) {
+                if(file == 'ajax_filter') {
+                    if(data) {
+                        var temp_action_get = $('#action_get').html();
+                        var $bfv = $('#block_filter_vier');
+                        $bfv.html(data);
+                        $('#filter_vier').css({"display":"block"});
+                        if(temp_action_get == undefined) {
+                          $('#action_get').remove();
+                        }
+                        else {
+                            $('#action_get').html(temp_action_get);
+                        }
+						{% if ajax_bloc_absolut %}
+                        if(coord_y) {
+                            $('#bloc_primenit').css({"display":"inline-block","position":"absolute"}).offset(coord_y);
+                            if(coord_x) {
+                                $('#bloc_primenit').css(coord_x);
+                            }
+                        }
+						{% endif %}
+                    }
+                }
+                else if(file == 'ajax_url') {
+                    if(data.result) {
+                        otpravUrl(corrUrl(data.result));
+                    }
+                }
+            }
+            ,complete: function(){
+                blocFilter(false);
+            }
+        });
+    }
+
+    function getParamFilt(router, bloc, clear_filter) {
+        var obj_param = {};
+        if(clear_filter) {
+            router = true;
+        }
+        else {
+            $("#block_filter_vier .actionis").prev("input").each(function () {
+                var nam = this.name;
+                var v = this.value;
+                if(bloc) {
+                    if(nam == bloc) {
+                        obj_param['-'+nam] = v;
+                    }
+                }
+                if(nam in obj_param) {
+                    obj_param[nam] = obj_param[nam] + '-' + v;
+                }
+                else {
+                    obj_param[nam] = v;
+                }
+    	    });
+        }
+        if(router) {
+            {% for key, val in get_route %}
+                obj_param['{{ key }}'] = '{{ val }}';
+            {% endfor %}
+        }
+        return obj_param;
+    }
+    $(".onli_param.img_fv").on('click', "a:not(.curs_def)", function(e) {
+        e.preventDefault();
+        var $param = $(this);
+        $param.toggleClass("actionis");
+        var nam = $param.prev().attr('name');
+        onliParamGet($param, nam, false);
+    });
+    $(".onli_param.link_fv").on('click', "a:not(.curs_def):not(.clear_slider)", function(e) {
+        e.preventDefault();
+        var $param = $(this);
+        $param.toggleClass("checka actionis").toggleClass("checkb");
+        var nam = $param.prev().attr('name');
+        onliParamGet($param, nam, false);
+    });
+    $(".onli_param.radio_fv").on('click', "a:not(.curs_def):not(.clear_slider)", function(e) {
+        e.preventDefault();
+        var $param = $(this);
+        $param.closest(".onli_param").find("a.actionis").removeClass("checka actionis").addClass("checkb");
+        $param.toggleClass("checka actionis").toggleClass("checkb");
+        var nam = $param.prev().attr('name');
+        onliParamGet($param, nam, false);
+    });
+    $(document).ready(function(){
+        $(".select_fv select").change(function() {
+            var $dat_sel = $(this);
+            var get_value = $dat_sel.children(":selected").attr("nam_val");
+            var arr_data = get_value.split('_');
+            if(arr_data.length == 2) {
+                var name = arr_data[0];
+                var value = arr_data[1];
+                $dat_sel.next('input').attr('name', name).attr('value', value).next('.selectz').addClass('actionis');
+                var nam = $dat_sel.next('input').attr('name');
+                onliParamGet($dat_sel, nam, false);
+            }
+        });
+    })
+    $("#primenit_js").on('click', function() {
+        primenit_js();
+    });
+    $('#clear_vibor').on('click', function() {
+        actionGet();
+    });
+    function primenit_js() {
+        var total_tovar = {{ ajx_total_prod ? ajx_total_prod : '0' }};
+        if(total_tovar) {
+            var obj_param = {};
+            obj_param = getParamFilt(true, '', false);
+            ajs_filter(obj_param, 'json', 'ajax_url', '', '');
+        }
+    }
+    function onliParamGet(elem, nam, flag_sl) {
+        var of_top = elem.offset().top;
+        //,"left":0
+        var oj_top = {"top":of_top};
+        var oj_l_r = positBottom(flag_sl);
+        var param = getParamFilt(true, nam, false);
+        ajs_filter(param, 'html', 'ajax_filter', oj_top, oj_l_r);
+    }
+    function actionGet() {
+        var url_start = clearGet();
+        if(url_start) {
+            otpravUrl(url_start);
+        }
+        else {
+            var param = getParamFilt(true, '', true);
+            ajs_filter(param, 'html', 'ajax_filter', '', '');
+        }
+    }
+
+    function positBottom(flag_sl) {
+        var oj = yesMobil();
+        var f_v_w = oj["f_v_w"];
+		{% if ajax_corect_gorizont %}
+        f_v_w = f_v_w + {{ ajax_corect_gorizont }};
+		{% endif %}
+        var of_f_v_w = oj["of_f_v_w"];
+        var all_width = oj["all_width"];
+        var flag_mobil = oj["flag_mobil"];
+        var posit = "left";
+        var correct = 12;
+        var corr_mob = 3;
+        var val_posit = (f_v_w+correct);
+        var oj_l_r = {};
+        if(flag_mobil) {
+            posit = "left";
+            val_posit = correct;
+        }
+        else if((of_f_v_w - all_width) > 1) {
+            posit = "right";
+        }
+        val_posit = val_posit;
+        if(flag_mobil) {
+            if(flag_sl) {
+                oj_l_r["margin-top"] = "-140px";
+            }
+            else {
+                oj_l_r["margin-top"] = "-"+(val_posit*corr_mob)+"px";
+            }
+            oj_l_r["margin-left"] = (f_v_w / corr_mob);
+        }
+        else {
+            oj_l_r[posit] = val_posit+"px";
+        }
+        return oj_l_r;
+    }
+    function clearGet() {
+        var url_start = corrUrl('{{ href_start }}');
+        var url_real = window.location.href;
+        if(url_real != url_start) {
+            return url_start;
+        }
+        else {
+            return false;
+        }
+    }
+</script>
+{% endif %} {# if_ajax_filter #}
+{% if fix_attrtool['fix_attrtool'] %}{# if_fix_attrtool #}
+<script type="text/javascript">
+$(document).ready(function () {
+    $('.attrtool').qtip({
+        hide: { event: 'unfocus mouseleave', fixed: true, delay: 300 },
+    	style: {
+            classes: '{{ fix_attrtool['attrtool_style'] }}',
+    		tip: {
+                corner: true
+    			}
+    		},
+    	show: {
+    		solo: true
+    		},
+    	position: {
+            my: 'bottom left',
+            at: 'top center',
+    		viewport: $(window),
+    		adjust: {
+                /*x: 0, y: 0,*/
+    			method: 'shift flip'
+    		}
+        }
+	});
+});
+</script>
+{% endif %}{# / if_fix_attrtool #}
+{{ end_bloc }}
+<!-- / if_hiden -->
+{% endif %}

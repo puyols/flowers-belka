@@ -1,0 +1,111 @@
+.js {
+	border-bottom: 1px dotted;
+	display: inline-block;
+	line-height: 1em;
+	height: 1em;
+	cursor: pointer;
+	background: none;
+	padding: 0;
+	position: relative;
+	text-decoration: none !important;
+	letter-spacing: -0.299px;
+}
+.js:hover {
+	border-color: transparent;
+}
+.show {
+	display:  block;
+}
+.hidden {
+	display:  none;
+}
+.no-margin-bottom {
+	margin-bottom: 0 !important;
+}
+.theme-more {
+	position: relative;
+	top: -10px;
+	margin-bottom: -30px;
+}
+.html-block-content .live-view {
+	position: absolute;
+	top: 10px;
+	right: 20px;
+}
+p.help {
+	color: #666;
+	font-size: 11px;
+	font-weight: normal;
+	font-family: Verdana, Geneva, sans-serif;
+	display: block;
+}
+.modal .throbber {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -8px;
+	margin-top: -5px;
+	width: 16px;
+	height: 11px;
+	background: transparent url(../image/html_block/loader.gif) no-repeat 0 0;
+}
+.include {
+	padding: 0 !important;
+	border: 0;
+}
+.include .form {
+	margin: 0;
+}
+.parent td,
+.include .form, 
+.include .form td {
+	border-bottom: 0 !important;
+}
+.include .form td {
+	border-top: 1px dotted #CCCCCC;
+}
+div.template-wrapper {
+	position: relative;
+	display: inline-block;
+}
+div.template-wrapper textarea {
+	resize: none;
+}
+a.js.show-hide-editor,
+a.js.show-default {
+	font-weight: normal;
+}
+#tab-themes p.link {
+	margin-top: 0;
+}
+.form-group.content label,
+.form-group.template label {
+	padding-top: 0;
+}
+.content table {
+	width: auto;
+}
+.checkbox label {
+	display: block;
+}
+.form-group.inline label {
+	padding-top: 0;
+}
+select.form-control,
+input.form-control {
+	max-width: 300px;
+}
+.form-control.inline {
+	width: auto;
+}
+.donate {
+	margin-top: 10px;
+}
+.donate form {
+	display: inline-block;
+	position: relative;
+	top: 6px;
+}
+.col-sm-10.view {
+	position: relative;
+}

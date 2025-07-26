@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core Colors */
+    --color-background: #FEFEFE; /* pure-white */
+    --color-foreground: #1A1A1A; /* rich-black */
+    --color-border: rgba(45, 90, 61, 0.12); /* forest-green-opacity */
+    --color-input: #F8F6F3; /* warm-white */
+    --color-ring: #2D5016; /* deep-forest-green */
+    
+    /* Card Colors */
+    --color-card: #FEFEFE; /* pure-white */
+    --color-card-foreground: #1A1A1A; /* rich-black */
+    --color-popover: #FEFEFE; /* pure-white */
+    --color-popover-foreground: #1A1A1A; /* rich-black */
+    
+    /* Muted Colors */
+    --color-muted: #F8F6F3; /* warm-white */
+    --color-muted-foreground: #666666; /* clear-gray */
+    
+    /* Brand Colors */
+    --color-primary: #2D5016; /* deep-forest-green */
+    --color-primary-foreground: #FEFEFE; /* pure-white */
+    --color-secondary: #8B4513; /* warm-earth-brown */
+    --color-secondary-foreground: #FEFEFE; /* pure-white */
+    
+    /* State Colors */
+    --color-destructive: #8B4513; /* warm-brown */
+    --color-destructive-foreground: #FEFEFE; /* pure-white */
+    --color-accent: #D4AF37; /* soft-gold */
+    --color-accent-foreground: #1A1A1A; /* rich-black */
+    --color-success: #4A7C59; /* natural-green */
+    --color-success-foreground: #FEFEFE; /* pure-white */
+    --color-warning: #B8860B; /* amber-tone */
+    --color-warning-foreground: #1A1A1A; /* rich-black */
+    --color-error: #8B4513; /* warm-brown */
+    --color-error-foreground: #FEFEFE; /* pure-white */
+    
+    /* Surface Colors */
+    --color-surface: #F8F6F3; /* warm-white */
+    --color-text-primary: #1A1A1A; /* rich-black */
+    --color-text-secondary: #666666; /* clear-gray */
+  }
+
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+  }
+  
+  body, p, span, div, button, input, select, textarea {
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-playfair {
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .text-shadow-soft {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .shadow-botanical {
+    box-shadow: 0 4px 16px rgba(45, 90, 61, 0.08);
+  }
+  
+  .shadow-botanical-sm {
+    box-shadow: 0 2px 8px rgba(45, 90, 61, 0.06);
+  }
+  
+  .transition-botanical {
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .border-botanical {
+    border: 1px solid rgba(45, 90, 61, 0.12);
+  }
+}

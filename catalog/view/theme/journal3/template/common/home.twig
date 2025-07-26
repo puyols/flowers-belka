@@ -1,0 +1,63 @@
+{{ header }}
+{{ j3.loadController('journal3/layout', 'top') }}
+
+{# Информация о текущем городе #}
+{% if current_city %}
+<div class="city-info-banner" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 1rem 0; margin-bottom: 1rem;">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 text-center">
+        <h2 style="margin: 0; font-size: 1.5rem;">Доставка цветов {{ current_city.title_suffix }}</h2>
+        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">{{ current_city.description_suffix }} • Время доставки: {{ current_city.delivery_time }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if content_top or content_bottom or column_left or column_right %}
+<div id="common-home" class="container">
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    {% if content_top or content_bottom %}
+    <div id="content" class="{{ class }}">
+      {{ content_top }}
+
+      {# Дополнительная информация о доставке в выбранном городе #}
+      {% if current_city %}
+      <div class="city-delivery-info" style="background: #f8f9fa; padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+        <h3 style="color: #1f2937; margin-bottom: 1.5rem;">Доставка {{ current_city.title_suffix }}</h3>
+        <div class="row">
+          <div class="col-md-4 text-center" style="margin-bottom: 1rem;">
+            <div style="font-size: 2rem; color: #3b82f6; margin-bottom: 0.5rem;">⏰</div>
+            <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Время доставки</h4>
+            <p style="color: #4b5563; margin: 0;">{{ current_city.delivery_time }}</p>
+          </div>
+          <div class="col-md-4 text-center" style="margin-bottom: 1rem;">
+            <div style="font-size: 2rem; color: #3b82f6; margin-bottom: 0.5rem;">💰</div>
+            <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Стоимость</h4>
+            <p style="color: #4b5563; margin: 0;">{{ current_city.delivery_cost }}</p>
+          </div>
+          <div class="col-md-4 text-center" style="margin-bottom: 1rem;">
+            <div style="font-size: 2rem; color: #3b82f6; margin-bottom: 0.5rem;">🎁</div>
+            <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">Бесплатно</h4>
+            <p style="color: #4b5563; margin: 0;">{{ current_city.free_delivery }}</p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {{ content_bottom }}
+    </div>
+    {% endif %}
+    {{ column_right }}</div>
+</div>
+{% endif %}
+{{ j3.loadController('journal3/seo/rich_snippets') }}
+{{ footer }}

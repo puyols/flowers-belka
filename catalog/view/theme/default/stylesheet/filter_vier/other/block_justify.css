@@ -1,0 +1,3 @@
+/* block_justify */
+.block_fv.attrb::after, .block_fv.optv::after {content: ""; width: 100%; height: 0px; visibility: hidden; overflow: hidden; display: inline-block;}
+/* end block_justify */

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест формата карточек 1:1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">Тест карточек товаров - формат 1:1</h1>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Карточка 1 -->
+            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300 group">
+                <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-green-100">
+                    <img 
+                        src="https://flowers-belka.ru/image/catalog/2022-06-05%2019-55-31.JPG" 
+                        alt="Букет цветов"
+                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div class="absolute top-2 left-2 bg-pink-500 text-white px-2 py-1 rounded text-xs font-medium">
+                        🌸 Букет цветов
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h3 class="text-base font-medium text-gray-900 mb-1">Букет весенних цветов</h3>
+                    <p class="text-sm text-gray-500 mb-2">Красивый букет из отборных цветов</p>
+                    <div class="mb-3">
+                        <span class="text-xl font-bold text-gray-900">5,800 ₽</span>
+                    </div>
+                    <button class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors">
+                        Купить
+                    </button>
+                </div>
+            </div>
+
+            <!-- Карточка 2 -->
+            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300 group">
+                <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-green-100">
+                    <img 
+                        src="https://flowers-belka.ru/image/catalog/2021-07-18%2011-40-05.JPG" 
+                        alt="Букет роз"
+                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                </div>
+                <div class="p-3">
+                    <h3 class="text-base font-medium text-gray-900 mb-1">Букет роз</h3>
+                    <p class="text-sm text-gray-500 mb-2">Элегантные розы для особого случая</p>
+                    <div class="mb-3">
+                        <span class="text-xl font-bold text-gray-900">5,300 ₽</span>
+                    </div>
+                    <button class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors">
+                        Купить
+                    </button>
+                </div>
+            </div>
+
+            <!-- Карточка 3 -->
+            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300 group">
+                <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-green-100">
+                    <img 
+                        src="https://flowers-belka.ru/image/catalog/2021-04-15%2016-59-29.JPG" 
+                        alt="Букет тюльпанов"
+                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                </div>
+                <div class="p-3">
+                    <h3 class="text-base font-medium text-gray-900 mb-1">Букет тюльпанов</h3>
+                    <p class="text-sm text-gray-500 mb-2">Весенние тюльпаны разных цветов</p>
+                    <div class="mb-3">
+                        <span class="text-xl font-bold text-gray-900">6,000 ₽</span>
+                    </div>
+                    <button class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors">
+                        Купить
+                    </button>
+                </div>
+            </div>
+
+            <!-- Карточка 4 -->
+            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300 group">
+                <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-green-100">
+                    <img 
+                        src="https://flowers-belka.ru/image/catalog/25.jpg" 
+                        alt="Букет пионов"
+                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                </div>
+                <div class="p-3">
+                    <h3 class="text-base font-medium text-gray-900 mb-1">Букет пионов</h3>
+                    <p class="text-sm text-gray-500 mb-2">Нежные пионы для романтического настроения</p>
+                    <div class="mb-3">
+                        <span class="text-xl font-bold text-gray-900">2,700 ₽</span>
+                    </div>
+                    <button class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors">
+                        Купить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <p class="text-gray-600">Все изображения теперь в квадратном формате 1:1</p>
+            <p class="text-sm text-gray-500 mt-2">Hover-эффект: увеличение изображения при наведении</p>
+        </div>
+    </div>
+</body>
+</html>

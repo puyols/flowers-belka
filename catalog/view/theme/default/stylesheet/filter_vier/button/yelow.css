@@ -1,0 +1,25 @@
+/* yelow */
+.btn_fv {
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  text-shadow: 0 -1px 1px #cc5500;
+  user-select: none;
+  outline: none;
+  border-radius: 1px;
+  background: linear-gradient(to left, rgba(0,0,0,.3), rgba(0,0,0,.0) 50%, rgba(0,0,0,.3)), linear-gradient(#d77d31, #fe8417, #d77d31);
+  background-size: 100% 100%, auto;
+  background-position: 50% 50%;
+  box-shadow: inset #ebab00 0 -1px 1px, inset 0 1px 1px #ffbf00, #cc7722 0 0 0 1px, #000 0 10px 15px -10px;
+  transition: 0.2s;
+  padding: 3px 5px;
+}
+.btn_fv:hover {
+  background-size: 140% 100%, auto;
+}
+.btn_fv:active {
+  top: 1px;
+  color: #ffdead;
+  box-shadow: inset #ebab00 0 -1px 1px, inset 0 1px 1px #ffbf00, #cc7722 0 0 0 1px, 0 10px 10px -9px #000;
+}
+/* / yelow */

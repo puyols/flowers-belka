@@ -1,0 +1,6 @@
+/*my_checkbox_galka*/
+#filter_vier .link_fv .checkb:before,#filter_vier .link_fv .checka:before{ margin-right: 4px; width: 18px; height: 18px; z-index: 0;/*top: 0px;*/}
+#filter_vier .link_fv .checkb:hover:not(.curs_def):before{}
+#filter_vier .link_fv .checka.actionis:before{}
+#filter_vier .link_fv .checka.actionis:after{ content: ""; position: absolute; width: 7px; height: 11px; left: 1px; border-top: 2px solid transparent; border-left: 2px solid transparent; border-style:solid; border-width: 2px; transform: rotateZ(37deg); transform-origin: 100% 100%; z-index: 1;}
+/*end my_checkbox_galka*/
