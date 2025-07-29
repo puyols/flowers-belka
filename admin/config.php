@@ -1,18 +1,18 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://localhost/flowers_belka/admin/');
-define('HTTP_CATALOG', 'http://localhost/flowers_belka/');
+define('HTTP_SERVER', 'http://localhost:8080/admin/');
+define('HTTP_CATALOG', 'http://localhost:8080/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://localhost/flowers_belka/admin/');
-define('HTTPS_CATALOG', 'http://localhost/flowers_belka/');
+define('HTTPS_SERVER', 'http://localhost:8080/admin/');
+define('HTTPS_CATALOG', 'http://localhost:8080/');
 
 // DIR
-define('DIR_APPLICATION', 'C:/xampp/htdocs/flowers_belka/admin/');
-define('DIR_SYSTEM', 'C:/xampp/htdocs/flowers_belka/system/');
-define('DIR_IMAGE', 'C:/xampp/htdocs/flowers_belka/image/');
-define('DIR_STORAGE', 'C:/xampp/htdocs/flowers_belka/storage/');
-define('DIR_CATALOG', 'C:/xampp/htdocs/flowers_belka/catalog/');
+define('DIR_APPLICATION', 'C:/Users/puyols/Downloads/flowers_belka/admin/');
+define('DIR_SYSTEM', 'C:/Users/puyols/Downloads/flowers_belka/system/');
+define('DIR_IMAGE', 'C:/Users/puyols/Downloads/flowers_belka/image/');
+define('DIR_STORAGE', 'C:/Users/puyols/Downloads/flowers_belka/storage/');
+define('DIR_CATALOG', 'C:/Users/puyols/Downloads/flowers_belka/catalog/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/template/');
 define('DIR_CONFIG', DIR_SYSTEM . 'config/');
