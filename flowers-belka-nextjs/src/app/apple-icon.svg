@@ -1,0 +1,45 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Фон с градиентом -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flowerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F472B6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#EC4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DB2777;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34D399;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Фон -->
+  <rect width="180" height="180" rx="32" fill="url(#bgGradient)"/>
+  
+  <!-- Стебель -->
+  <rect x="85" y="100" width="10" height="60" rx="5" fill="#065F46"/>
+  
+  <!-- Листья -->
+  <ellipse cx="65" cy="125" rx="18" ry="8" fill="url(#leafGradient)" transform="rotate(-30 65 125)"/>
+  <ellipse cx="115" cy="135" rx="15" ry="7" fill="url(#leafGradient)" transform="rotate(25 115 135)"/>
+  
+  <!-- Цветок (роза) -->
+  <circle cx="90" cy="70" r="40" fill="url(#flowerGradient)"/>
+  
+  <!-- Лепестки розы -->
+  <circle cx="90" cy="70" r="32" fill="#F9A8D4" opacity="0.8"/>
+  <circle cx="90" cy="70" r="24" fill="#F472B6" opacity="0.9"/>
+  <circle cx="90" cy="70" r="16" fill="#EC4899"/>
+  <circle cx="90" cy="70" r="8" fill="#BE185D"/>
+  
+  <!-- Блики для объема -->
+  <ellipse cx="80" cy="60" rx="8" ry="5" fill="#FECACA" opacity="0.6"/>
+  <circle cx="75" cy="55" r="3" fill="#FEF7F7" opacity="0.8"/>
+  
+  <!-- Дополнительные детали -->
+  <circle cx="90" cy="70" r="4" fill="#9D174D"/>
+  <circle cx="88" cy="68" r="1.5" fill="#FDF2F8" opacity="0.9"/>
+</svg>

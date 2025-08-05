@@ -1,0 +1,7 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="linear-gradient(45deg, #fdf2f8, #f3e8ff)"/>
+  <text x="200" y="150" text-anchor="middle" fill="#374151" font-size="24" font-family="Arial">📰 Модные букеты 2025</text>
+  <circle cx="100" cy="100" r="30" fill="#ec4899" opacity="0.6"/>
+  <circle cx="300" cy="200" r="25" fill="#f472b6" opacity="0.5"/>
+  <circle cx="350" cy="80" r="20" fill="#fbbf24" opacity="0.4"/>
+</svg>

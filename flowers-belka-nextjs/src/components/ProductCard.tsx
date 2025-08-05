@@ -1,0 +1,149 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Product } from '../types';
+import { useCart } from '@/contexts/CartContext';
+
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { addToCart } = useCart();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0],
+      slug: product.slug,
+      category: product.category,
+    });
+  };
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleImageHover = () => {
+    if (product.images.length > 1) {
+      setCurrentImageIndex(1);
+      setIsHovered(true);
+    }
+  };
+
+  const handleImageLeave = () => {
+    setCurrentImageIndex(0);
+    setIsHovered(false);
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('ru-RU', {
+      style: 'currency',
+      currency: 'RUB',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300 group h-full flex flex-col">
+      {/* Product image */}
+      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-green-100">
+        <Link href={`/${product.category}/${product.slug}`}>
+          <div
+            className="relative w-full h-full cursor-pointer"
+            onMouseEnter={handleImageHover}
+            onMouseLeave={handleImageLeave}
+          >
+            {product.images[currentImageIndex] ? (
+              <Image
+                src={product.images[currentImageIndex]}
+                alt={product.name}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                onError={(e) => {
+                  // Fallback to beautiful gradient placeholder
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.innerHTML = `
+                      <div class="w-full h-full bg-gradient-to-br from-pink-100 via-purple-100 to-green-100 flex items-center justify-center">
+                        <div class="text-center text-gray-600">
+                          <div class="text-4xl mb-2">🌸</div>
+                          <p class="text-sm font-medium text-gray-500">Букет цветов</p>
+                        </div>
+                      </div>
+                    `;
+                  }
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-pink-100 via-purple-100 to-green-100 flex items-center justify-center">
+                <div className="text-center text-gray-600">
+                  <div className="text-4xl mb-2">🌸</div>
+                  <p className="text-sm font-medium text-gray-500">Букет цветов</p>
+                </div>
+              </div>
+            )}
+
+            {/* Hit badge - розовый как на вашем сайте */}
+            {product.isHit && (
+              <div className="absolute top-2 left-2 bg-pink-500 text-white px-2 py-1 rounded text-xs font-medium">
+                🌸 Букет цветов
+              </div>
+            )}
+          </div>
+        </Link>
+      </div>
+
+      {/* Product info */}
+      <div className="p-3 flex flex-col flex-grow">
+        <Link href={`/${product.category}/${product.slug}`}>
+          <h3 className="text-base font-medium text-gray-900 hover:text-blue-600 transition-colors mb-1 h-12 overflow-hidden line-clamp-2">
+            {product.name}
+          </h3>
+        </Link>
+
+
+
+        {/* Price */}
+        <div className="mb-3">
+          <span className="text-xl font-bold text-gray-900">
+            {product.price.toLocaleString()} ₽
+          </span>
+        </div>
+
+        {/* Actions */}
+        <div className="mt-auto space-y-2">
+          <button
+            onClick={handleAddToCart}
+            className={`w-full px-4 py-2 rounded text-sm font-medium transition-colors ${
+              product.inStock
+                ? 'bg-green-500 hover:bg-green-600 text-white'
+                : 'bg-gray-400 text-white cursor-not-allowed'
+            }`}
+            disabled={!product.inStock}
+          >
+            {product.inStock ? 'Купить' : 'Нет в наличии'}
+          </button>
+
+          <Link
+            href="/dostavka"
+            className="block text-center text-xs text-green-600 hover:text-green-700 transition-colors"
+          >
+            Доставка от 5000₽ бесплатно
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;

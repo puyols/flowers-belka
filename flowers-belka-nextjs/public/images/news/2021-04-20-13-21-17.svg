@@ -1,0 +1,8 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="linear-gradient(45deg, #fefce8, #f7fee7)"/>
+  <text x="200" y="150" text-anchor="middle" fill="#374151" font-size="18" font-family="Arial">⏰ Стойкие цветы</text>
+  <circle cx="100" cy="80" r="20" fill="#eab308" opacity="0.7"/>
+  <circle cx="200" cy="100" r="25" fill="#facc15" opacity="0.6"/>
+  <circle cx="300" cy="120" r="22" fill="#fde047" opacity="0.5"/>
+  <circle cx="150" cy="200" r="18" fill="#fef08a" opacity="0.4"/>
+</svg>

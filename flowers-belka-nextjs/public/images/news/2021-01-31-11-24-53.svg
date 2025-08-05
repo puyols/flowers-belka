@@ -1,0 +1,7 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="linear-gradient(45deg, #eff6ff, #dbeafe)"/>
+  <text x="200" y="150" text-anchor="middle" fill="#374151" font-size="18" font-family="Arial">💧 Сохранение свежести</text>
+  <circle cx="150" cy="80" r="15" fill="#3b82f6" opacity="0.6"/>
+  <circle cx="250" cy="120" r="12" fill="#60a5fa" opacity="0.5"/>
+  <circle cx="200" cy="200" r="18" fill="#93c5fd" opacity="0.4"/>
+</svg>

@@ -1,0 +1,51 @@
+User-agent: *
+Allow: /
+
+# Основные страницы
+Allow: /bukety_tsvetov
+Allow: /rozy
+Allow: /tulpany
+Allow: /tsvety_v_korobke
+Allow: /novosti
+Allow: /dostavka
+Allow: /korzina
+
+# Статические ресурсы
+Allow: /images/
+Allow: /icons/
+Allow: /_next/static/
+Allow: /favicon.ico
+Allow: /manifest.json
+
+# Запрещаем индексацию служебных страниц
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /payment/
+
+# Карта сайта
+Sitemap: https://flowers-belka.ru/sitemap.xml
+
+# Дополнительные директивы для поисковых систем
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Yandex
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Запрещаем плохих ботов
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

@@ -1,0 +1,33 @@
+{
+  "name": "Flowers Belka - Доставка цветов в Путилково",
+  "short_name": "Flowers Belka",
+  "description": "Доставка свежих цветов и букетов в Путилково и соседние районы",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10B981",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "lifestyle"],
+  "lang": "ru",
+  "scope": "/",
+  "prefer_related_applications": false
+}
