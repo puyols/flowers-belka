@@ -1,7 +1,11 @@
 import { Product } from '../types';
 
+// ВНИМАНИЕ: Данные устарели! Используйте products-updated.ts
+// Этот файл сохранен для совместимости
+// Актуальные данные находятся в products-updated.ts
+
 export const products: Product[] = [
-  // Спарсенные товары с https://flowers-belka.ru/bukety_tsvetov
+  // УСТАРЕВШИЕ данные - используйте products-updated.ts
   {
     id: '1',
     name: 'Букет весна 001',
