@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест API OpenCart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌸 Тест API для интеграции Next.js с OpenCart</h1>
+    
+    <div class="test-section">
+        <h2>Тест подключения к API</h2>
+        <button onclick="testProducts()">Получить товары</button>
+        <button onclick="testCategories()">Получить категории</button>
+        <button onclick="testProduct(1)">Получить товар #1</button>
+        <div id="result-connection" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Информация о конфигурации</h2>
+        <p><strong>API URL:</strong> <span id="api-url">http://localhost:8080/api_products.php</span></p>
+        <p><strong>Next.js URL:</strong> <span id="nextjs-url">http://localhost:3001</span></p>
+        <p><strong>CORS:</strong> Настроен для localhost:3001</p>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api_products.php';
+
+        async function makeApiCall(action, params = {}) {
+            const url = new URL(API_BASE);
+            url.searchParams.append('action', action);
+            
+            Object.keys(params).forEach(key => {
+                url.searchParams.append(key, params[key]);
+            });
+
+            try {
+                const response = await fetch(url.toString());
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${data.error || 'Unknown error'}`);
+                }
+                
+                return { success: true, data };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function displayResult(elementId, result) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            
+            if (result.success) {
+                element.className = 'result success';
+                element.textContent = JSON.stringify(result.data, null, 2);
+            } else {
+                element.className = 'result error';
+                element.textContent = `Ошибка: ${result.error}`;
+            }
+        }
+
+        async function testProducts() {
+            console.log('Тестируем получение товаров...');
+            const result = await makeApiCall('products');
+            displayResult('result-connection', result);
+        }
+
+        async function testCategories() {
+            console.log('Тестируем получение категорий...');
+            const result = await makeApiCall('categories');
+            displayResult('result-connection', result);
+        }
+
+        async function testProduct(id) {
+            console.log(`Тестируем получение товара #${id}...`);
+            const result = await makeApiCall('product', { id });
+            displayResult('result-connection', result);
+        }
+
+        // Автоматический тест при загрузке страницы
+        window.addEventListener('load', () => {
+            console.log('Страница загружена. API готов к тестированию.');
+        });
+    </script>
+</body>
+</html>
