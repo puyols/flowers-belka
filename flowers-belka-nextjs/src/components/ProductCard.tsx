@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Product } from '../types';
 import { useCart } from '@/contexts/CartContext';
 import OptimizedImage from './OptimizedImage';
+import useAnalytics from '@/hooks/useAnalytics';
 
 interface ProductCardProps {
   product: Product;
@@ -13,10 +14,14 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { addToCart } = useCart();
+  const { trackProductView, trackAddToCart } = useAnalytics();
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Отслеживаем добавление в корзину
+    await trackAddToCart(product.id, product.name, 1, product.price);
 
     await addToCart({
       product_id: product.id,
@@ -27,6 +32,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       slug: product.slug,
       category: product.category,
     });
+  };
+
+  const handleProductClick = () => {
+    // Отслеживаем просмотр товара
+    trackProductView(product.id, product.name, product.category);
   };
   const [isHovered, setIsHovered] = useState(false);
 
@@ -55,7 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300 group h-full flex flex-col">
       {/* Product image */}
       <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-green-100">
-        <Link href={`/${product.category}/${product.slug}`}>
+        <Link href={`/${product.category}/${product.slug}`} onClick={handleProductClick}>
           <div
             className="relative w-full h-full cursor-pointer"
             onMouseEnter={handleImageHover}

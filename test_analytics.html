@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест аналитики и мониторинга - Flowers Belka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        button.success { background: #28a745; }
+        button.warning { background: #ffc107; color: #000; }
+        button.danger { background: #dc3545; }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .metric-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .metric-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .status { padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .status.healthy { background: #d4edda; color: #155724; }
+        .status.warning { background: #fff3cd; color: #856404; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .chart-container {
+            height: 200px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+        }
+        .chart-bar {
+            background: #007bff;
+            min-height: 5px;
+            width: 20px;
+            border-radius: 2px 2px 0 0;
+            margin: 0 2px;
+            position: relative;
+        }
+        .chart-bar:hover {
+            background: #0056b3;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Тестирование аналитики и мониторинга Flowers Belka</h1>
+    
+    <div class="container">
+        <h2>📊 Статус системы</h2>
+        <div id="system-status">Проверяем...</div>
+        <button onclick="checkSystemHealth()">Проверить систему</button>
+        <button onclick="loadDashboard()">Загрузить дашборд</button>
+        <button onclick="loadRealTimeStats()">Реальное время</button>
+    </div>
+
+    <!-- Дашборд метрик -->
+    <div class="container">
+        <h2>📈 Основные метрики</h2>
+        <div class="form-group">
+            <label>Период:</label>
+            <select id="period-select" onchange="loadDashboard()">
+                <option value="7">Последние 7 дней</option>
+                <option value="30" selected>Последние 30 дней</option>
+                <option value="90">Последние 90 дней</option>
+            </select>
+        </div>
+        
+        <div id="dashboard-metrics" class="grid">
+            <div class="metric-card">
+                <div class="metric-value" id="total-orders">-</div>
+                <div class="metric-label">Заказы</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="total-revenue">-</div>
+                <div class="metric-label">Выручка</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="avg-order">-</div>
+                <div class="metric-label">Средний чек</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="customers">-</div>
+                <div class="metric-label">Клиенты</div>
+            </div>
+        </div>
+        
+        <div id="dashboard-result" class="result">Выберите период и нажмите "Загрузить дашборд"</div>
+    </div>
+
+    <div class="grid">
+        <!-- График продаж -->
+        <div class="container">
+            <h2>📊 График продаж</h2>
+            <div id="sales-chart" class="chart-container">
+                <div class="chart-bar" style="height: 20%"></div>
+                <div class="chart-bar" style="height: 40%"></div>
+                <div class="chart-bar" style="height: 60%"></div>
+                <div class="chart-bar" style="height: 30%"></div>
+                <div class="chart-bar" style="height: 80%"></div>
+                <div class="chart-bar" style="height: 50%"></div>
+                <div class="chart-bar" style="height: 90%"></div>
+            </div>
+            <p class="text-center text-sm text-gray-600 mt-2">Продажи по дням (демо)</p>
+        </div>
+
+        <!-- Топ товары -->
+        <div class="container">
+            <h2>🏆 Топ товары</h2>
+            <div id="top-products">Загрузите дашборд для просмотра</div>
+        </div>
+    </div>
+
+    <!-- Отчеты -->
+    <div class="container">
+        <h2>📋 Отчеты</h2>
+        <div class="grid-3">
+            <div>
+                <h3>Продажи</h3>
+                <div class="form-group">
+                    <label>Период:</label>
+                    <select id="sales-period">
+                        <option value="day">По дням</option>
+                        <option value="week">По неделям</option>
+                        <option value="month" selected>По месяцам</option>
+                    </select>
+                </div>
+                <button onclick="loadSalesReport()">Загрузить отчет</button>
+            </div>
+            
+            <div>
+                <h3>Заказы</h3>
+                <div class="form-group">
+                    <label>Статус:</label>
+                    <select id="orders-status">
+                        <option value="all">Все</option>
+                        <option value="1">Ожидание</option>
+                        <option value="2">В обработке</option>
+                        <option value="5">Завершен</option>
+                    </select>
+                </div>
+                <button onclick="loadOrdersReport()">Загрузить отчет</button>
+            </div>
+            
+            <div>
+                <h3>Товары</h3>
+                <div class="form-group">
+                    <label>Сортировка:</label>
+                    <select id="products-sort">
+                        <option value="revenue">По выручке</option>
+                        <option value="quantity">По количеству</option>
+                        <option value="orders">По заказам</option>
+                    </select>
+                </div>
+                <button onclick="loadProductsReport()">Загрузить отчет</button>
+            </div>
+        </div>
+        
+        <div id="reports-result" class="result">Выберите тип отчета</div>
+    </div>
+
+    <!-- Логирование событий -->
+    <div class="container">
+        <h2>📝 Логирование событий</h2>
+        <div class="grid">
+            <div>
+                <div class="form-group">
+                    <label>Тип события:</label>
+                    <select id="event-type">
+                        <option value="page_view">Просмотр страницы</option>
+                        <option value="product_view">Просмотр товара</option>
+                        <option value="add_to_cart">Добавление в корзину</option>
+                        <option value="purchase">Покупка</option>
+                        <option value="search">Поиск</option>
+                        <option value="custom">Пользовательское</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Данные события (JSON):</label>
+                    <textarea id="event-data" rows="4" placeholder='{"product_id": "123", "category": "roses"}'></textarea>
+                </div>
+                
+                <button onclick="logEvent()">Записать событие</button>
+            </div>
+            
+            <div>
+                <h3>Быстрые события</h3>
+                <button onclick="logQuickEvent('page_view', {page: '/test'})">Просмотр страницы</button>
+                <button onclick="logQuickEvent('product_view', {product_id: '123', name: 'Тестовый товар'})">Просмотр товара</button>
+                <button onclick="logQuickEvent('add_to_cart', {product_id: '123', quantity: 1, price: 1500})">В корзину</button>
+                <button onclick="logQuickEvent('search', {query: 'розы', results: 15})">Поиск</button>
+            </div>
+        </div>
+        
+        <div id="events-result" class="result">Выберите событие для записи</div>
+    </div>
+
+    <!-- Мониторинг производительности -->
+    <div class="container">
+        <h2>⚡ Мониторинг производительности</h2>
+        <div id="performance-metrics">
+            <div class="grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="db-response">-</div>
+                    <div class="metric-label">База данных (ms)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="memory-usage">-</div>
+                    <div class="metric-label">Память (MB)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="disk-usage">-</div>
+                    <div class="metric-label">Диск (%)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="active-sessions">-</div>
+                    <div class="metric-label">Активные сессии</div>
+                </div>
+            </div>
+        </div>
+        
+        <button onclick="loadPerformanceMetrics()">Обновить метрики</button>
+        
+        <div id="performance-result" class="result">Нажмите "Обновить метрики"</div>
+    </div>
+
+    <!-- Результаты тестов -->
+    <div class="container">
+        <h2>📈 Результаты тестирования</h2>
+        <div id="test-summary">
+            <p>Тесты еще не запускались</p>
+        </div>
+        <button onclick="runAllTests()">Запустить все тесты</button>
+        <button onclick="clearResults()">Очистить результаты</button>
+    </div>
+
+    <script>
+        let testResults = { passed: 0, failed: 0, tests: [] };
+        let sessionId = 'test_session_' + Date.now();
+
+        // Проверка состояния системы
+        async function checkSystemHealth() {
+            const statusDiv = document.getElementById('system-status');
+            statusDiv.innerHTML = 'Проверяем состояние системы...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_analytics.php?action=system_health');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const health = data.health;
+                    statusDiv.innerHTML = `
+                        <div class="status ${health.overall_status || 'healthy'}">
+                            📊 Общий статус: ${getStatusText(data.overall_status)}
+                        </div>
+                        <div class="grid">
+                            <div>База данных: ${health.database.response_time_ms}ms</div>
+                            <div>Память: ${health.memory.current_mb}MB</div>
+                            <div>Диск: ${health.disk.usage_percent}% (${health.disk.free_space_gb}GB свободно)</div>
+                            <div>Статус: ${getStatusText(health.database.status)}</div>
+                        </div>
+                    `;
+                    
+                    // Обновляем метрики производительности
+                    document.getElementById('db-response').textContent = health.database.response_time_ms;
+                    document.getElementById('memory-usage').textContent = health.memory.current_mb;
+                    document.getElementById('disk-usage').textContent = health.disk.usage_percent;
+                    
+                    addTestResult('Проверка состояния системы', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status error">❌ Система недоступна: ${error.message}</div>
+                    <p>Убедитесь, что PHP сервер запущен: <code>php -S localhost:8080</code></p>
+                `;
+                addTestResult('Проверка состояния системы', false, error.message);
+            }
+        }
+
+        // Загрузка дашборда
+        async function loadDashboard() {
+            const period = document.getElementById('period-select').value;
+            const resultDiv = document.getElementById('dashboard-result');
+            resultDiv.textContent = 'Загружаем данные дашборда...';
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api_analytics.php?action=dashboard&period=${period}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const dashboard = data.dashboard;
+                    
+                    // Обновляем метрики
+                    document.getElementById('total-orders').textContent = dashboard.summary.current.total_orders || 0;
+                    document.getElementById('total-revenue').textContent = formatCurrency(dashboard.summary.current.total_revenue || 0);
+                    document.getElementById('avg-order').textContent = formatCurrency(dashboard.summary.current.avg_order_value || 0);
+                    document.getElementById('customers').textContent = dashboard.summary.current.unique_customers || 0;
+                    
+                    // Обновляем топ товары
+                    const topProductsDiv = document.getElementById('top-products');
+                    if (dashboard.top_products && dashboard.top_products.length > 0) {
+                        let html = '<ol>';
+                        dashboard.top_products.slice(0, 5).forEach(product => {
+                            html += `<li><strong>${product.name}</strong><br>
+                                     Выручка: ${formatCurrency(product.total_revenue)}<br>
+                                     Количество: ${product.total_quantity} шт.</li>`;
+                        });
+                        html += '</ol>';
+                        topProductsDiv.innerHTML = html;
+                    } else {
+                        topProductsDiv.innerHTML = '<p>Нет данных о товарах</p>';
+                    }
+                    
+                    // Обновляем график продаж
+                    updateSalesChart(dashboard.sales_chart);
+                    
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Дашборд загружен за период ${period} дней\n\n${JSON.stringify(dashboard, null, 2)}`;
+                    
+                    addTestResult('Загрузка дашборда', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Загрузка дашборда', false, error.message);
+            }
+        }
+
+        // Обновление графика продаж
+        function updateSalesChart(salesData) {
+            const chartContainer = document.getElementById('sales-chart');
+            
+            if (!salesData || salesData.length === 0) {
+                chartContainer.innerHTML = '<p class="text-center">Нет данных для отображения</p>';
+                return;
+            }
+            
+            const maxRevenue = Math.max(...salesData.map(d => d.revenue || 0));
+            
+            let html = '';
+            salesData.forEach(day => {
+                const height = maxRevenue > 0 ? (day.revenue / maxRevenue) * 100 : 5;
+                html += `<div class="chart-bar" style="height: ${height}%" 
+                              title="${day.date}: ${formatCurrency(day.revenue)} (${day.orders_count} заказов)"></div>`;
+            });
+            
+            chartContainer.innerHTML = html;
+        }
+
+        // Загрузка статистики в реальном времени
+        async function loadRealTimeStats() {
+            try {
+                const response = await fetch('http://localhost:8080/api_analytics.php?action=real_time_stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.stats;
+                    document.getElementById('active-sessions').textContent = stats.active_sessions || 0;
+                    
+                    const statusDiv = document.getElementById('system-status');
+                    statusDiv.innerHTML += `
+                        <div class="status healthy">
+                            📊 Реальное время: ${stats.last_1h.orders_1h || 0} заказов за час, 
+                            ${stats.last_24h.orders_24h || 0} за сутки
+                        </div>
+                    `;
+                    
+                    addTestResult('Статистика в реальном времени', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                addTestResult('Статистика в реальном времени', false, error.message);
+            }
+        }
+
+        // Загрузка отчета по продажам
+        async function loadSalesReport() {
+            const period = document.getElementById('sales-period').value;
+            const resultDiv = document.getElementById('reports-result');
+            resultDiv.textContent = 'Загружаем отчет по продажам...';
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api_analytics.php?action=sales_report&period=${period}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Отчет по продажам (${period})\n\n${JSON.stringify(data.report, null, 2)}`;
+                    addTestResult('Отчет по продажам', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Отчет по продажам', false, error.message);
+            }
+        }
+
+        // Загрузка отчета по заказам
+        async function loadOrdersReport() {
+            const status = document.getElementById('orders-status').value;
+            const resultDiv = document.getElementById('reports-result');
+            resultDiv.textContent = 'Загружаем отчет по заказам...';
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api_analytics.php?action=orders_report&status=${status}&limit=10`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Отчет по заказам (статус: ${status})\n\n${JSON.stringify(data.orders, null, 2)}`;
+                    addTestResult('Отчет по заказам', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Отчет по заказам', false, error.message);
+            }
+        }
+
+        // Логирование события
+        async function logEvent() {
+            const eventType = document.getElementById('event-type').value;
+            const eventDataText = document.getElementById('event-data').value;
+            const resultDiv = document.getElementById('events-result');
+            
+            let eventData = {};
+            if (eventDataText.trim()) {
+                try {
+                    eventData = JSON.parse(eventDataText);
+                } catch (e) {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = '❌ Некорректный JSON в данных события';
+                    return;
+                }
+            }
+            
+            await logQuickEvent(eventType, eventData);
+        }
+
+        // Быстрое логирование события
+        async function logQuickEvent(eventType, eventData) {
+            const resultDiv = document.getElementById('events-result');
+            resultDiv.textContent = `Записываем событие ${eventType}...`;
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_analytics.php?action=log_event', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        event_type: eventType,
+                        event_data: eventData,
+                        session_id: sessionId,
+                        user_id: 0
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Событие записано: ${eventType}\nID: ${data.event_id}\n\nДанные:\n${JSON.stringify(eventData, null, 2)}`;
+                    addTestResult(`Логирование события: ${eventType}`, true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult(`Логирование события: ${eventType}`, false, error.message);
+            }
+        }
+
+        // Загрузка метрик производительности
+        async function loadPerformanceMetrics() {
+            const resultDiv = document.getElementById('performance-result');
+            resultDiv.textContent = 'Загружаем метрики производительности...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_analytics.php?action=performance_metrics');
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Метрики производительности загружены\n\n${JSON.stringify(data.metrics, null, 2)}`;
+                    addTestResult('Метрики производительности', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Метрики производительности', false, error.message);
+            }
+        }
+
+        // Вспомогательные функции
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('ru-RU', {
+                style: 'currency',
+                currency: 'RUB',
+                minimumFractionDigits: 0,
+            }).format(amount);
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'healthy': return '✅ Работает';
+                case 'warning': return '⚠️ Предупреждение';
+                case 'error': return '❌ Ошибка';
+                default: return '❓ Неизвестно';
+            }
+        }
+
+        function addTestResult(testName, success, error = null) {
+            if (success) {
+                testResults.passed++;
+            } else {
+                testResults.failed++;
+            }
+            
+            testResults.tests.push({
+                name: testName,
+                success,
+                error,
+                timestamp: new Date().toLocaleTimeString()
+            });
+            
+            updateTestSummary();
+        }
+
+        function updateTestSummary() {
+            const summaryDiv = document.getElementById('test-summary');
+            const total = testResults.passed + testResults.failed;
+            
+            let html = `
+                <h3>📊 Сводка тестирования</h3>
+                <p><strong>Всего тестов:</strong> ${total}</p>
+                <p><strong>Успешно:</strong> <span style="color: green;">${testResults.passed}</span></p>
+                <p><strong>Ошибок:</strong> <span style="color: red;">${testResults.failed}</span></p>
+                
+                <h4>Детали:</h4>
+                <ul>
+            `;
+            
+            testResults.tests.forEach(test => {
+                const icon = test.success ? '✅' : '❌';
+                const error = test.error ? ` - ${test.error}` : '';
+                html += `<li>${icon} ${test.name} (${test.timestamp})${error}</li>`;
+            });
+            
+            html += '</ul>';
+            
+            if (total > 0) {
+                const successRate = Math.round((testResults.passed / total) * 100);
+                html += `<p><strong>Успешность:</strong> ${successRate}%</p>`;
+            }
+            
+            summaryDiv.innerHTML = html;
+        }
+
+        function clearResults() {
+            testResults = { passed: 0, failed: 0, tests: [] };
+            updateTestSummary();
+            
+            // Очищаем результаты
+            document.getElementById('dashboard-result').textContent = 'Результаты очищены';
+            document.getElementById('reports-result').textContent = 'Результаты очищены';
+            document.getElementById('events-result').textContent = 'Результаты очищены';
+            document.getElementById('performance-result').textContent = 'Результаты очищены';
+        }
+
+        async function runAllTests() {
+            testResults = { passed: 0, failed: 0, tests: [] };
+            
+            await checkSystemHealth();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await loadDashboard();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await loadRealTimeStats();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await loadSalesReport();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await loadOrdersReport();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await logQuickEvent('test_event', {test: true, timestamp: Date.now()});
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await loadPerformanceMetrics();
+        }
+
+        // Автоматическая проверка при загрузке
+        window.onload = function() {
+            checkSystemHealth();
+        };
+    </script>
+</body>
+</html>
