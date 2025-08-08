@@ -19,8 +19,8 @@
 
 1. **Клонирование репозитория**:
    ```bash
-   git clone https://github.com/puyols83/belkaflo.git
-   cd belkaflo
+   git clone https://github.com/puyols/flowers-belka.git
+   cd flowers-belka
    ```
 
 2. **Настройка базы данных**:
@@ -151,5 +151,5 @@ GET /api_products.php?action=product&id=1
 
 ---
 
-**Разработчик**: puyols  
-**GitHub**: https://github.com/puyols83/belkaflo
+**Разработчик**: puyols
+**GitHub**: https://github.com/puyols/flowers-belka
