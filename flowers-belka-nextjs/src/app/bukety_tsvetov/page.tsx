@@ -5,7 +5,7 @@ import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import SEOHead from '@/components/SEOHead';
-import { products } from '@/data/products-parsed';
+import { completeProducts } from '@/data/products-complete';
 import { getCategorySEO, generateBreadcrumbs } from '@/utils/seo';
 
 export default function BuketyTsvetovPage() {
@@ -24,7 +24,7 @@ export default function BuketyTsvetovPage() {
 
   // Фильтруем и сортируем товары
   const categoryProducts = useMemo(() => {
-    let filtered = products.filter(p => p.category === 'bukety_tsvetov');
+    let filtered = completeProducts.filter(p => p.category === 'bukety_tsvetov');
 
     // Фильтр по цене
     if (filters.priceFrom) {

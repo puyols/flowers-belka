@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
-import { products } from '@/data/products-parsed';
+import { completeProducts } from '@/data/products-complete';
 
 export default function RozyPage() {
   // Состояние фильтров
@@ -16,7 +16,7 @@ export default function RozyPage() {
 
   // Фильтруем и сортируем товары
   const categoryProducts = useMemo(() => {
-    let filtered = products.filter(p => p.category === 'rozy');
+    let filtered = completeProducts.filter(p => p.category === 'rozy');
 
     // Фильтр по цене
     if (filters.priceFrom) {

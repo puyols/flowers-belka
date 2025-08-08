@@ -5,7 +5,7 @@ import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import SEOHead from '@/components/SEOHead';
-import { products } from '@/data/products-parsed';
+import { completeProducts } from '@/data/products-complete';
 import { getCategorySEO, generateBreadcrumbs } from '@/utils/seo';
 
 export default function PionyPage() {
@@ -23,7 +23,7 @@ export default function PionyPage() {
 
   // Фильтруем товары с пионами
   const categoryProducts = useMemo(() => {
-    let filtered = products.filter(p => {
+    let filtered = completeProducts.filter(p => {
       const tags = p.tags.map(tag => tag.toLowerCase()).join(' ');
       const name = p.name.toLowerCase();
       const allText = `${tags} ${name}`;

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import AddToCartButton from '@/components/AddToCartButton';
-import { products, getProductBySlug, getProductsByCategory } from '@/data/products-parsed';
+import { completeProducts, getCompleteProductBySlug, getCompleteProductsByCategory } from '@/data/products-complete';
 
 interface ProductPageProps {
   params: {
@@ -14,7 +14,7 @@ interface ProductPageProps {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const product = getProductBySlug(params.slug);
+  const product = getCompleteProductBySlug(params.slug);
   const category = { name: 'Букеты цветов', slug: 'bukety_tsvetov' };
 
   if (!product) {
@@ -22,7 +22,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   }
 
   // Get related products
-  const relatedProducts = products
+  const relatedProducts = completeProducts
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 

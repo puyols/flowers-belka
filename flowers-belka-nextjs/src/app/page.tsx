@@ -14,13 +14,13 @@ import Reviews from '../components/Reviews';
 import StructuredData from '../components/StructuredData';
 import Breadcrumbs from '../components/Breadcrumbs';
 import SEOHead from '../components/SEOHead';
-import { updatedProducts, getHitProducts, getProductsByCategory } from '../data/products-updated';
+import { completeProducts, getCompleteHitProducts, getCompleteProductsByCategory } from '../data/products-complete';
 import { getLatestNews } from '../data/news';
 import { getHomeSEO, getOrganizationData } from '../utils/seo';
 
 export default function HomePage() {
-  const hitProducts = getHitProducts().slice(0, 8);
-  const popularProducts = updatedProducts
+  const hitProducts = getCompleteHitProducts().slice(0, 8);
+  const popularProducts = completeProducts
     .sort((a, b) => {
       // Извлекаем числа из названий букетов
       const getNumber = (name: string) => {

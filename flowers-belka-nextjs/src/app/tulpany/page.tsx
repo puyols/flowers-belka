@@ -1,11 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
-import { products } from '@/data/products-parsed';
+import { completeProducts } from '@/data/products-complete';
 
 export default function TulpanyPage() {
   const category = { name: 'Тюльпаны', description: 'Весенние тюльпаны для особых моментов' };
-  const categoryProducts = products.filter(p => p.category === 'tulpany');
+  const categoryProducts = completeProducts.filter(p => p.category === 'tulpany');
 
   return (
     <div className="min-h-screen bg-gray-50">
