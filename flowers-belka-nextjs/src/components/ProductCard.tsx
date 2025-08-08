@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Product } from '../types';
 import { useCart } from '@/contexts/CartContext';
+import OptimizedImage from './OptimizedImage';
 
 interface ProductCardProps {
   product: Product;
@@ -60,38 +60,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             onMouseEnter={handleImageHover}
             onMouseLeave={handleImageLeave}
           >
-            {product.images[currentImageIndex] ? (
-              <Image
-                src={product.images[currentImageIndex]}
-                alt={product.name}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                onError={(e) => {
-                  // Fallback to beautiful gradient placeholder
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const parent = target.parentElement;
-                  if (parent) {
-                    parent.innerHTML = `
-                      <div class="w-full h-full bg-gradient-to-br from-pink-100 via-purple-100 to-green-100 flex items-center justify-center">
-                        <div class="text-center text-gray-600">
-                          <div class="text-4xl mb-2">🌸</div>
-                          <p class="text-sm font-medium text-gray-500">Букет цветов</p>
-                        </div>
-                      </div>
-                    `;
-                  }
-                }}
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-pink-100 via-purple-100 to-green-100 flex items-center justify-center">
-                <div className="text-center text-gray-600">
-                  <div className="text-4xl mb-2">🌸</div>
-                  <p className="text-sm font-medium text-gray-500">Букет цветов</p>
-                </div>
-              </div>
-            )}
+            <OptimizedImage
+              src={product.images[currentImageIndex] || ''}
+              alt={product.name}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              placeholder="blur"
+            />
 
             {/* Hit badge - розовый как на вашем сайте */}
             {product.isHit && (
@@ -146,4 +122,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   );
 };
 
-export default ProductCard;
+// Мемоизируем компонент для оптимизации рендеринга
+export default memo(ProductCard, (prevProps, nextProps) => {
+  return (
+    prevProps.product.id === nextProps.product.id &&
+    prevProps.product.price === nextProps.product.price &&
+    prevProps.product.inStock === nextProps.product.inStock
+  );
+});
