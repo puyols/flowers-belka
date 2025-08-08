@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест системы уведомлений - Flowers Belka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        button.success { background: #28a745; }
+        button.warning { background: #ffc107; color: #000; }
+        button.danger { background: #dc3545; }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .status { padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .status.online { background: #d4edda; color: #155724; }
+        .status.offline { background: #f8d7da; color: #721c24; }
+        .notification-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+        .notification-type {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .type-email { background: #007bff; color: white; }
+        .type-sms { background: #28a745; color: white; }
+        .type-push { background: #6f42c1; color: white; }
+    </style>
+</head>
+<body>
+    <h1>📧 Тестирование системы уведомлений Flowers Belka</h1>
+    
+    <div class="container">
+        <h2>📊 Статус системы</h2>
+        <div id="system-status">Проверяем...</div>
+        <button onclick="checkSystem()">Проверить систему</button>
+        <button onclick="createTables()">Создать таблицы БД</button>
+    </div>
+
+    <div class="grid">
+        <!-- Email уведомления -->
+        <div class="container">
+            <h2>📧 Email уведомления</h2>
+            
+            <div class="form-group">
+                <label>Email получателя:</label>
+                <input type="email" id="email-to" value="test@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label>Тема:</label>
+                <input type="text" id="email-subject" value="Тестовое уведомление">
+            </div>
+            
+            <div class="form-group">
+                <label>Шаблон:</label>
+                <select id="email-template">
+                    <option value="default">Обычный</option>
+                    <option value="order_confirmation">Подтверждение заказа</option>
+                    <option value="order_status">Статус заказа</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Сообщение:</label>
+                <textarea id="email-message" rows="3">Это тестовое email уведомление от Flowers Belka!</textarea>
+            </div>
+            
+            <button onclick="sendTestEmail()">Отправить Email</button>
+            <button onclick="testEmailConfig()">Тест конфигурации</button>
+            
+            <div id="email-result" class="result">Выберите действие</div>
+        </div>
+
+        <!-- SMS уведомления -->
+        <div class="container">
+            <h2>📱 SMS уведомления</h2>
+            
+            <div class="form-group">
+                <label>Номер телефона:</label>
+                <input type="tel" id="sms-phone" value="+7 999 123 45 67">
+            </div>
+            
+            <div class="form-group">
+                <label>Сообщение:</label>
+                <textarea id="sms-message" rows="3">Flowers Belka: Тестовое SMS уведомление!</textarea>
+            </div>
+            
+            <button onclick="sendTestSMS()">Отправить SMS</button>
+            
+            <div id="sms-result" class="result">Выберите действие</div>
+        </div>
+    </div>
+
+    <!-- Push уведомления -->
+    <div class="container">
+        <h2>🔔 Push уведомления</h2>
+        
+        <div class="grid">
+            <div>
+                <div class="form-group">
+                    <label>Заголовок:</label>
+                    <input type="text" id="push-title" value="Тестовое уведомление">
+                </div>
+                
+                <div class="form-group">
+                    <label>Текст:</label>
+                    <textarea id="push-body" rows="2">Это тестовое push уведомление от Flowers Belka!</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>URL:</label>
+                    <input type="text" id="push-url" value="/">
+                </div>
+            </div>
+            
+            <div>
+                <div id="push-status" class="status offline">Push уведомления не поддерживаются</div>
+                <button id="push-subscribe" onclick="subscribeToPush()" disabled>Подписаться</button>
+                <button onclick="sendTestPush()" disabled id="push-send">Отправить Push</button>
+            </div>
+        </div>
+        
+        <div id="push-result" class="result">Проверьте поддержку push уведомлений</div>
+    </div>
+
+    <!-- Комплексные уведомления -->
+    <div class="container">
+        <h2>🛒 Уведомления о заказах</h2>
+        
+        <div class="form-group">
+            <label>ID заказа:</label>
+            <input type="number" id="order-id" value="1" min="1">
+        </div>
+        
+        <div class="form-group">
+            <label>Тип уведомления:</label>
+            <select id="order-type">
+                <option value="confirmation">Подтверждение заказа</option>
+                <option value="status_change">Изменение статуса</option>
+                <option value="delivery">Передача в доставку</option>
+            </select>
+        </div>
+        
+        <button onclick="sendOrderNotifications()">Отправить уведомления о заказе</button>
+        
+        <div id="order-result" class="result">Выберите действие</div>
+    </div>
+
+    <!-- История уведомлений -->
+    <div class="container">
+        <h2>📋 История уведомлений</h2>
+        
+        <button onclick="loadNotifications()">Загрузить историю</button>
+        <button onclick="clearResults()">Очистить</button>
+        
+        <div id="notifications-list">Нажмите "Загрузить историю" для просмотра</div>
+    </div>
+
+    <!-- Результаты тестов -->
+    <div class="container">
+        <h2>📈 Результаты тестирования</h2>
+        <div id="test-summary">
+            <p>Тесты еще не запускались</p>
+        </div>
+        <button onclick="runAllTests()">Запустить все тесты</button>
+    </div>
+
+    <script>
+        let testResults = { passed: 0, failed: 0, tests: [] };
+        let pushSubscription = null;
+
+        // Проверка поддержки push уведомлений
+        window.onload = function() {
+            checkSystem();
+            checkPushSupport();
+        };
+
+        function checkPushSupport() {
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                document.getElementById('push-status').className = 'status online';
+                document.getElementById('push-status').textContent = 'Push уведомления поддерживаются';
+                document.getElementById('push-subscribe').disabled = false;
+                document.getElementById('push-send').disabled = false;
+                
+                // Регистрируем Service Worker
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration);
+                        return registration.pushManager.getSubscription();
+                    })
+                    .then(subscription => {
+                        if (subscription) {
+                            pushSubscription = subscription;
+                            document.getElementById('push-subscribe').textContent = 'Отписаться';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            }
+        }
+
+        async function checkSystem() {
+            const statusDiv = document.getElementById('system-status');
+            statusDiv.innerHTML = 'Проверяем систему...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_notifications.php?action=test_email&email=test@example.com');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.innerHTML = `
+                        <div class="status online">✅ API уведомлений: Работает</div>
+                        <div class="status online">✅ База данных: Подключена</div>
+                        <div class="status ${data.success ? 'online' : 'offline'}">
+                            ${data.success ? '✅' : '❌'} Email конфигурация: ${data.message}
+                        </div>
+                    `;
+                } else {
+                    throw new Error('Server error');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status offline">❌ Система недоступна</div>
+                    <p>Убедитесь, что PHP сервер запущен: <code>php -S localhost:8080</code></p>
+                `;
+            }
+        }
+
+        async function createTables() {
+            try {
+                const response = await fetch('create_notifications_tables.sql');
+                const sql = await response.text();
+                
+                // В реальном приложении SQL должен выполняться на сервере
+                alert('SQL скрипт загружен. Выполните его в MySQL:\n\n' + sql.substring(0, 500) + '...');
+                
+            } catch (error) {
+                alert('Ошибка загрузки SQL скрипта: ' + error.message);
+            }
+        }
+
+        async function sendTestEmail() {
+            const resultDiv = document.getElementById('email-result');
+            resultDiv.textContent = 'Отправляем email...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_notifications.php?action=send_email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        to: document.getElementById('email-to').value,
+                        subject: document.getElementById('email-subject').value,
+                        message: document.getElementById('email-message').value,
+                        template: document.getElementById('email-template').value,
+                        data: {
+                            order_id: '123',
+                            total: '5000',
+                            address: 'г. Путилково, ул. Тестовая, д. 1',
+                            phone: '+7 999 123 45 67'
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ ${data.message}`;
+                    addTestResult('Email отправка', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Email отправка', false, error.message);
+            }
+        }
+
+        async function testEmailConfig() {
+            const resultDiv = document.getElementById('email-result');
+            resultDiv.textContent = 'Тестируем конфигурацию email...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_notifications.php?action=test_email&email=' + 
+                    encodeURIComponent(document.getElementById('email-to').value));
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ ${data.message}`;
+                    addTestResult('Email конфигурация', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Email конфигурация', false, error.message);
+            }
+        }
+
+        async function sendTestSMS() {
+            const resultDiv = document.getElementById('sms-result');
+            resultDiv.textContent = 'Отправляем SMS...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_notifications.php?action=send_sms', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: document.getElementById('sms-phone').value,
+                        message: document.getElementById('sms-message').value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ ${data.message}`;
+                    addTestResult('SMS отправка', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('SMS отправка', false, error.message);
+            }
+        }
+
+        async function subscribeToPush() {
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                
+                if (pushSubscription) {
+                    // Отписываемся
+                    await pushSubscription.unsubscribe();
+                    pushSubscription = null;
+                    document.getElementById('push-subscribe').textContent = 'Подписаться';
+                    document.getElementById('push-result').textContent = 'Отписались от push уведомлений';
+                } else {
+                    // Подписываемся
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array('your-vapid-public-key')
+                    });
+                    
+                    pushSubscription = subscription;
+                    document.getElementById('push-subscribe').textContent = 'Отписаться';
+                    document.getElementById('push-result').textContent = 'Подписались на push уведомления';
+                    
+                    // Сохраняем подписку на сервере
+                    await fetch('http://localhost:8080/api_notifications.php?action=subscribe_push', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            subscription: JSON.stringify(subscription),
+                            user_id: 0
+                        })
+                    });
+                }
+            } catch (error) {
+                document.getElementById('push-result').textContent = `Ошибка: ${error.message}`;
+            }
+        }
+
+        async function sendTestPush() {
+            if (!pushSubscription) {
+                document.getElementById('push-result').textContent = 'Сначала подпишитесь на push уведомления';
+                return;
+            }
+
+            const resultDiv = document.getElementById('push-result');
+            resultDiv.textContent = 'Отправляем push уведомление...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_notifications.php?action=send_push', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        subscription: JSON.stringify(pushSubscription),
+                        title: document.getElementById('push-title').value,
+                        body: document.getElementById('push-body').value,
+                        url: document.getElementById('push-url').value,
+                        icon: '/icon-192x192.png'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ ${data.message}`;
+                    addTestResult('Push отправка', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Push отправка', false, error.message);
+            }
+        }
+
+        async function sendOrderNotifications() {
+            const resultDiv = document.getElementById('order-result');
+            resultDiv.textContent = 'Отправляем уведомления о заказе...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_notifications.php?action=order_notifications', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        order_id: parseInt(document.getElementById('order-id').value),
+                        type: document.getElementById('order-type').value,
+                        status: 'Тестовый статус'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ ${data.message}\n\nРезультаты:\n${JSON.stringify(data.results, null, 2)}`;
+                    addTestResult('Уведомления о заказе', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Уведомления о заказе', false, error.message);
+            }
+        }
+
+        async function loadNotifications() {
+            const listDiv = document.getElementById('notifications-list');
+            listDiv.innerHTML = 'Загружаем историю...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_notifications.php?action=get_notifications&user_id=0&limit=20');
+                const data = await response.json();
+                
+                if (data.success && data.notifications.length > 0) {
+                    let html = '<h3>Последние уведомления:</h3>';
+                    
+                    data.notifications.forEach(notification => {
+                        html += `
+                            <div class="notification-item">
+                                <span class="notification-type type-${notification.type}">${notification.type.toUpperCase()}</span>
+                                <strong>${notification.subject || 'Без темы'}</strong>
+                                <p>${notification.message}</p>
+                                <small>Получатель: ${notification.recipient} | 
+                                       Статус: ${notification.success ? 'Отправлено' : 'Ошибка'} | 
+                                       Время: ${new Date(notification.created_at).toLocaleString('ru-RU')}</small>
+                            </div>
+                        `;
+                    });
+                    
+                    listDiv.innerHTML = html;
+                } else {
+                    listDiv.innerHTML = '<p>История уведомлений пуста</p>';
+                }
+            } catch (error) {
+                listDiv.innerHTML = `<p style="color: red;">Ошибка загрузки: ${error.message}</p>`;
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('notifications-list').innerHTML = 'Нажмите "Загрузить историю" для просмотра';
+        }
+
+        function addTestResult(testName, success, error = null) {
+            if (success) {
+                testResults.passed++;
+            } else {
+                testResults.failed++;
+            }
+            
+            testResults.tests.push({
+                name: testName,
+                success,
+                error,
+                timestamp: new Date().toLocaleTimeString()
+            });
+            
+            updateTestSummary();
+        }
+
+        function updateTestSummary() {
+            const summaryDiv = document.getElementById('test-summary');
+            const total = testResults.passed + testResults.failed;
+            
+            let html = `
+                <h3>📊 Сводка тестирования</h3>
+                <p><strong>Всего тестов:</strong> ${total}</p>
+                <p><strong>Успешно:</strong> <span style="color: green;">${testResults.passed}</span></p>
+                <p><strong>Ошибок:</strong> <span style="color: red;">${testResults.failed}</span></p>
+                
+                <h4>Детали:</h4>
+                <ul>
+            `;
+            
+            testResults.tests.forEach(test => {
+                const icon = test.success ? '✅' : '❌';
+                const error = test.error ? ` - ${test.error}` : '';
+                html += `<li>${icon} ${test.name} (${test.timestamp})${error}</li>`;
+            });
+            
+            html += '</ul>';
+            
+            if (total > 0) {
+                const successRate = Math.round((testResults.passed / total) * 100);
+                html += `<p><strong>Успешность:</strong> ${successRate}%</p>`;
+            }
+            
+            summaryDiv.innerHTML = html;
+        }
+
+        async function runAllTests() {
+            testResults = { passed: 0, failed: 0, tests: [] };
+            
+            await checkSystem();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testEmailConfig();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await sendTestEmail();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await sendTestSMS();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            if (pushSubscription) {
+                await sendTestPush();
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            await sendOrderNotifications();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await loadNotifications();
+        }
+
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+    </script>
+</body>
+</html>

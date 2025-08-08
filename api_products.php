@@ -902,6 +902,14 @@ function createOrder($pdo) {
             // Подтверждаем транзакцию
             $pdo->commit();
 
+            // Отправляем уведомления о заказе
+            try {
+                sendOrderNotifications($order_id, 'confirmation', $customer_data, $cart_data);
+            } catch (Exception $e) {
+                // Ошибки уведомлений не должны прерывать создание заказа
+                error_log("Failed to send order notifications: " . $e->getMessage());
+            }
+
             echo json_encode([
                 'success' => true,
                 'message' => 'Заказ успешно создан',
@@ -1044,5 +1052,42 @@ function calculateDelivery($pdo) {
             'error' => $e->getMessage()
         ], JSON_UNESCAPED_UNICODE);
     }
+}
+
+// ===== ФУНКЦИИ УВЕДОМЛЕНИЙ =====
+
+function sendOrderNotifications($order_id, $type, $customer_data, $cart_data) {
+    // Отправляем уведомления через API уведомлений
+    $notifications_api = 'http://localhost:8080/api_notifications.php?action=order_notifications';
+
+    $data = [
+        'order_id' => $order_id,
+        'type' => $type,
+        'customer' => $customer_data,
+        'cart' => $cart_data
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $notifications_api);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($http_code !== 200) {
+        throw new Exception("Failed to send notifications: HTTP $http_code");
+    }
+
+    $result = json_decode($response, true);
+    if (!$result || !$result['success']) {
+        throw new Exception("Notification API error: " . ($result['error'] ?? 'Unknown error'));
+    }
+
+    return $result;
 }
 ?>
