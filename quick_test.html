@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Быстрый тест API - Flowers Belka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .status { padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .status.online { background: #d4edda; color: #155724; }
+        .status.offline { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Быстрый тест улучшений Flowers Belka</h1>
+    
+    <div class="container">
+        <h2>🔍 Статус серверов</h2>
+        <div id="server-status">Проверяем...</div>
+        <button onclick="checkServers()">Проверить серверы</button>
+    </div>
+
+    <div class="container">
+        <h2>🧪 Тестирование API</h2>
+        <p>Убедитесь, что PHP сервер запущен на порту 8080</p>
+        
+        <button onclick="testAPI('products', 'Получение товаров')">Товары</button>
+        <button onclick="testAPI('categories', 'Категории')">Категории</button>
+        <button onclick="testAPI('stats', 'Статистика')">Статистика</button>
+        <button onclick="testAPI('search&q=роза', 'Поиск')">Поиск "роза"</button>
+        <button onclick="testAPI('price_range', 'Диапазон цен')">Цены</button>
+        <button onclick="testAdvancedProducts()">Расширенный поиск</button>
+        
+        <div id="api-result" class="result">Выберите тест для выполнения</div>
+    </div>
+
+    <div class="container">
+        <h2>📊 Результаты тестирования</h2>
+        <div id="test-summary">
+            <p>Тесты еще не запускались</p>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {
+            passed: 0,
+            failed: 0,
+            tests: []
+        };
+
+        async function checkServers() {
+            const statusDiv = document.getElementById('server-status');
+            statusDiv.innerHTML = 'Проверяем серверы...';
+            
+            // Проверяем PHP сервер (API)
+            try {
+                const response = await fetch('http://localhost:8080/api_products.php?action=stats', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = `
+                        <div class="status online">✅ PHP сервер (API): Работает на порту 8080</div>
+                    `;
+                } else {
+                    throw new Error('Server responded with error');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status offline">❌ PHP сервер (API): Не доступен на порту 8080</div>
+                    <p><strong>Решение:</strong> Запустите команду: <code>php -S localhost:8080</code></p>
+                `;
+            }
+            
+            // Проверяем Next.js сервер
+            try {
+                const response = await fetch('http://localhost:3001', {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+                
+                statusDiv.innerHTML += `
+                    <div class="status online">✅ Next.js сервер: Работает на порту 3001</div>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML += `
+                    <div class="status offline">❌ Next.js сервер: Не доступен на порту 3001</div>
+                    <p><strong>Решение:</strong> Запустите: <code>cd flowers-belka-nextjs && npm run dev</code></p>
+                `;
+            }
+        }
+
+        async function testAPI(action, description) {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.className = 'result';
+            resultDiv.textContent = `Тестируем: ${description}...`;
+            
+            const url = `http://localhost:8080/api_products.php?action=${action}`;
+            
+            try {
+                const startTime = Date.now();
+                const response = await fetch(url);
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+                
+                const data = await response.json();
+                
+                if (response.ok && (data.success !== false)) {
+                    resultDiv.className = 'result success';
+                    
+                    let summary = `✅ ${description} - Успешно (${responseTime}ms)\n\n`;
+                    
+                    if (data.products) {
+                        summary += `📦 Товаров: ${data.products.length}\n`;
+                        if (data.pagination) {
+                            summary += `📄 Страниц: ${data.pagination.pages}\n`;
+                        }
+                    } else if (data.categories) {
+                        summary += `📂 Категорий: ${data.categories.length}\n`;
+                    } else if (data.stats) {
+                        summary += `📊 Статистика:\n`;
+                        Object.entries(data.stats).forEach(([key, value]) => {
+                            if (Array.isArray(value)) {
+                                summary += `  ${key}: ${value.length} элементов\n`;
+                            } else {
+                                summary += `  ${key}: ${value}\n`;
+                            }
+                        });
+                    } else if (data.results) {
+                        summary += `🔍 Найдено: ${data.results.length} товаров\n`;
+                    } else if (data.price_range) {
+                        summary += `💰 Цены: ${data.price_range.min} - ${data.price_range.max} руб.\n`;
+                    }
+                    
+                    resultDiv.textContent = summary + '\nПолный ответ:\n' + JSON.stringify(data, null, 2);
+                    
+                    testResults.passed++;
+                    testResults.tests.push({name: description, status: 'passed', time: responseTime});
+                } else {
+                    throw new Error(data.error || 'API returned error');
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}\n\nURL: ${url}`;
+                
+                testResults.failed++;
+                testResults.tests.push({name: description, status: 'failed', error: error.message});
+            }
+            
+            updateTestSummary();
+        }
+
+        async function testAdvancedProducts() {
+            await testAPI('products&page=1&limit=5&sort=price_asc&min_price=1000&max_price=5000', 'Расширенный поиск товаров');
+        }
+
+        function updateTestSummary() {
+            const summaryDiv = document.getElementById('test-summary');
+            const total = testResults.passed + testResults.failed;
+            
+            let html = `
+                <h3>📊 Сводка тестирования</h3>
+                <p><strong>Всего тестов:</strong> ${total}</p>
+                <p><strong>Успешно:</strong> <span style="color: green;">${testResults.passed}</span></p>
+                <p><strong>Ошибок:</strong> <span style="color: red;">${testResults.failed}</span></p>
+                
+                <h4>Детали:</h4>
+                <ul>
+            `;
+            
+            testResults.tests.forEach(test => {
+                const icon = test.status === 'passed' ? '✅' : '❌';
+                const time = test.time ? ` (${test.time}ms)` : '';
+                const error = test.error ? ` - ${test.error}` : '';
+                html += `<li>${icon} ${test.name}${time}${error}</li>`;
+            });
+            
+            html += '</ul>';
+            
+            if (total > 0) {
+                const successRate = Math.round((testResults.passed / total) * 100);
+                html += `<p><strong>Успешность:</strong> ${successRate}%</p>`;
+                
+                if (successRate >= 80) {
+                    html += '<p style="color: green;">🎉 Отличный результат! API работает стабильно.</p>';
+                } else if (successRate >= 60) {
+                    html += '<p style="color: orange;">⚠️ Есть проблемы, но основная функциональность работает.</p>';
+                } else {
+                    html += '<p style="color: red;">🚨 Серьезные проблемы с API. Проверьте сервер и базу данных.</p>';
+                }
+            }
+            
+            summaryDiv.innerHTML = html;
+        }
+
+        // Автоматическая проверка серверов при загрузке
+        window.onload = function() {
+            setTimeout(checkServers, 1000);
+        };
+    </script>
+</body>
+</html>
