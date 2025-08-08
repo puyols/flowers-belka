@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расширенный тест API - Flowers Belka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.secondary {
+            background: #6c757d;
+        }
+        button.secondary:hover {
+            background: #545b62;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .endpoint {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        .form-group label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 200px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🌸 Расширенный тест API - Flowers Belka</h1>
+    
+    <div class="container">
+        <h2>📋 Новые endpoints:</h2>
+        <div class="endpoint">GET /api_products.php?action=products&page=1&limit=20&search=роза&category_id=1&min_price=1000&max_price=5000&sort=price_asc</div>
+        <div class="endpoint">GET /api_products.php?action=search&q=букет&limit=10</div>
+        <div class="endpoint">GET /api_products.php?action=stats</div>
+        <div class="endpoint">GET /api_products.php?action=price_range&category_id=1</div>
+    </div>
+
+    <div class="grid">
+        <div class="container">
+            <h2>🧪 Базовые тесты</h2>
+            
+            <button onclick="testProducts()">Получить товары</button>
+            <button onclick="testCategories()">Получить категории</button>
+            <button onclick="testProduct()">Получить товар #1</button>
+            <button onclick="testStats()" class="secondary">Статистика</button>
+            <button onclick="testPriceRange()" class="secondary">Диапазон цен</button>
+        </div>
+
+        <div class="container">
+            <h2>🔍 Расширенные тесты</h2>
+            
+            <div class="form-group">
+                <label>Поиск:</label>
+                <input type="text" id="searchQuery" placeholder="роза, букет..." value="роза">
+                <button onclick="testSearch()">Поиск</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Страница:</label>
+                <input type="number" id="page" value="1" min="1">
+                <label>Лимит:</label>
+                <input type="number" id="limit" value="10" min="1" max="100">
+            </div>
+            
+            <div class="form-group">
+                <label>Мин. цена:</label>
+                <input type="number" id="minPrice" value="" placeholder="1000">
+                <label>Макс. цена:</label>
+                <input type="number" id="maxPrice" value="" placeholder="5000">
+            </div>
+            
+            <div class="form-group">
+                <label>Сортировка:</label>
+                <select id="sort">
+                    <option value="date_desc">Новые сначала</option>
+                    <option value="date_asc">Старые сначала</option>
+                    <option value="price_asc">Цена по возрастанию</option>
+                    <option value="price_desc">Цена по убыванию</option>
+                    <option value="name_asc">По названию А-Я</option>
+                    <option value="name_desc">По названию Я-А</option>
+                </select>
+            </div>
+            
+            <button onclick="testProductsAdvanced()">Расширенный поиск товаров</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📊 Результат</h2>
+        <div id="result" class="result">Выберите тест для выполнения</div>
+    </div>
+
+    <script>
+        const API_BASE = '/api_products.php';
+        
+        async function makeRequest(url) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Загрузка...';
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `Ошибка ${response.status}: ${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Ошибка сети: ${error.message}`;
+            }
+        }
+        
+        function testProducts() {
+            makeRequest(`${API_BASE}?action=products`);
+        }
+        
+        function testCategories() {
+            makeRequest(`${API_BASE}?action=categories`);
+        }
+        
+        function testProduct() {
+            makeRequest(`${API_BASE}?action=product&id=1`);
+        }
+        
+        function testSearch() {
+            const query = document.getElementById('searchQuery').value;
+            makeRequest(`${API_BASE}?action=search&q=${encodeURIComponent(query)}&limit=10`);
+        }
+        
+        function testStats() {
+            makeRequest(`${API_BASE}?action=stats`);
+        }
+        
+        function testPriceRange() {
+            makeRequest(`${API_BASE}?action=price_range`);
+        }
+        
+        function testProductsAdvanced() {
+            const page = document.getElementById('page').value;
+            const limit = document.getElementById('limit').value;
+            const minPrice = document.getElementById('minPrice').value;
+            const maxPrice = document.getElementById('maxPrice').value;
+            const sort = document.getElementById('sort').value;
+            
+            let url = `${API_BASE}?action=products&page=${page}&limit=${limit}&sort=${sort}`;
+            
+            if (minPrice) url += `&min_price=${minPrice}`;
+            if (maxPrice) url += `&max_price=${maxPrice}`;
+            
+            makeRequest(url);
+        }
+    </script>
+</body>
+</html>
