@@ -6,11 +6,16 @@ import Image from 'next/image';
 import { useCart } from '@/contexts/CartContext';
 
 const CartPage = () => {
-  const { items, updateQuantity, removeFromCart, getTotalPrice, clearCart } = useCart();
+  const { cartData, isLoading, error, updateQuantity, removeFromCart, clearCart, refreshCart } = useCart();
 
   const formatPrice = (price: number) => {
     return price.toLocaleString('ru-RU') + ' ₽';
   };
+
+  // Обновляем корзину при загрузке страницы
+  React.useEffect(() => {
+    refreshCart();
+  }, [refreshCart]);
 
   if (items.length === 0) {
     return (

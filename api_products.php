@@ -49,12 +49,40 @@ switch ($action) {
     case 'price_range':
         getPriceRange($pdo);
         break;
+    case 'cart_add':
+        addToCart($pdo);
+        break;
+    case 'cart_get':
+        getCart($pdo);
+        break;
+    case 'cart_update':
+        updateCart($pdo);
+        break;
+    case 'cart_remove':
+        removeFromCart($pdo);
+        break;
+    case 'cart_clear':
+        clearCart($pdo);
+        break;
+    case 'order_create':
+        createOrder($pdo);
+        break;
+    case 'order_get':
+        getOrder($pdo);
+        break;
+    case 'delivery_calculate':
+        calculateDelivery($pdo);
+        break;
     default:
         http_response_code(404);
         echo json_encode([
             'success' => false,
             'error' => 'Action not found',
-            'available_actions' => ['products', 'categories', 'product', 'search', 'stats', 'price_range']
+            'available_actions' => [
+                'products', 'categories', 'product', 'search', 'stats', 'price_range',
+                'cart_add', 'cart_get', 'cart_update', 'cart_remove', 'cart_clear',
+                'order_create', 'order_get', 'delivery_calculate'
+            ]
         ], JSON_UNESCAPED_UNICODE);
 }
 
@@ -429,6 +457,591 @@ function getPriceRange($pdo) {
             'success' => false,
             'error' => 'Ошибка получения диапазона цен',
             'message' => $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
+    }
+}
+
+// ===== ФУНКЦИИ КОРЗИНЫ =====
+
+// Добавление товара в корзину
+function addToCart($pdo) {
+    try {
+        // Получаем данные из POST запроса
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (!$input) {
+            $input = $_POST;
+        }
+
+        $product_id = intval($input['product_id'] ?? 0);
+        $quantity = intval($input['quantity'] ?? 1);
+        $session_id = $input['session_id'] ?? session_id();
+
+        if ($product_id <= 0) {
+            throw new Exception('Некорректный ID товара');
+        }
+
+        if ($quantity <= 0) {
+            throw new Exception('Количество должно быть больше 0');
+        }
+
+        // Проверяем существование товара
+        $stmt = $pdo->prepare("
+            SELECT p.product_id, pd.name, p.price, p.quantity as stock, p.status
+            FROM " . DB_PREFIX . "product p
+            LEFT JOIN " . DB_PREFIX . "product_description pd ON p.product_id = pd.product_id
+            WHERE p.product_id = ? AND p.status = 1 AND pd.language_id = 1
+        ");
+        $stmt->execute([$product_id]);
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$product) {
+            throw new Exception('Товар не найден или недоступен');
+        }
+
+        if ($product['stock'] < $quantity) {
+            throw new Exception('Недостаточно товара на складе');
+        }
+
+        // Проверяем, есть ли товар уже в корзине
+        $stmt = $pdo->prepare("
+            SELECT cart_id, quantity
+            FROM " . DB_PREFIX . "cart
+            WHERE api_id = ? AND product_id = ?
+        ");
+        $stmt->execute([$session_id, $product_id]);
+        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($existing) {
+            // Обновляем количество
+            $new_quantity = $existing['quantity'] + $quantity;
+            $stmt = $pdo->prepare("
+                UPDATE " . DB_PREFIX . "cart
+                SET quantity = ?, date_added = NOW()
+                WHERE cart_id = ?
+            ");
+            $stmt->execute([$new_quantity, $existing['cart_id']]);
+        } else {
+            // Добавляем новый товар
+            $stmt = $pdo->prepare("
+                INSERT INTO " . DB_PREFIX . "cart
+                (api_id, product_id, quantity, date_added)
+                VALUES (?, ?, ?, NOW())
+            ");
+            $stmt->execute([$session_id, $product_id, $quantity]);
+        }
+
+        // Получаем обновленную корзину
+        $cart_data = getCartData($pdo, $session_id);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Товар добавлен в корзину',
+            'cart' => $cart_data
+        ], JSON_UNESCAPED_UNICODE);
+
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
+    }
+}
+
+// Получение корзины
+function getCart($pdo) {
+    try {
+        $session_id = $_GET['session_id'] ?? session_id();
+        $cart_data = getCartData($pdo, $session_id);
+
+        echo json_encode([
+            'success' => true,
+            'cart' => $cart_data
+        ], JSON_UNESCAPED_UNICODE);
+
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
+    }
+}
+
+// Обновление количества товара в корзине
+function updateCart($pdo) {
+    try {
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (!$input) {
+            $input = $_POST;
+        }
+
+        $cart_id = intval($input['cart_id'] ?? 0);
+        $quantity = intval($input['quantity'] ?? 1);
+        $session_id = $input['session_id'] ?? session_id();
+
+        if ($cart_id <= 0) {
+            throw new Exception('Некорректный ID записи корзины');
+        }
+
+        if ($quantity <= 0) {
+            // Удаляем товар из корзины
+            $stmt = $pdo->prepare("
+                DELETE FROM " . DB_PREFIX . "cart
+                WHERE cart_id = ? AND api_id = ?
+            ");
+            $stmt->execute([$cart_id, $session_id]);
+        } else {
+            // Обновляем количество
+            $stmt = $pdo->prepare("
+                UPDATE " . DB_PREFIX . "cart
+                SET quantity = ?, date_added = NOW()
+                WHERE cart_id = ? AND api_id = ?
+            ");
+            $stmt->execute([$quantity, $cart_id, $session_id]);
+        }
+
+        $cart_data = getCartData($pdo, $session_id);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Корзина обновлена',
+            'cart' => $cart_data
+        ], JSON_UNESCAPED_UNICODE);
+
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
+    }
+}
+
+// Удаление товара из корзины
+function removeFromCart($pdo) {
+    try {
+        $cart_id = intval($_GET['cart_id'] ?? 0);
+        $session_id = $_GET['session_id'] ?? session_id();
+
+        if ($cart_id <= 0) {
+            throw new Exception('Некорректный ID записи корзины');
+        }
+
+        $stmt = $pdo->prepare("
+            DELETE FROM " . DB_PREFIX . "cart
+            WHERE cart_id = ? AND api_id = ?
+        ");
+        $stmt->execute([$cart_id, $session_id]);
+
+        $cart_data = getCartData($pdo, $session_id);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Товар удален из корзины',
+            'cart' => $cart_data
+        ], JSON_UNESCAPED_UNICODE);
+
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
+    }
+}
+
+// Очистка корзины
+function clearCart($pdo) {
+    try {
+        $session_id = $_GET['session_id'] ?? session_id();
+
+        $stmt = $pdo->prepare("
+            DELETE FROM " . DB_PREFIX . "cart
+            WHERE api_id = ?
+        ");
+        $stmt->execute([$session_id]);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Корзина очищена',
+            'cart' => [
+                'items' => [],
+                'total_items' => 0,
+                'total_price' => 0,
+                'subtotal' => 0,
+                'delivery' => 0,
+                'session_id' => $session_id
+            ]
+        ], JSON_UNESCAPED_UNICODE);
+
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
+    }
+}
+
+// Вспомогательная функция для получения данных корзины
+function getCartData($pdo, $session_id) {
+    $stmt = $pdo->prepare("
+        SELECT
+            c.cart_id,
+            c.product_id,
+            c.quantity,
+            p.price,
+            p.image,
+            pd.name,
+            cd.name as category_name
+        FROM " . DB_PREFIX . "cart c
+        LEFT JOIN " . DB_PREFIX . "product p ON c.product_id = p.product_id
+        LEFT JOIN " . DB_PREFIX . "product_description pd ON p.product_id = pd.product_id
+        LEFT JOIN " . DB_PREFIX . "product_to_category ptc ON p.product_id = ptc.product_id
+        LEFT JOIN " . DB_PREFIX . "category_description cd ON ptc.category_id = cd.category_id
+        WHERE c.api_id = ? AND p.status = 1 AND pd.language_id = 1
+        ORDER BY c.date_added DESC
+    ");
+    $stmt->execute([$session_id]);
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Обрабатываем изображения и подсчитываем итоги
+    $total_items = 0;
+    $subtotal = 0;
+
+    foreach ($items as &$item) {
+        if (!empty($item['image'])) {
+            $item['image_url'] = 'http://localhost:8080/image/' . $item['image'];
+        } else {
+            $item['image_url'] = null;
+        }
+
+        $item['total_price'] = $item['price'] * $item['quantity'];
+        $total_items += $item['quantity'];
+        $subtotal += $item['total_price'];
+    }
+
+    // Расчет доставки (базовая логика)
+    $delivery_cost = calculateDeliveryCost($subtotal);
+    $total_price = $subtotal + $delivery_cost;
+
+    return [
+        'items' => $items,
+        'total_items' => $total_items,
+        'subtotal' => $subtotal,
+        'delivery' => $delivery_cost,
+        'total_price' => $total_price,
+        'session_id' => $session_id
+    ];
+}
+
+// Расчет стоимости доставки
+function calculateDeliveryCost($subtotal) {
+    // Бесплатная доставка от 5000 рублей
+    if ($subtotal >= 5000) {
+        return 0;
+    }
+
+    // Стандартная доставка 500 рублей
+    return 500;
+}
+
+// ===== ФУНКЦИИ ЗАКАЗОВ =====
+
+// Создание заказа
+function createOrder($pdo) {
+    try {
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (!$input) {
+            throw new Exception('Некорректные данные заказа');
+        }
+
+        $session_id = $input['session_id'] ?? session_id();
+        $customer_data = $input['customer'] ?? [];
+        $delivery_data = $input['delivery'] ?? [];
+        $payment_method = $input['payment_method'] ?? 'cash';
+        $comment = $input['comment'] ?? '';
+
+        // Валидация обязательных полей
+        $required_fields = ['firstname', 'telephone'];
+        foreach ($required_fields as $field) {
+            if (empty($customer_data[$field])) {
+                throw new Exception("Поле '{$field}' обязательно для заполнения");
+            }
+        }
+
+        // Получаем корзину
+        $cart_data = getCartData($pdo, $session_id);
+
+        if (empty($cart_data['items'])) {
+            throw new Exception('Корзина пуста');
+        }
+
+        // Начинаем транзакцию
+        $pdo->beginTransaction();
+
+        try {
+            // Создаем заказ
+            $order_status_id = 1; // Pending
+            $currency_code = 'RUB';
+            $currency_value = 1.0;
+
+            $stmt = $pdo->prepare("
+                INSERT INTO " . DB_PREFIX . "order
+                (invoice_no, invoice_prefix, store_id, store_name, store_url, customer_id,
+                 customer_group_id, firstname, lastname, email, telephone,
+                 payment_firstname, payment_lastname, payment_address_1, payment_city,
+                 payment_postcode, payment_country, payment_zone, payment_method,
+                 shipping_firstname, shipping_lastname, shipping_address_1, shipping_city,
+                 shipping_postcode, shipping_country, shipping_zone, shipping_method,
+                 comment, total, order_status_id, language_id, currency_code,
+                 currency_value, date_added, date_modified)
+                VALUES
+                (0, 'INV-', 0, 'Flowers Belka', 'http://localhost:8080', 0,
+                 1, ?, ?, ?, ?,
+                 ?, ?, ?, ?,
+                 ?, 'Россия', 'Московская область', ?,
+                 ?, ?, ?, ?,
+                 ?, 'Россия', 'Московская область', 'Курьерская доставка',
+                 ?, ?, ?, 1, ?,
+                 ?, NOW(), NOW())
+            ");
+
+            $stmt->execute([
+                $customer_data['firstname'],
+                $customer_data['lastname'] ?? '',
+                $customer_data['email'] ?? '',
+                $customer_data['telephone'],
+                $customer_data['firstname'],
+                $customer_data['lastname'] ?? '',
+                $delivery_data['address'] ?? '',
+                $delivery_data['city'] ?? 'Путилково',
+                $delivery_data['postcode'] ?? '',
+                $payment_method,
+                $customer_data['firstname'],
+                $customer_data['lastname'] ?? '',
+                $delivery_data['address'] ?? '',
+                $delivery_data['city'] ?? 'Путилково',
+                $delivery_data['postcode'] ?? '',
+                $comment,
+                $cart_data['total_price'],
+                $order_status_id,
+                $currency_code,
+                $currency_value
+            ]);
+
+            $order_id = $pdo->lastInsertId();
+
+            // Обновляем номер инвойса
+            $stmt = $pdo->prepare("
+                UPDATE " . DB_PREFIX . "order
+                SET invoice_no = ?
+                WHERE order_id = ?
+            ");
+            $stmt->execute([$order_id, $order_id]);
+
+            // Добавляем товары заказа
+            foreach ($cart_data['items'] as $item) {
+                $stmt = $pdo->prepare("
+                    INSERT INTO " . DB_PREFIX . "order_product
+                    (order_id, product_id, name, model, quantity, price, total)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                ");
+                $stmt->execute([
+                    $order_id,
+                    $item['product_id'],
+                    $item['name'],
+                    'MODEL-' . $item['product_id'],
+                    $item['quantity'],
+                    $item['price'],
+                    $item['total_price']
+                ]);
+            }
+
+            // Добавляем итоги заказа
+            $order_totals = [
+                ['code' => 'sub_total', 'title' => 'Промежуточный итог', 'value' => $cart_data['subtotal'], 'sort_order' => 1],
+                ['code' => 'shipping', 'title' => 'Доставка', 'value' => $cart_data['delivery'], 'sort_order' => 2],
+                ['code' => 'total', 'title' => 'Итого', 'value' => $cart_data['total_price'], 'sort_order' => 3]
+            ];
+
+            foreach ($order_totals as $total) {
+                $stmt = $pdo->prepare("
+                    INSERT INTO " . DB_PREFIX . "order_total
+                    (order_id, code, title, value, sort_order)
+                    VALUES (?, ?, ?, ?, ?)
+                ");
+                $stmt->execute([
+                    $order_id,
+                    $total['code'],
+                    $total['title'],
+                    $total['value'],
+                    $total['sort_order']
+                ]);
+            }
+
+            // Добавляем историю заказа
+            $stmt = $pdo->prepare("
+                INSERT INTO " . DB_PREFIX . "order_history
+                (order_id, order_status_id, notify, comment, date_added)
+                VALUES (?, ?, 0, 'Заказ создан', NOW())
+            ");
+            $stmt->execute([$order_id, $order_status_id]);
+
+            // Очищаем корзину
+            $stmt = $pdo->prepare("
+                DELETE FROM " . DB_PREFIX . "cart
+                WHERE api_id = ?
+            ");
+            $stmt->execute([$session_id]);
+
+            // Подтверждаем транзакцию
+            $pdo->commit();
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Заказ успешно создан',
+                'order_id' => $order_id,
+                'order' => [
+                    'id' => $order_id,
+                    'total' => $cart_data['total_price'],
+                    'status' => 'pending',
+                    'items_count' => $cart_data['total_items']
+                ]
+            ], JSON_UNESCAPED_UNICODE);
+
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
+    }
+}
+
+// Получение информации о заказе
+function getOrder($pdo) {
+    try {
+        $order_id = intval($_GET['order_id'] ?? 0);
+
+        if ($order_id <= 0) {
+            throw new Exception('Некорректный ID заказа');
+        }
+
+        // Получаем основную информацию о заказе
+        $stmt = $pdo->prepare("
+            SELECT
+                o.*,
+                os.name as status_name
+            FROM " . DB_PREFIX . "order o
+            LEFT JOIN " . DB_PREFIX . "order_status os ON o.order_status_id = os.order_status_id
+            WHERE o.order_id = ? AND os.language_id = 1
+        ");
+        $stmt->execute([$order_id]);
+        $order = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$order) {
+            throw new Exception('Заказ не найден');
+        }
+
+        // Получаем товары заказа
+        $stmt = $pdo->prepare("
+            SELECT * FROM " . DB_PREFIX . "order_product
+            WHERE order_id = ?
+        ");
+        $stmt->execute([$order_id]);
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Получаем итоги заказа
+        $stmt = $pdo->prepare("
+            SELECT * FROM " . DB_PREFIX . "order_total
+            WHERE order_id = ?
+            ORDER BY sort_order
+        ");
+        $stmt->execute([$order_id]);
+        $totals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Получаем историю заказа
+        $stmt = $pdo->prepare("
+            SELECT
+                oh.*,
+                os.name as status_name
+            FROM " . DB_PREFIX . "order_history oh
+            LEFT JOIN " . DB_PREFIX . "order_status os ON oh.order_status_id = os.order_status_id
+            WHERE oh.order_id = ? AND os.language_id = 1
+            ORDER BY oh.date_added DESC
+        ");
+        $stmt->execute([$order_id]);
+        $history = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode([
+            'success' => true,
+            'order' => [
+                'info' => $order,
+                'products' => $products,
+                'totals' => $totals,
+                'history' => $history
+            ]
+        ], JSON_UNESCAPED_UNICODE);
+
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
+    }
+}
+
+// Расчет стоимости доставки
+function calculateDelivery($pdo) {
+    try {
+        $subtotal = floatval($_GET['subtotal'] ?? 0);
+        $city = $_GET['city'] ?? 'Путилково';
+        $address = $_GET['address'] ?? '';
+
+        $delivery_cost = calculateDeliveryCost($subtotal);
+
+        // Дополнительная логика расчета в зависимости от города
+        $delivery_zones = [
+            'Путилково' => 0,
+            'Красногорск' => 200,
+            'Москва' => 300,
+            'Московская область' => 500
+        ];
+
+        $zone_cost = $delivery_zones[$city] ?? $delivery_zones['Московская область'];
+
+        // Если есть базовая стоимость доставки, добавляем зональную
+        if ($delivery_cost > 0) {
+            $delivery_cost += $zone_cost;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'delivery' => [
+                'cost' => $delivery_cost,
+                'free_from' => 5000,
+                'zone' => $city,
+                'zone_cost' => $zone_cost,
+                'estimated_time' => $delivery_cost == 0 ? 'Бесплатная доставка' : 'В течение дня'
+            ]
+        ], JSON_UNESCAPED_UNICODE);
+
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
         ], JSON_UNESCAPED_UNICODE);
     }
 }

@@ -14,11 +14,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { addToCart } = useCart();
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    addToCart({
+    await addToCart({
+      product_id: product.id,
       id: product.id,
       name: product.name,
       price: product.price,

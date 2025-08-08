@@ -19,8 +19,9 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
-  const handleAddToCart = () => {
-    addToCart({
+  const handleAddToCart = async () => {
+    await addToCart({
+      product_id: product.id,
       id: product.id,
       name: product.name,
       price: product.price,

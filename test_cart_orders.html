@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест корзины и заказов - Flowers Belka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .cart-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+        .status { padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .status.online { background: #d4edda; color: #155724; }
+        .status.offline { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🛒 Тестирование корзины и заказов Flowers Belka</h1>
+    
+    <div class="container">
+        <h2>📊 Статус системы</h2>
+        <div id="system-status">Проверяем...</div>
+        <button onclick="checkSystem()">Проверить систему</button>
+    </div>
+
+    <div class="grid">
+        <!-- Тестирование корзины -->
+        <div class="container">
+            <h2>🛒 Тестирование корзины</h2>
+            
+            <div class="form-group">
+                <label>ID товара:</label>
+                <input type="number" id="product-id" value="1" min="1">
+            </div>
+            
+            <div class="form-group">
+                <label>Количество:</label>
+                <input type="number" id="quantity" value="1" min="1">
+            </div>
+            
+            <button onclick="addToCart()">Добавить в корзину</button>
+            <button onclick="getCart()">Получить корзину</button>
+            <button onclick="clearCart()">Очистить корзину</button>
+            
+            <div id="cart-result" class="result">Выберите действие</div>
+        </div>
+
+        <!-- Тестирование заказов -->
+        <div class="container">
+            <h2>📋 Тестирование заказов</h2>
+            
+            <div class="form-group">
+                <label>Имя:</label>
+                <input type="text" id="customer-name" value="Тест Тестов">
+            </div>
+            
+            <div class="form-group">
+                <label>Телефон:</label>
+                <input type="tel" id="customer-phone" value="+7 999 123 45 67">
+            </div>
+            
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="customer-email" value="test@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label>Адрес:</label>
+                <input type="text" id="delivery-address" value="ул. Тестовая, д. 1">
+            </div>
+            
+            <button onclick="createTestOrder()">Создать тестовый заказ</button>
+            
+            <div id="order-result" class="result">Заказы не создавались</div>
+        </div>
+    </div>
+
+    <!-- Корзина -->
+    <div class="container">
+        <h2>🛍️ Текущая корзина</h2>
+        <div id="cart-display">Корзина не загружена</div>
+        <button onclick="refreshCartDisplay()">Обновить отображение</button>
+    </div>
+
+    <!-- Результаты тестов -->
+    <div class="container">
+        <h2>📈 Результаты тестирования</h2>
+        <div id="test-summary">
+            <p>Тесты еще не запускались</p>
+        </div>
+        <button onclick="runAllTests()">Запустить все тесты</button>
+    </div>
+
+    <script>
+        let sessionId = 'test_session_' + Date.now();
+        let testResults = { passed: 0, failed: 0, tests: [] };
+
+        async function checkSystem() {
+            const statusDiv = document.getElementById('system-status');
+            statusDiv.innerHTML = 'Проверяем систему...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_products.php?action=stats');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.innerHTML = `
+                        <div class="status online">✅ API сервер: Работает</div>
+                        <div class="status online">✅ База данных: Подключена</div>
+                        <div class="status online">✅ Товаров в базе: ${data.stats?.total_products || 'N/A'}</div>
+                    `;
+                } else {
+                    throw new Error('Server error');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status offline">❌ Система недоступна</div>
+                    <p>Убедитесь, что PHP сервер запущен: <code>php -S localhost:8080</code></p>
+                `;
+            }
+        }
+
+        async function addToCart() {
+            const productId = document.getElementById('product-id').value;
+            const quantity = document.getElementById('quantity').value;
+            const resultDiv = document.getElementById('cart-result');
+            
+            resultDiv.textContent = 'Добавляем товар в корзину...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_products.php?action=cart_add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        product_id: parseInt(productId),
+                        quantity: parseInt(quantity),
+                        session_id: sessionId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ ${data.message}\n\nКорзина:\n${JSON.stringify(data.cart, null, 2)}`;
+                    addTestResult('Добавление в корзину', true);
+                    refreshCartDisplay();
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Добавление в корзину', false, error.message);
+            }
+        }
+
+        async function getCart() {
+            const resultDiv = document.getElementById('cart-result');
+            resultDiv.textContent = 'Загружаем корзину...';
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api_products.php?action=cart_get&session_id=${sessionId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Корзина загружена\n\n${JSON.stringify(data.cart, null, 2)}`;
+                    addTestResult('Получение корзины', true);
+                    refreshCartDisplay();
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Получение корзины', false, error.message);
+            }
+        }
+
+        async function clearCart() {
+            const resultDiv = document.getElementById('cart-result');
+            resultDiv.textContent = 'Очищаем корзину...';
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api_products.php?action=cart_clear&session_id=${sessionId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ ${data.message}`;
+                    addTestResult('Очистка корзины', true);
+                    refreshCartDisplay();
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Очистка корзины', false, error.message);
+            }
+        }
+
+        async function createTestOrder() {
+            const resultDiv = document.getElementById('order-result');
+            resultDiv.textContent = 'Создаем тестовый заказ...';
+            
+            // Сначала добавим товар в корзину
+            await addToCart();
+            
+            const orderData = {
+                customer: {
+                    firstname: document.getElementById('customer-name').value,
+                    lastname: 'Тестович',
+                    email: document.getElementById('customer-email').value,
+                    telephone: document.getElementById('customer-phone').value
+                },
+                delivery: {
+                    address: document.getElementById('delivery-address').value,
+                    city: 'Путилково',
+                    postcode: '143441'
+                },
+                payment_method: 'cash',
+                comment: 'Тестовый заказ',
+                session_id: sessionId
+            };
+            
+            try {
+                const response = await fetch('http://localhost:8080/api_products.php?action=order_create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ ${data.message}\n\nЗаказ #${data.order_id}\n\n${JSON.stringify(data.order, null, 2)}`;
+                    addTestResult('Создание заказа', true);
+                    
+                    // Проверим заказ
+                    setTimeout(() => checkOrder(data.order_id), 1000);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Ошибка: ${error.message}`;
+                addTestResult('Создание заказа', false, error.message);
+            }
+        }
+
+        async function checkOrder(orderId) {
+            try {
+                const response = await fetch(`http://localhost:8080/api_products.php?action=order_get&order_id=${orderId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const resultDiv = document.getElementById('order-result');
+                    resultDiv.textContent += `\n\n✅ Заказ найден в базе:\n${JSON.stringify(data.order, null, 2)}`;
+                    addTestResult('Проверка заказа', true);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                addTestResult('Проверка заказа', false, error.message);
+            }
+        }
+
+        async function refreshCartDisplay() {
+            const displayDiv = document.getElementById('cart-display');
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api_products.php?action=cart_get&session_id=${sessionId}`);
+                const data = await response.json();
+                
+                if (data.success && data.cart.items.length > 0) {
+                    let html = `<h3>Товаров в корзине: ${data.cart.total_items}</h3>`;
+                    
+                    data.cart.items.forEach(item => {
+                        html += `
+                            <div class="cart-item">
+                                <strong>${item.name}</strong><br>
+                                Цена: ${item.price} ₽<br>
+                                Количество: ${item.quantity}<br>
+                                Итого: ${item.total_price} ₽
+                            </div>
+                        `;
+                    });
+                    
+                    html += `
+                        <div style="margin-top: 15px; padding: 10px; background: #e9ecef; border-radius: 4px;">
+                            <strong>Промежуточный итог: ${data.cart.subtotal} ₽</strong><br>
+                            <strong>Доставка: ${data.cart.delivery === 0 ? 'Бесплатно' : data.cart.delivery + ' ₽'}</strong><br>
+                            <strong>Итого: ${data.cart.total_price} ₽</strong>
+                        </div>
+                    `;
+                    
+                    displayDiv.innerHTML = html;
+                } else {
+                    displayDiv.innerHTML = '<p>Корзина пуста</p>';
+                }
+            } catch (error) {
+                displayDiv.innerHTML = `<p style="color: red;">Ошибка загрузки корзины: ${error.message}</p>`;
+            }
+        }
+
+        function addTestResult(testName, success, error = null) {
+            if (success) {
+                testResults.passed++;
+            } else {
+                testResults.failed++;
+            }
+            
+            testResults.tests.push({
+                name: testName,
+                success,
+                error,
+                timestamp: new Date().toLocaleTimeString()
+            });
+            
+            updateTestSummary();
+        }
+
+        function updateTestSummary() {
+            const summaryDiv = document.getElementById('test-summary');
+            const total = testResults.passed + testResults.failed;
+            
+            let html = `
+                <h3>📊 Сводка тестирования</h3>
+                <p><strong>Всего тестов:</strong> ${total}</p>
+                <p><strong>Успешно:</strong> <span style="color: green;">${testResults.passed}</span></p>
+                <p><strong>Ошибок:</strong> <span style="color: red;">${testResults.failed}</span></p>
+                
+                <h4>Детали:</h4>
+                <ul>
+            `;
+            
+            testResults.tests.forEach(test => {
+                const icon = test.success ? '✅' : '❌';
+                const error = test.error ? ` - ${test.error}` : '';
+                html += `<li>${icon} ${test.name} (${test.timestamp})${error}</li>`;
+            });
+            
+            html += '</ul>';
+            
+            if (total > 0) {
+                const successRate = Math.round((testResults.passed / total) * 100);
+                html += `<p><strong>Успешность:</strong> ${successRate}%</p>`;
+            }
+            
+            summaryDiv.innerHTML = html;
+        }
+
+        async function runAllTests() {
+            testResults = { passed: 0, failed: 0, tests: [] };
+            
+            await checkSystem();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await addToCart();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await getCart();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await createTestOrder();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await clearCart();
+        }
+
+        // Автоматическая проверка при загрузке
+        window.onload = function() {
+            checkSystem();
+            refreshCartDisplay();
+        };
+    </script>
+</body>
+</html>
