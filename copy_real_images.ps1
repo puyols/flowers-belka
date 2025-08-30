@@ -1,7 +1,7 @@
 # PowerShell script to copy real flower images to Next.js project
 
-$sourceDir = "C:\Users\puyols\Downloads\flowers_belka\image\catalog"
-$targetDir = "C:\Users\puyols\Downloads\flowers_belka\flowers-belka-nextjs\public\images\products"
+$sourceDir = "/workspace/image/catalog"
+$targetDir = "/workspace/flowers-belka-nextjs/public/images/products"
 
 # Create target directory if it doesn't exist
 if (!(Test-Path $targetDir)) {

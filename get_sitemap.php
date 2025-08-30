@@ -2,7 +2,7 @@
 // Получение полной структуры сайта из OpenCart
 header('Content-Type: application/json; charset=utf-8');
 
-require_once('C:/xampp/htdocs/flowers_belka/config.php');
+require_once('config.php');
 
 try {
     $mysqli = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT);

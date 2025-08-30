@@ -1,7 +1,7 @@
 # PowerShell script to copy images for news
 
-$sourceDir = "C:\Users\puyols\Downloads\flowers_belka\image\catalog"
-$targetDir = "C:\Users\puyols\Downloads\flowers_belka\flowers-belka-nextjs\public\images\news"
+$sourceDir = "/workspace/image/catalog"
+$targetDir = "/workspace/flowers-belka-nextjs/public/images/news"
 
 # Create target directory if it doesn't exist
 if (!(Test-Path $targetDir)) {

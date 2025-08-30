@@ -1,8 +1,8 @@
 # Скрипт для копирования изображений из OpenCart в новый сайт
 Write-Host "🖼️ Копируем изображения из OpenCart..." -ForegroundColor Green
 
-$sourceImagePath = "C:\xampp\htdocs\flowers_belka\image"
-$destImagePath = "C:\xampp\htdocs\flowers_belka_new\public\images"
+$sourceImagePath = "/workspace/image"
+$destImagePath = "/workspace/flowers-belka-nextjs/public/images"
 
 # Создаем папку для изображений в новом сайте
 if (!(Test-Path $destImagePath)) {
