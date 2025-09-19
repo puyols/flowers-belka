@@ -71,13 +71,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
-  themeColor: '#d4145a',
-  colorScheme: 'light',
   category: 'business',
   classification: 'Flower delivery service',
   referrer: 'origin-when-cross-origin',
@@ -96,6 +89,16 @@ export const metadata: Metadata = {
     }
   }
 };
+
+export function generateViewport() {
+  return {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+    themeColor: '#d4145a',
+    colorScheme: 'light',
+  };
+}
 
 export default function RootLayout({
   children,

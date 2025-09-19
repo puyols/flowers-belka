@@ -6,7 +6,8 @@ import Image from 'next/image';
 import { useCart } from '@/contexts/CartContext';
 
 const CartPage = () => {
-  const { cartData, isLoading, error, updateQuantity, removeFromCart, clearCart, refreshCart } = useCart();
+  const { cartData, isLoading, error, updateQuantity, removeFromCart, clearCart, refreshCart, getTotalPrice } = useCart();
+  const items = cartData?.items || [];
 
   const formatPrice = (price: number) => {
     return price.toLocaleString('ru-RU') + ' ₽';
@@ -87,7 +88,7 @@ const CartPage = () => {
                         {item.name}
                       </Link>
                       <button
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => item.cart_id && removeFromCart(item.cart_id)}
                         className="text-sm text-red-600 hover:text-red-700 transition-colors mt-1 block"
                       >
                         Удалить
@@ -106,14 +107,14 @@ const CartPage = () => {
                   <div className="col-span-2 text-center">
                     <div className="flex items-center justify-center space-x-2">
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        onClick={() => item.cart_id && updateQuantity(item.cart_id, item.quantity - 1)}
                         className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
                       >
                         -
                       </button>
                       <span className="w-8 text-center font-medium">{item.quantity}</span>
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        onClick={() => item.cart_id && updateQuantity(item.cart_id, item.quantity + 1)}
                         className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
                       >
                         +

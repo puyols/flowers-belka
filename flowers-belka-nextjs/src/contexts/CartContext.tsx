@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import Toast from '@/components/Toast';
 
 export interface CartItem {
@@ -67,15 +67,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setSessionId(storedSessionId);
   }, []);
 
-  // Загружаем корзину при инициализации
-  useEffect(() => {
-    if (sessionId) {
-      refreshCart();
-    }
-  }, [sessionId]);
-
   // Обновление корзины с сервера
-  const refreshCart = async () => {
+  const refreshCart = useCallback(async () => {
     if (!sessionId) return;
 
     try {
@@ -97,7 +90,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [sessionId]);
+
+  // Загружаем корзину при инициализации
+  useEffect(() => {
+    if (sessionId) {
+      refreshCart();
+    }
+  }, [sessionId, refreshCart]);
 
   // Добавление товара в корзину
   const addToCart = async (product: Omit<CartItem, 'quantity' | 'cart_id' | 'total_price'>, quantity = 1) => {

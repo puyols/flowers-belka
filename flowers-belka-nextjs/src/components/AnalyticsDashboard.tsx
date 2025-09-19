@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 interface DashboardData {
   summary: {
@@ -70,21 +70,7 @@ const AnalyticsDashboard: React.FC = () => {
   const [period, setPeriod] = useState('30');
   const [autoRefresh, setAutoRefresh] = useState(true);
 
-  useEffect(() => {
-    loadDashboardData();
-    loadSystemHealth();
-    
-    if (autoRefresh) {
-      const interval = setInterval(() => {
-        loadDashboardData();
-        loadSystemHealth();
-      }, 60000); // Обновляем каждую минуту
-      
-      return () => clearInterval(interval);
-    }
-  }, [period, autoRefresh]);
-
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch(`http://localhost:8080/api_analytics.php?action=dashboard&period=${period}`);
@@ -100,9 +86,9 @@ const AnalyticsDashboard: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [period]);
 
-  const loadSystemHealth = async () => {
+  const loadSystemHealth = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:8080/api_analytics.php?action=system_health');
       const data = await response.json();
@@ -113,7 +99,21 @@ const AnalyticsDashboard: React.FC = () => {
     } catch (err) {
       console.error('Error loading system health:', err);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadDashboardData();
+    loadSystemHealth();
+
+    if (autoRefresh) {
+      const interval = setInterval(() => {
+        loadDashboardData();
+        loadSystemHealth();
+      }, 60000); // Обновляем каждую минуту
+
+      return () => clearInterval(interval);
+    }
+  }, [period, autoRefresh, loadDashboardData, loadSystemHealth]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ru-RU', {

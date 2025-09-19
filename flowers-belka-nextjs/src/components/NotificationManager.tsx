@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 interface NotificationSettings {
   email_notifications: boolean;
@@ -40,19 +40,7 @@ const NotificationManager: React.FC = () => {
   const [testEmail, setTestEmail] = useState('');
   const [testPhone, setTestPhone] = useState('');
 
-  useEffect(() => {
-    checkPushSupport();
-    loadNotifications();
-  }, []);
-
-  const checkPushSupport = () => {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      setPushSupported(true);
-      checkPushSubscription();
-    }
-  };
-
-  const checkPushSubscription = async () => {
+  const checkPushSubscription = useCallback(async () => {
     try {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
@@ -60,7 +48,32 @@ const NotificationManager: React.FC = () => {
     } catch (error) {
       console.error('Error checking push subscription:', error);
     }
-  };
+  }, []);
+
+  const checkPushSupport = useCallback(() => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      setPushSupported(true);
+      checkPushSubscription();
+    }
+  }, [checkPushSubscription]);
+
+  const loadNotifications = useCallback(async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api_notifications.php?action=get_notifications&user_id=0&limit=10');
+      const data = await response.json();
+
+      if (data.success) {
+        setNotifications(data.notifications);
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkPushSupport();
+    loadNotifications();
+  }, [checkPushSupport, loadNotifications]);
 
   const subscribeToPush = async () => {
     try {

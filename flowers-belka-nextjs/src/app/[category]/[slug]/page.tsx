@@ -197,7 +197,7 @@ export default function ProductPage({ params }: ProductPageProps) {
 
 // Generate static params for all products
 export async function generateStaticParams() {
-  return products.map((product) => ({
+  return completeProducts.map((product) => ({
     category: product.category,
     slug: product.slug,
   }));
@@ -205,7 +205,7 @@ export async function generateStaticParams() {
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ProductPageProps) {
-  const product = getProductBySlug(params.slug);
+  const product = getCompleteProductBySlug(params.slug);
 
   if (!product) {
     return {
