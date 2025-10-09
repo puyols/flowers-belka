@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комплексное тестирование API OpenCart</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 960px; margin: 20px auto; padding: 0 20px; }
+        h1, h2, h3 { color: #2c3e50; }
+        h2 { border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; margin-top: 40px; }
+        pre { background-color: #ecf0f1; padding: 15px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-size: 14px; }
+        .test-case { border: 1px solid #bdc3c7; border-radius: 8px; padding: 20px; margin-bottom: 30px; }
+        .test-case h3 { margin-top: 0; color: #3498db; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #7f8c8d; }
+        input[type="text"], input[type="number"], textarea { width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; box-sizing: border-box; margin-bottom: 10px; }
+        button { background-color: #3498db; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; }
+        button:hover { background-color: #2980b9; }
+        .response-container { margin-top: 15px; }
+        .status { font-weight: bold; }
+        .status.ok { color: #27ae60; }
+        .status.error { color: #c0392b; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .info { background-color: #e8f4fd; border-left: 4px solid #3498db; padding: 10px 15px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>Комплексное тестирование API OpenCart</h1>
+    <p>Эта страница предназначена для ручного тестирования API, особенно эндпоинтов корзины и заказов.</p>
+
+    <div class="info">
+        <p><strong>Session ID:</strong> <span id="sessionId"></span></p>
+        <p>Этот ID уникален для вашего браузера и используется для отслеживания вашей корзины. Он сохранится между перезагрузками страницы.</p>
+    </div>
+
+    <!-- Раздел: Корзина -->
+    <h2>🛒 Управление корзиной</h2>
+
+    <div class="test-case">
+        <h3>1. Добавить товар в корзину (cart_add)</h3>
+        <div class="grid">
+            <div>
+                <label for="addProductId">Product ID</label>
+                <input type="number" id="addProductId" value="43">
+            </div>
+            <div>
+                <label for="addQuantity">Quantity</label>
+                <input type="number" id="addQuantity" value="1">
+            </div>
+        </div>
+        <button onclick="runTest('cart_add')">Добавить</button>
+        <div class="response-container">
+            <pre id="response-cart_add">Ответ от сервера появится здесь...</pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h3>2. Получить содержимое корзины (cart_get)</h3>
+        <button onclick="runTest('cart_get')">Получить корзину</button>
+        <div class="response-container">
+            <pre id="response-cart_get">Ответ от сервера появится здесь...</pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h3>3. Обновить количество товара (cart_update)</h3>
+        <p class="info">Сначала получите корзину, чтобы узнать <strong>Cart Item ID</strong>.</p>
+        <div class="grid">
+            <div>
+                <label for="updateCartId">Cart Item ID</label>
+                <input type="number" id="updateCartId" placeholder="ID товара в корзине">
+            </div>
+            <div>
+                <label for="updateQuantity">New Quantity</label>
+                <input type="number" id="updateQuantity" value="2">
+            </div>
+        </div>
+        <button onclick="runTest('cart_update')">Обновить</button>
+        <div class="response-container">
+            <pre id="response-cart_update">Ответ от сервера появится здесь...</pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h3>4. Удалить товар из корзины (cart_remove)</h3>
+        <p class="info">Сначала получите корзину, чтобы узнать <strong>Cart Item ID</strong>.</p>
+        <label for="removeCartId">Cart Item ID</label>
+        <input type="number" id="removeCartId" placeholder="ID товара в корзине">
+        <button onclick="runTest('cart_remove')">Удалить</button>
+        <div class="response-container">
+            <pre id="response-cart_remove">Ответ от сервера появится здесь...</pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h3>5. Очистить корзину (cart_clear)</h3>
+        <button onclick="runTest('cart_clear')">Очистить</button>
+        <div class="response-container">
+            <pre id="response-cart_clear">Ответ от сервера появится здесь...</pre>
+        </div>
+    </div>
+
+    <!-- Раздел: Заказы -->
+    <h2>📦 Управление заказами</h2>
+
+    <div class="test-case">
+        <h3>6. Создать заказ (order_create)</h3>
+        <p class="info">Этот эндпоинт должен быть защищен! Сейчас он открыт для всех.</p>
+        <label for="orderData">Данные заказа (JSON)</label>
+        <textarea id="orderData" rows="10">{
+    "customer": {
+        "firstname": "Тест",
+        "lastname": "Тестов",
+        "telephone": "+79991234567",
+        "email": "test@example.com"
+    },
+    "delivery": {
+        "address": "ул. Тестовая, д. 1, кв. 2",
+        "city": "Путилково"
+    },
+    "payment_method": "cash",
+    "comment": "Тестовый заказ через API"
+}</textarea>
+        <button onclick="runTest('order_create')">Создать заказ</button>
+        <div class="response-container">
+            <pre id="response-order_create">Ответ от сервера появится здесь...</pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h3>7. Получить информацию о заказе (order_get)</h3>
+        <label for="getOrderId">Order ID</label>
+        <input type="number" id="getOrderId" placeholder="ID заказа">
+        <button onclick="runTest('order_get')">Получить заказ</button>
+        <div class="response-container">
+            <pre id="response-order_get">Ответ от сервера появится здесь...</pre>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api_products.php';
+        let sessionId = '';
+
+        // Инициализация Session ID
+        document.addEventListener('DOMContentLoaded', () => {
+            let storedSessionId = localStorage.getItem('api_test_session_id');
+            if (!storedSessionId) {
+                storedSessionId = 'test_session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('api_test_session_id', storedSessionId);
+            }
+            sessionId = storedSessionId;
+            document.getElementById('sessionId').textContent = sessionId;
+        });
+
+        async function runTest(action) {
+            const responseContainer = document.getElementById(`response-${action}`);
+            responseContainer.innerHTML = 'Выполняется запрос...';
+
+            let url = `${API_URL}?action=${action}&session_id=${sessionId}`;
+            let options = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            let body = null;
+
+            try {
+                switch (action) {
+                    case 'cart_add':
+                        options.method = 'POST';
+                        body = {
+                            product_id: document.getElementById('addProductId').value,
+                            quantity: document.getElementById('addQuantity').value,
+                            session_id: sessionId
+                        };
+                        break;
+
+                    case 'cart_update':
+                        options.method = 'POST';
+                        body = {
+                            cart_id: document.getElementById('updateCartId').value,
+                            quantity: document.getElementById('updateQuantity').value,
+                            session_id: sessionId
+                        };
+                        break;
+
+                    case 'cart_remove':
+                        url += `&cart_id=${document.getElementById('removeCartId').value}`;
+                        break;
+
+                    case 'order_create':
+                        options.method = 'POST';
+                        const orderData = JSON.parse(document.getElementById('orderData').value);
+                        body = { ...orderData, session_id: sessionId };
+                        break;
+
+                    case 'order_get':
+                        url += `&order_id=${document.getElementById('getOrderId').value}`;
+                        break;
+                }
+
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+
+                const response = await fetch(url, options);
+                const data = await response.json();
+
+                const statusClass = response.ok ? 'ok' : 'error';
+                responseContainer.innerHTML = `<div class="status ${statusClass}">Статус: ${response.status} ${response.statusText}</div>`;
+                responseContainer.innerHTML += JSON.stringify(data, null, 2);
+
+            } catch (error) {
+                responseContainer.innerHTML = `<div class="status error">Ошибка выполнения запроса</div>`;
+                responseContainer.innerHTML += error.toString();
+                console.error('Test error:', error);
+            }
+        }
+    </script>
+
+</body>
+</html>
