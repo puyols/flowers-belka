@@ -98,7 +98,7 @@ function extractSlugsFromFile() {
   // Ищем все slug'и в файле
   const slugMatches = productsFile.match(/slug: '[^']+'/g);
   if (!slugMatches) {
-    throw new Error('Не удалось найти slug\'и в файле');
+    throw new Error("Не удалось найти slug'и в файле");
   }
   
   const slugs = slugMatches.map(match => {
