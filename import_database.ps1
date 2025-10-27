@@ -26,7 +26,7 @@ if ($dbExists -match "flowers_belka_new") {
 }
 
 # Проверяем размер SQL файла
-$sqlFile = "C:\Users\puyols\Downloads\flowers_belka\localhost.sql"
+$sqlFile = "/workspace/localhost.sql"
 if (Test-Path $sqlFile) {
     $fileSize = (Get-Item $sqlFile).Length / 1MB
     Write-Host "4️⃣ Размер SQL файла: $([math]::Round($fileSize, 2)) MB" -ForegroundColor Cyan

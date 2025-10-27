@@ -5,7 +5,20 @@ const { JSDOM } = require('jsdom');
 // Функция для получения HTML страницы
 function fetchPage(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
+    const options = {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1'
+      },
+      timeout: 10000, // 10 секунд таймаут
+      rejectUnauthorized: false // Игнорируем SSL ошибки для тестирования
+    };
+
+    const req = https.get(url, options, (res) => {
       let data = '';
       res.on('data', (chunk) => {
         data += chunk;
@@ -13,9 +26,19 @@ function fetchPage(url) {
       res.on('end', () => {
         resolve(data);
       });
-    }).on('error', (err) => {
+    });
+
+    req.on('error', (err) => {
+      console.error(`Ошибка при запросе ${url}:`, err.message);
       reject(err);
     });
+
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('Timeout'));
+    });
+
+    req.setTimeout(10000);
   });
 }
 
@@ -102,6 +125,12 @@ async function main() {
         }
       } catch (error) {
         console.error(`Ошибка при парсинге ${product.name}:`, error.message);
+        // Добавляем информацию об ошибке в результаты
+        results.push({
+          slug: product.slug,
+          name: product.name,
+          error: error.message
+        });
       }
       
       // Задержка между запросами

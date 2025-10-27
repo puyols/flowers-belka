@@ -17,7 +17,7 @@ UPDATE oc_setting SET value = 'Belka Flowers - Локальная копия'
 WHERE `key` = 'config_name' AND store_id = 0;
 
 -- Обновляем пути к изображениям (если используются абсолютные пути)
-UPDATE oc_setting SET value = 'C:/Users/puyols/Downloads/flowers_belka/image/' 
+UPDATE oc_setting SET value = '/workspace/image/' 
 WHERE `key` = 'config_image' AND store_id = 0;
 
 -- Проверяем настройки темы Journal3 (если используется)

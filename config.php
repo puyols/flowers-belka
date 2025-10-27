@@ -6,10 +6,10 @@ define('HTTP_SERVER', 'http://localhost:8080/');
 define('HTTPS_SERVER', 'http://localhost:8080/');
 
 // DIR
-define('DIR_APPLICATION', 'C:/Users/puyols/Downloads/flowers_belka/catalog/');
-define('DIR_SYSTEM', 'C:/Users/puyols/Downloads/flowers_belka/system/');
-define('DIR_IMAGE', 'C:/Users/puyols/Downloads/flowers_belka/image/');
-define('DIR_STORAGE', 'C:/Users/puyols/Downloads/flowers_belka/storage/');
+define('DIR_APPLICATION', '/workspace/catalog/');
+define('DIR_SYSTEM', '/workspace/system/');
+define('DIR_IMAGE', '/workspace/image/');
+define('DIR_STORAGE', '/workspace/storage/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/theme/');
 define('DIR_CONFIG', DIR_SYSTEM . 'config/');
