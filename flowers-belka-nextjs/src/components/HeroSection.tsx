@@ -27,6 +27,13 @@ const HeroSection = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl">
+          {/* Greeting */}
+          <div className="mb-4 animate-fade-in">
+            <span className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg">
+              👋 Привет!
+            </span>
+          </div>
+
           {/* Status badge */}
           <div className="inline-flex items-center bg-white/90 backdrop-blur-sm rounded-full px-6 py-3 mb-8 shadow-lg">
             <span className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></span>
