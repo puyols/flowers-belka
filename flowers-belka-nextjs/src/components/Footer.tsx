@@ -171,7 +171,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/sitemap" className="text-gray-300 hover:text-green-400 transition-colors duration-300 flex items-center group">
+                <Link href="/karta-sayta" className="text-gray-300 hover:text-green-400 transition-colors duration-300 flex items-center group">
                   <span className="w-2 h-2 bg-green-400 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                   Карта сайта
                 </Link>
@@ -278,7 +278,7 @@ const Footer = () => {
                 <Link href="/privacy" className="text-gray-500 hover:text-green-400 transition-colors">
                   Политика конфиденциальности
                 </Link>
-                <Link href="/sitemap" className="text-gray-500 hover:text-green-400 transition-colors">
+                <Link href="/karta-sayta" className="text-gray-500 hover:text-green-400 transition-colors">
                   Карта сайта
                 </Link>
               </div>

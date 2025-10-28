@@ -88,13 +88,14 @@ export const metadata: Metadata = {
       'x-default': 'https://flowers-belka.ru'
     }
   },
-  verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-    other: {
-      'msvalidate.01': 'your-bing-verification-code'
-    }
-  }
+  // Раскомментируйте и добавьте коды верификации после регистрации в поисковых системах:
+  // verification: {
+  //   google: 'your-google-verification-code',
+  //   yandex: 'your-yandex-verification-code',
+  //   other: {
+  //     'msvalidate.01': 'your-bing-verification-code'
+  //   }
+  // }
 };
 
 export default function RootLayout({
